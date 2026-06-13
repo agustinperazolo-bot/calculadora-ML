@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Financiero ARG · Sofia Ferrer</title>
+<style>
+  :root{
+    --ink:#1a1a2e; --muted:#6b7280; --bg:#f4f6fb; --card:#ffffff; --line:#e6e9f0;
+    --tn:#0a3d62; --tn2:#1e6fb8; --ml:#3483fa; --sf:#7c3aed;
+    --green:#16a34a; --green-bg:#e7f7ee; --amber:#d97706; --red:#dc2626; --red-bg:#fde8e8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.4;padding:20px}
+  .wrap{max-width:1200px;margin:0 auto}
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:space-between;margin-bottom:16px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#0a3d62,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px}
+  h1{font-size:20px;font-weight:700}
+  .sub{font-size:12.5px;color:var(--muted)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .tabs button{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 16px;font-weight:700;font-size:13.5px;cursor:pointer;color:var(--muted)}
+  .tabs button.on{color:#fff;border-color:transparent}
+  .tabs button.on.t-tn{background:var(--tn)}
+  .tabs button.on.t-ml{background:var(--ml)}
+  .tabs button.on.t-sf{background:var(--sf)}
+  .tab{display:none}
+  .tab.show{display:block}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 1px 3px rgba(16,24,40,.04)}
+  .kpi .l{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .kpi .v{font-size:23px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+  .kpi .v.pos{color:var(--green)} .kpi .v.neg{color:var(--red)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.04)}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:820px){.grid2{grid-template-columns:1fr}}
+  table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+  th,td{padding:6px 8px;text-align:right;border-bottom:1px solid #eef0f5;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);font-weight:700}
+  tbody tr:hover{background:#f7f9fc}
+  tr.tot td{font-weight:800;border-top:2px solid var(--line);background:#f7f9fc}
+  .neg{color:var(--red)} .pos{color:var(--green)}
+  .tbl-wrap{overflow-x:auto}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:8px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:middle}
+  .struct{display:flex;flex-direction:column;gap:8px}
+  .struct .srow{display:flex;align-items:center;gap:10px}
+  .struct .sname{width:160px;font-size:12.5px}
+  .struct .strack{flex:1;background:#eef0f5;border-radius:6px;height:20px;overflow:hidden}
+  .struct .sfill{height:100%;border-radius:6px}
+  .struct .sval{width:150px;text-align:right;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+  .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:18px;line-height:1.6}
+  .sub-h{font-size:12px;font-weight:800;color:var(--ink);margin:4px 0 8px;text-transform:uppercase;letter-spacing:.4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">SF</div>
+      <div>
+        <h1>Dashboard Financiero · Sofia Ferrer Argentina</h1>
+        <div class="sub">Fuente: ARG - FINZ 2025 · datos al 13/06/2026 · USD/$ 1.440</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button id="bt_tn" class="on t-tn" onclick="show('tn')">🛒 Tienda Nube</button>
+      <button id="bt_ml" class="t-ml" onclick="show('ml')">💛 Mercado Libre</button>
+      <button id="bt_sf" class="t-sf" onclick="show('sf')">📊 Consolidado ARG</button>
+    </div>
+  </header>
+  <div id="tab_tn" class="tab show"></div>
+  <div id="tab_ml" class="tab"></div>
+  <div id="tab_sf" class="tab"></div>
+  <div class="foot">Dashboard de control · Sofia Ferrer Argentina · generado desde la planilla ARG - FINZ 2025. Valores en ARS salvo donde se indica USD (tipo de cambio 1.440).</div>
+</div>
+<script>
+const USD=1440;
+const DATA={
+  tn:{
+    months:["Set-25","Oct-25","Nov-25","Dic-25","Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26"],
+    envios:[24,87,109,138,101,38,124,133,165,90],
+    pventa:[55893,55739,60854,64197,63288,62042,63850,64713,63461,65500],
+    ventas:[1341432,4849293,6633086,8859186,6392088,2357596,7917400,8606829,10471065,5895000],
+    cv:[1104718,3421949,4541479,5869903,4777315,2295273,5079615,5552578,6549783,3750656],
+    margenBruto:[236714,1427344,2091607,2989283,1614773,62323,2837785,3054251,3921282,2144345],
+    corpo:[251251,232264,281324,411000,381349,338516,562260,583651,382077,235624],
+    resBruto:[-14537,1195080,1810283,2578283,1233424,-276193,2275525,2470600,3539205,1908721],
+    resNeto:[197588,536109,1410266,2368763,585157,470698,1297301,2216237,2996366,1180371],
+    struct:[
+      ["Costo Producto",22425532,"#f59e0b"],
+      ["Costo Envío",8479321,"#3483fa"],
+      ["Costo Fulfillment",2849383,"#10b981"],
+      ["Comisiones",1830034,"#a855f7"],
+      ["Facebook Ads",5475500,"#ec4899"],
+      ["Otros Gastos",1883500,"#64748b"],
+      ["Costos Corporativos",3659316,"#0ea5e9"]
+    ],
+    fisco:3461534, ivaRecup:7528404
+  },
+  ml:{
+    months:["Nov-25","Dic-25","Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26"],
+    envios:[47,110,107,226,185,218,215,136],
+    pventa:[37624,47447,48674,57471,54706,55696,53917,53452],
+    ventas:[1768310,5219206,5208125,12988451,10120565,12141747,11592241,7269500],
+    devol:[59970,315930,142291,148170,446320,495962,95320,100000],
+    margenBruto:[1074447,3127773,3437798,8862929,6346075,7691712,7344411,4625175],
+    resBruto:[293971,1543925,1675151,4924164,3204377,4054412,3438071,1896386],
+    resNeto:[120192,1010968,1113149,3505214,2146831,2777522,2298222,1169046],
+    dividendo:[40064,336989,371050,1168405,715610,925841,766074,389682],
+    struct:[
+      ["Costo JOYA",15268800,"#f59e0b"],
+      ["Costo Cajita",3262917,"#eab308"],
+      ["Costo Armado",3582720,"#10b981"],
+      ["Costo Insumos",270200,"#84cc16"],
+      ["Costos ML (comisión+envío)",21993862,"#3483fa"],
+      ["Publicidad",1169389,"#ec4899"],
+      ["Devoluciones",1803963,"#ef4444"]
+    ],
+    fisco:6889314, ivaRecup:4618711
+  },
+  sf:{
+    months:["Sep-25","Oct-25","Nov-25","Dic-25","Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26"],
+    enviosTN:[24,87,109,138,101,38,124,133,165,90],
+    enviosML:[0,0,47,110,107,226,185,218,215,136],
+    ventas:[1341432,4849293,8401396,14078392,11600213,15346047,18037965,20748576,22063306,13164500],
+    resBruto:[-14537,1195080,2090454,4100208,2886175,4601171,5437702,6478612,6932276,4026507],
+    resNeto:[197583,527430,1308142,3232208,1473721,3222466,3193488,5061860,5249588,2570817],
+    dividendo:[65861,175810,436047,1077403,491240,1074155,1064496,1687287,1749863,856939],
+    struct:[
+      ["Producto",41227449,"#f59e0b"],
+      ["Armado",6432103,"#10b981"],
+      ["Costos ML",21993862,"#3483fa"],
+      ["Costos TN",12192855,"#1e6fb8"],
+      ["Publicidad",6391889,"#ec4899"],
+      ["Corporativos",3659316,"#64748b"]
+    ],
+    fisco:11696345, ivaRecup:11270382
+  }
+};
+// Fondos y Stock (TN + PANEL, columna T en adelante)
+const FONDOS={
+  conv:{iniUSD:6249, actUSD:28579, difUSD:22330, x:4.6, stkUSD:15291, stkPct:54},
+  caja:[["Bancor $",159392],["Naranja X",53280],["Bancor USD",44640],["Reserva USD",0]],
+  cobrar:[["Tienda Nube",3543100],["Mercado Pago",17909000]],
+  deuda:[["MEDIACOR",2196875],["ADS Jun-26",377280]],
+  casa:[["2cora",1946059,149],["Nudo",1206576,95],["Puls Nudo",1024531,462],["Estuche Blanco",1003363,147],["2cora DEFECT",936619,73],["Anillo",373176,365],["Cadena",176501,37],["Puls 2c +ext",136028,32],["Martillo",129800,16],["Pelota",93583,20],["Cajitas",73008,30]],
+  full:[["Nudo",1638403,119],["2cora",1319141,89],["Cajitas",739814,271],["Estuche Anillos",212890,24],["Estuche Puls Nudo",146390,13],["Martillo",105463,13],["Puls 2 cora",103680,29],["Pelota",70187,13],["Cadena",33392,7],["Puls Nudo",15523,1]],
+  transito:[["2cora",3916800,500],["Nudo",2168640,300],["Forever Love",783360,200],["Frasquito",720000,200],["Anillo",613440,600],["Puls 2 cora",472320,200],["Estuche Blanco",432000,300],["Cajitas",280800,500],["Cadena",226080,100]],
+  fabrica:[["Frasquito",1080000,300],["Cajitas",561600,1000]]
+};
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const f0=n=>"$"+Math.round(n).toLocaleString("es-AR");
+const fK=n=>{const a=Math.abs(n);if(a>=1e6)return "$"+(n/1e6).toFixed(1)+"M";if(a>=1e3)return "$"+(n/1e3).toFixed(0)+"K";return "$"+Math.round(n);};
+const usd=n=>"US$ "+Math.round(n/USD).toLocaleString("es-AR");
+const pc=(n,b)=>b?(n/b*100).toFixed(1)+"%":"—";
+
+function svgBars(months, series, height){
+  const W=760,H=height||300,padL=46,padR=12,padT=14,padB=42;
+  const n=months.length, gw=(W-padL-padR)/n;
+  let max=0,min=0;
+  series.forEach(s=>s.data.forEach(v=>{if(v>max)max=v;if(v<min)min=v;}));
+  max=max*1.1||1; min=min*1.1;
+  const span=max-min||1;
+  const y=v=>padT+(max-v)/span*(H-padT-padB);
+  const y0=y(0);
+  let g="";
+  // gridlines (4)
+  for(let i=0;i<=4;i++){const val=max-(span*i/4);const yy=padT+(H-padT-padB)*i/4;g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#eef0f5"/><text x="${padL-6}" y="${yy+3}" font-size="9" fill="#9aa3b2" text-anchor="end">${fK(val)}</text>`;}
+  const bw=gw*0.7/series.length;
+  months.forEach((m,i)=>{
+    const gx=padL+gw*i+gw*0.15;
+    series.forEach((s,si)=>{
+      const v=s.data[i], yy=y(Math.max(v,0)), h=Math.abs(y(v)-y0);
+      g+=`<rect x="${gx+bw*si}" y="${v>=0?yy:y0}" width="${bw*0.92}" height="${Math.max(h,1)}" rx="2" fill="${s.color}"><title>${m} · ${s.name}: ${f0(v)}</title></rect>`;
+    });
+    g+=`<text x="${padL+gw*i+gw/2}" y="${H-padB+14}" font-size="9.5" fill="#6b7280" text-anchor="middle">${m}</text>`;
+  });
+  g+=`<line x1="${padL}" y1="${y0}" x2="${W-padR}" y2="${y0}" stroke="#cbd5e1"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${g}</svg>`;
+}
+
+function kpiHtml(arr){return '<div class="kpis">'+arr.map(k=>`<div class="kpi"><div class="l">${k.l}</div><div class="v ${k.cls||''}">${k.v}</div><div class="s">${k.s||''}</div></div>`).join("")+'</div>';}
+
+function structHtml(items){
+  const tot=sum(items.map(i=>i[1]));
+  return '<div class="struct">'+items.map(it=>{
+    const w=it[1]/tot*100;
+    return `<div class="srow"><div class="sname">${it[0]}</div><div class="strack"><div class="sfill" style="width:${w}%;background:${it[2]}"></div></div><div class="sval">${f0(it[1])} · ${w.toFixed(1)}%</div></div>`;
+  }).join("")+`<div style="font-size:11px;color:var(--muted);margin-top:6px">Total costos del período: ${f0(tot)}</div>`;
+}
+
+function monthTable(d, cols){
+  let h="<thead><tr><th>Mes</th>"+cols.map(c=>`<th>${c.h}</th>`).join("")+"</tr></thead><tbody>";
+  d.months.forEach((m,i)=>{
+    h+=`<tr><td>${m}</td>`+cols.map(c=>{const v=c.get(i);return `<td class="${c.cls?c.cls(v):''}">${c.fmt(v,i)}</td>`;}).join("")+"</tr>";
+  });
+  h+=`<tr class="tot"><td>TOTAL</td>`+cols.map(c=>`<td>${c.tot?c.tot():''}</td>`).join("")+"</tr></tbody>";
+  return `<div class="tbl-wrap"><table>${h}</table></div>`;
+}
+
+function stockTable(title,rows,color){
+  const tot=sum(rows.map(r=>r[1]));
+  let h=`<div class="sub-h" style="color:${color}">${title} · ${f0(tot)} · ${usd(tot)}</div><div class="tbl-wrap"><table><thead><tr><th>Ítem</th><th>$ Stock</th><th>Cant</th><th>USD</th></tr></thead><tbody>`;
+  rows.forEach(r=>{h+=`<tr><td>${r[0]}</td><td>${f0(r[1])}</td><td>${r[2]!=null?r[2]:'—'}</td><td>${usd(r[1])}</td></tr>`;});
+  h+=`<tr class="tot"><td>Total</td><td>${f0(tot)}</td><td></td><td>${usd(tot)}</td></tr></tbody></table></div>`;
+  return h;
+}
+function chartCard(title,d){
+  const svg=svgBars(d.months,[{name:"Ventas",color:"#cbd5e1",data:d.ventas},{name:"Resultado Neto",color:"#16a34a",data:d.resNeto}]);
+  return `<div class="card"><h2>${title}</h2>${svg}<div class="legend"><span><i style="background:#cbd5e1"></i>Ventas</span><span><i style="background:#16a34a"></i>Resultado Neto</span></div></div>`;
+}
+
+function renderTN(){
+  const d=DATA.tn, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), enT=sum(d.envios);
+  let h=kpiHtml([
+    {l:"Ventas período",v:fK(vT),s:usd(vT)},
+    {l:"Resultado Neto",v:fK(rnT),cls:"pos",s:usd(rnT)+" · "+pc(rnT,vT)},
+    {l:"Resultado Bruto",v:fK(rbT),s:pc(rbT,vT)},
+    {l:"Envíos",v:enT.toLocaleString("es-AR"),s:"P.Venta mix ~"+f0(d.pventa[d.pventa.length-1])},
+    {l:"IVA a recuperar",v:fK(d.ivaRecup),s:"al fisco "+fK(d.fisco)}
+  ]);
+  h+='<div class="grid2">'+chartCard("Ventas y Resultado Neto mensual",d)+`<div class="card"><h2>Estructura de costos (período)</h2>${structHtml(d.struct)}</div></div>`;
+  h+=`<div class="card"><h2>Detalle mensual</h2>`+monthTable(d,[
+    {h:"Envíos",get:i=>d.envios[i],fmt:v=>v},
+    {h:"Ventas",get:i=>d.ventas[i],fmt:f0,tot:()=>f0(vT)},
+    {h:"Costos Var.",get:i=>d.cv[i],fmt:f0,tot:()=>f0(sum(d.cv))},
+    {h:"Margen Bruto",get:i=>d.margenBruto[i],fmt:f0,tot:()=>f0(sum(d.margenBruto))},
+    {h:"Corpo",get:i=>d.corpo[i],fmt:f0,tot:()=>f0(sum(d.corpo))},
+    {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0,cls:v=>v<0?'neg':'pos',tot:()=>f0(rnT)},
+    {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",cls:v=>v<0?'neg':'',tot:()=>pc(rnT,vT)}
+  ])+`</div>`;
+  // Parte B
+  const F=FONDOS;
+  h+='<div class="card"><h2>Fondos y Stock (Parte B)</h2>';
+  h+=kpiHtml([
+    {l:"Inversión inicial",v:"US$ "+F.conv.iniUSD.toLocaleString("es-AR")},
+    {l:"Valor actual",v:"US$ "+F.conv.actUSD.toLocaleString("es-AR"),cls:"pos",s:F.conv.x+"x · +US$ "+F.conv.difUSD.toLocaleString("es-AR")},
+    {l:"Stock total",v:"US$ "+F.conv.stkUSD.toLocaleString("es-AR"),s:F.conv.stkPct+"% del capital"},
+    {l:"A cobrar TN/MP",v:fK(sum(F.cobrar.map(r=>r[1]))),s:usd(sum(F.cobrar.map(r=>r[1])))},
+    {l:"Caja",v:fK(sum(F.caja.map(r=>r[1]))),s:usd(sum(F.caja.map(r=>r[1])))},
+    {l:"Deuda",v:fK(sum(F.deuda.map(r=>r[1]))),cls:"neg",s:usd(sum(F.deuda.map(r=>r[1])))}
+  ]);
+  h+='<div class="grid2">';
+  h+='<div>'+stockTable("Stock Casa Pichi",F.casa,"#0a3d62")+stockTable("Stock ML Full",F.full,"#3483fa")+'</div>';
+  h+='<div>'+stockTable("Compra en tránsito",F.transito,"#d97706")+stockTable("En fabricación",F.fabrica,"#7c3aed");
+  h+='<div class="sub-h">Caja &amp; Cuentas</div><div class="tbl-wrap"><table><tbody>';
+  F.caja.forEach(r=>h+=`<tr><td>${r[0]}</td><td>${f0(r[1])}</td></tr>`);
+  F.cobrar.forEach(r=>h+=`<tr><td>Por cobrar · ${r[0]}</td><td>${f0(r[1])}</td></tr>`);
+  F.deuda.forEach(r=>h+=`<tr><td class="neg">Deuda · ${r[0]}</td><td class="neg">${f0(r[1])}</td></tr>`);
+  h+='</tbody></table></div></div></div></div>';
+  document.getElementById("tab_tn").innerHTML=h;
+}
+
+function renderML(){
+  const d=DATA.ml, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), enT=sum(d.envios), divT=sum(d.dividendo), devT=sum(d.devol);
+  let h=kpiHtml([
+    {l:"Ventas período",v:fK(vT),s:usd(vT)},
+    {l:"Resultado Neto",v:fK(rnT),cls:"pos",s:usd(rnT)+" · "+pc(rnT,vT)},
+    {l:"Resultado Bruto",v:fK(rbT),s:pc(rbT,vT)},
+    {l:"Envíos",v:enT.toLocaleString("es-AR"),s:"Devoluciones "+fK(devT)},
+    {l:"Dividendo /socio",v:fK(divT),s:usd(divT)}
+  ]);
+  h+='<div class="grid2">'+chartCard("Ventas y Resultado Neto mensual",d)+`<div class="card"><h2>Estructura de costos (período)</h2>${structHtml(d.struct)}</div></div>`;
+  h+=`<div class="card"><h2>Detalle mensual</h2>`+monthTable(d,[
+    {h:"Envíos",get:i=>d.envios[i],fmt:v=>v},
+    {h:"Ventas",get:i=>d.ventas[i],fmt:f0,tot:()=>f0(vT)},
+    {h:"Devol.",get:i=>d.devol[i],fmt:f0,cls:()=>'neg',tot:()=>f0(devT)},
+    {h:"Margen Bruto",get:i=>d.margenBruto[i],fmt:f0,tot:()=>f0(sum(d.margenBruto))},
+    {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0,cls:v=>v<0?'neg':'pos',tot:()=>f0(rnT)},
+    {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",tot:()=>pc(rnT,vT)},
+    {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0,tot:()=>f0(divT)}
+  ])+`</div>`;
+  document.getElementById("tab_ml").innerHTML=h;
+}
+
+function renderSF(){
+  const d=DATA.sf, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), divT=sum(d.dividendo);
+  const enT=sum(d.enviosTN)+sum(d.enviosML);
+  let h=kpiHtml([
+    {l:"Ventas totales",v:fK(vT),s:usd(vT)},
+    {l:"Resultado Neto",v:fK(rnT),cls:"pos",s:usd(rnT)+" · "+pc(rnT,vT)},
+    {l:"Resultado Bruto",v:fK(rbT),s:pc(rbT,vT)},
+    {l:"Envíos TN+ML",v:enT.toLocaleString("es-AR"),s:sum(d.enviosTN)+" TN · "+sum(d.enviosML)+" ML"},
+    {l:"Dividendo /socio",v:fK(divT),s:usd(divT)}
+  ]);
+  const svg=svgBars(d.months,[{name:"Ventas",color:"#cbd5e1",data:d.ventas},{name:"Resultado Neto",color:"#7c3aed",data:d.resNeto}]);
+  h+='<div class="grid2"><div class="card"><h2>Ventas y Resultado Neto mensual (TN+ML)</h2>'+svg+'<div class="legend"><span><i style="background:#cbd5e1"></i>Ventas</span><span><i style="background:#7c3aed"></i>Resultado Neto</span></div></div>'+`<div class="card"><h2>Estructura de costos (período)</h2>${structHtml(d.struct)}</div></div>`;
+  h+=`<div class="card"><h2>Detalle mensual consolidado</h2>`+monthTable(d,[
+    {h:"Env. TN",get:i=>d.enviosTN[i],fmt:v=>v,tot:()=>sum(d.enviosTN)},
+    {h:"Env. ML",get:i=>d.enviosML[i],fmt:v=>v,tot:()=>sum(d.enviosML)},
+    {h:"Ventas",get:i=>d.ventas[i],fmt:f0,tot:()=>f0(vT)},
+    {h:"Res. Bruto",get:i=>d.resBruto[i],fmt:f0,cls:v=>v<0?'neg':'',tot:()=>f0(rbT)},
+    {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0,cls:v=>v<0?'neg':'pos',tot:()=>f0(rnT)},
+    {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",tot:()=>pc(rnT,vT)},
+    {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0,tot:()=>f0(divT)}
+  ])+`</div>`;
+  document.getElementById("tab_sf").innerHTML=h;
+}
+
+function show(k){
+  ["tn","ml","sf"].forEach(t=>{
+    document.getElementById("tab_"+t).classList.toggle("show",t===k);
+    document.getElementById("bt_"+t).classList.toggle("on",t===k);
+  });
+}
+renderTN();renderML();renderSF();
+</script>
+</body>
+</html>
