@@ -92,6 +92,23 @@
   .struct .sval small{color:var(--muted);font-weight:500}
   .sub-h{font-size:11.5px;font-weight:800;color:var(--ink);margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
   .sub-h .sq{width:9px;height:9px;border-radius:2px}
+  .cnar{font-size:12.5px;color:var(--ink2);background:rgba(52,211,153,.08);border-left:3px solid #34d399;padding:10px 13px;border-radius:0 9px 9px 0;margin-bottom:15px;line-height:1.55}
+  .cnar b{color:var(--ink)}
+  .cbar{display:flex;width:100%;height:34px;border-radius:9px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+  .cseg{position:relative;height:100%;display:flex;align-items:center;justify-content:center;min-width:2px;cursor:default}
+  .cseg span{font-size:9.5px;font-weight:800;color:rgba(0,0,0,.5)}
+  .cseg.cmarg span{color:#06281c}
+  .cseg:hover{filter:brightness(1.15)}
+  .cseg .ctip{display:none;position:absolute;bottom:125%;left:50%;transform:translateX(-50%);background:#06070c;border:1px solid var(--line2);color:var(--ink);font-size:10.5px;padding:6px 9px;border-radius:7px;white-space:nowrap;z-index:6;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+  .cseg:hover .ctip{display:block}
+  .cbarcap{font-size:10.5px;color:var(--muted);text-align:center;margin:9px 0 14px}
+  .clist{display:flex;flex-direction:column}
+  .crow{display:grid;grid-template-columns:15px 1fr 56px auto;gap:11px;align-items:center;padding:7px 4px;border-bottom:1px solid var(--line);font-size:12px}
+  .crow:hover{background:rgba(124,58,237,.06)}
+  .cdot{width:12px;height:12px;border-radius:3px}
+  .cname{color:var(--ink2)} .cpct{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right;font-weight:600} .camt{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+  .cmargrow{border-top:2px solid var(--line2);border-bottom:none;margin-top:2px;background:rgba(52,211,153,.07)}
+  .cmargrow .cname{color:#34d399;font-weight:800} .cmargrow .camt,.cmargrow .cpct{color:#34d399}
   .note{font-size:11px;color:var(--muted);margin-top:8px;padding:8px 11px;background:rgba(167,139,250,.07);
     border-left:2px solid var(--violet);border-radius:0 8px 8px 0}
   .foot{font-size:11px;color:var(--faint);text-align:center;margin-top:22px;line-height:1.7;color:var(--muted)}
@@ -206,9 +223,10 @@ const f0u=n=>`${f0(n)}<span style="display:block;font-size:9.5px;color:var(--mut
 
 function svgBars(months, series, opts){
   opts=opts||{};
-  const W=780,H=opts.height||320,padL=50,padR=opts.line?52:14,padT=18,padB=46;
+  const W=780,H=opts.height||320,padL=50,padR=((opts.lines||(opts.line?[opts.line]:[])).some(l=>l.axis))?52:14,padT=18,padB=46;
   const n=months.length, gw=(W-padL-padR)/n;
   const pIdx=opts.partialIndex!=null?opts.partialIndex:-1;
+  const U=(svgBars._n=(svgBars._n||0)+1);
   let max=0,min=0;
   series.forEach(s=>s.data.forEach(v=>{if(v>max)max=v;if(v<min)min=v;}));
   max=max*1.12||1; min=min*1.12;
@@ -217,10 +235,10 @@ function svgBars(months, series, opts){
   const y0=y(0);
   let defs="";
   series.forEach((s,si)=>{
-    defs+=`<linearGradient id="g${si}" x1="0" y1="0" x2="0" y2="1">
+    defs+=`<linearGradient id="g${U}_${si}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="${s.color}" stop-opacity="1"/>
       <stop offset="100%" stop-color="${s.color}" stop-opacity="${s.flat?1:.55}"/></linearGradient>
-      <pattern id="h${si}" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <pattern id="h${U}_${si}" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
       <rect width="7" height="7" fill="${s.color}" opacity=".15"/><line x1="0" y1="0" x2="0" y2="7" stroke="${s.color}" stroke-width="3" opacity=".85"/></pattern>`;
   });
   let g=`<defs>${defs}</defs>`;
@@ -233,25 +251,35 @@ function svgBars(months, series, opts){
     const isP=i===pIdx;
     series.forEach((s,si)=>{
       const v=s.data[i], yy=y(Math.max(v,0)), h=Math.abs(y(v)-y0);
-      const fill=isP?`url(#h${si})`:`url(#g${si})`;
+      const fill=isP?`url(#h${U}_${si})`:`url(#g${U}_${si})`;
       g+=`<rect x="${(gx+bw*si).toFixed(1)}" y="${(v>=0?yy:y0).toFixed(1)}" width="${(bw*0.9).toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="3" fill="${fill}" ${isP?'opacity=".92"':''}><title>${m} · ${s.name}: ${f0(v)}${isP?' (en curso)':''}</title></rect>`;
     });
     g+=`<text x="${(padL+gw*i+gw/2).toFixed(1)}" y="${H-padB+15}" font-size="9.5" fill="${isP?'#a78bfa':'#8b93ab'}" text-anchor="middle" font-weight="${isP?'700':'400'}">${m}</text>`;
     if(isP)g+=`<text x="${(padL+gw*i+gw/2).toFixed(1)}" y="${H-padB+27}" font-size="7.5" fill="#a78bfa" text-anchor="middle" font-weight="700">EN CURSO</text>`;
   });
   g+=`<line x1="${padL}" y1="${y0}" x2="${W-padR}" y2="${y0}" stroke="#475069"/>`;
-  // optional line (margin %)
-  if(opts.line){
-    const ld=opts.line.data, lmax=Math.max(...ld)*1.25||1;
+  // line series (margen %, unidades, etc.)
+  const _lines=opts.lines||(opts.line?[opts.line]:[]);
+  _lines.forEach(L=>{
+    const ld=L.data, lmax=Math.max(...ld)*1.25||1;
     const ly=v=>padT+(lmax-v)/lmax*(H-padT-padB);
-    let pts=ld.map((v,i)=>`${(padL+gw*i+gw/2).toFixed(1)},${ly(v).toFixed(1)}`);
-    const solid=pIdx>=0?pts.slice(0,pIdx+1):pts;
-    g+=`<polyline points="${solid.join(' ')}" fill="none" stroke="${opts.line.color}" stroke-width="2.4"/>`;
-    if(pIdx>=0&&pIdx<ld.length)g+=`<polyline points="${pts.slice(pIdx).join(' ')}" fill="none" stroke="${opts.line.color}" stroke-width="2.4" stroke-dasharray="3 4" opacity=".7"/>`;
-    ld.forEach((v,i)=>{g+=`<circle cx="${(padL+gw*i+gw/2).toFixed(1)}" cy="${ly(v).toFixed(1)}" r="3" fill="#0b0d14" stroke="${opts.line.color}" stroke-width="2"><title>${months[i]} · ${opts.line.name}: ${v.toFixed(1)}%</title></circle>`;});
-    for(let i=0;i<=4;i++){const val=lmax-(lmax*i/4);const yy=padT+(H-padT-padB)*i/4;
-      g+=`<text x="${W-padR+8}" y="${yy+3}" font-size="9" fill="${opts.line.color}" text-anchor="start">${val.toFixed(0)}%</text>`;}
-  }
+    const sfx=L.suffix||"";
+    const fmtV=v=>L.dec!=null?v.toFixed(L.dec):Math.round(v).toLocaleString("es-AR");
+    if(L.points){
+      // solo puntos (marcadores), sin línea
+      ld.forEach((v,i)=>{const isP=pIdx===i;const cx=(padL+gw*i+gw/2).toFixed(1),cy=ly(v).toFixed(1);
+        g+=`<circle cx="${cx}" cy="${cy}" r="4.2" fill="${L.color}" stroke="#0b0d14" stroke-width="1.4" ${isP?'opacity=".75"':''}><title>${months[i]} · ${L.name}: ${fmtV(v)}${sfx}${isP?' (en curso)':''}</title></circle>`;
+        g+=`<text x="${cx}" y="${(+cy-8).toFixed(1)}" font-size="8.5" fill="${L.color}" text-anchor="middle" font-weight="700">${fmtV(v)}</text>`;});
+    } else {
+      const pts=ld.map((v,i)=>`${(padL+gw*i+gw/2).toFixed(1)},${ly(v).toFixed(1)}`);
+      const solid=pIdx>=0?pts.slice(0,pIdx+1):pts;
+      g+=`<polyline points="${solid.join(' ')}" fill="none" stroke="${L.color}" stroke-width="2.4"/>`;
+      if(pIdx>=0&&pIdx<ld.length)g+=`<polyline points="${pts.slice(pIdx).join(' ')}" fill="none" stroke="${L.color}" stroke-width="2.4" stroke-dasharray="3 4" opacity=".7"/>`;
+      ld.forEach((v,i)=>{g+=`<circle cx="${(padL+gw*i+gw/2).toFixed(1)}" cy="${ly(v).toFixed(1)}" r="3" fill="#0b0d14" stroke="${L.color}" stroke-width="2"><title>${months[i]} · ${L.name}: ${fmtV(v)}${sfx}</title></circle>`;});
+    }
+    if(L.axis){for(let i=0;i<=4;i++){const val=lmax-(lmax*i/4);const yy=padT+(H-padT-padB)*i/4;
+      g+=`<text x="${W-padR+8}" y="${yy+3}" font-size="9" fill="${L.color}" text-anchor="start">${val.toFixed(0)}${sfx}</text>`;}}
+  });
   return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${g}</svg>`;
 }
 
@@ -287,30 +315,50 @@ function stockTable(title,rows,color){
 function chartCard(title,d,accent){
   const marg=d.ventas.map((v,i)=>v?d.resNeto[i]/v*100:0);
   const svg=svgBars(d.months,[
-    {name:"Ventas",color:"#475069",data:d.ventas},
-    {name:"Resultado Neto",color:accent,data:d.resNeto,flat:true}
-  ],{partialIndex:d.partial?d.months.length-1:-1,line:{name:"Margen Neto",data:marg,color:"#e8c46a"}});
+    {name:"Facturación",color:accent,data:d.ventas,flat:true}
+  ],{partialIndex:d.partial?d.months.length-1:-1,lines:[
+    {name:"Margen Neto",data:marg,color:"#34d399",axis:true,suffix:"%",dec:1},
+    {name:"Unidades",data:d.envios,color:"#c7cde0",points:true}
+  ]});
   return `<div class="card"><h2><span class="dot" style="background:${accent}"></span>${title}</h2>${svg}
     <div class="legend">
-      <span><i style="background:#475069"></i>Ventas</span>
-      <span><i style="background:${accent}"></i>Resultado Neto</span>
-      <span><i style="background:#e8c46a"></i>Margen Neto %</span>
+      <span><i style="background:${accent}"></i>Facturación</span>
+      <span><i style="background:#c7cde0;border-radius:50%"></i>Unidades vendidas</span>
+      <span><i style="background:#34d399"></i>Margen Neto %</span>
       <span><i class="hatch"></i>Mes en curso</span>
     </div></div>`;
+}
+
+function costBreakdown(struct, vT, rnT){
+  const totC=sum(struct.map(i=>i[1]));
+  const bal=Math.max(vT-totC-rnT,0);
+  const pct=v=>v/vT*100;
+  const segs=struct.map(it=>[it[0],it[1],it[2]]);
+  segs.push(["Impuestos y otros",bal,"#64748b"]);
+  let bar='<div class="cbar">';
+  segs.forEach(it=>{const w=pct(it[1]);bar+=`<div class="cseg" style="width:${w}%;background:${it[2]}"><span>${w>=7?Math.round(w)+'%':''}</span><div class="ctip">${it[0]}: ${f0(it[1])} · ${w.toFixed(1)}% de ventas</div></div>`;});
+  const rnPct=pct(rnT);
+  bar+=`<div class="cseg cmarg" style="width:${Math.max(rnPct,0)}%;background:#34d399"><span>${rnPct>=7?Math.round(rnPct)+'%':''}</span><div class="ctip">Resultado Neto: ${f0(rnT)} · ${rnPct.toFixed(1)}%</div></div></div>`;
+  let list='<div class="clist">';
+  segs.forEach(it=>{const w=pct(it[1]);list+=`<div class="crow"><span class="cdot" style="background:${it[2]}"></span><span class="cname">${it[0]}</span><span class="cpct">${w.toFixed(1)}%</span><span class="camt">${f0(it[1])}</span></div>`;});
+  list+=`<div class="crow cmargrow"><span class="cdot" style="background:#34d399"></span><span class="cname">Resultado Neto (lo que queda)</span><span class="cpct">${rnPct.toFixed(1)}%</span><span class="camt">${f0(rnT)}</span></div></div>`;
+  const top=[...struct].sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const nar=`De cada <b>$100</b> facturados se van `+top.map(t=>`<b>$${Math.round(pct(t[1]))}</b> en ${t[0].toLowerCase()}`).join(", ")+`; quedan <b style="color:#34d399">$${Math.round(rnPct)} de resultado neto</b>.`;
+  return `<div class="cnar">${nar}</div>${bar}<div class="cbarcap">Cada barra representa $100 de facturación · base ventas ${fK(vT)}</div>${list}`;
 }
 
 function renderTN(){
   const d=DATA.tn, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), enT=sum(d.envios);
   const li=d.months.length-1, vJun=d.ventas[li], rnJun=d.resNeto[li], enJun=d.envios[li];
   let h=kpiHtml([
-    {l:"Mes en curso · "+d.months[li],v:fK(vJun),cls:"",s:"Neto "+fK(rnJun)+" · "+usd(vJun)+" · "+enJun+" env.",k:"k-curso"},
+    {l:"Mes en curso · "+d.months[li],v:fK(vJun),cls:"",s:"Neto "+fK(rnJun)+" · "+usd(vJun)+" · "+enJun+" u. vend.",k:"k-curso"},
     {l:"Ventas período",v:fK(vT),s:usd(vT),k:"k-blue"},
     {l:"Resultado Neto",v:fK(rnT),cls:"pos",s:usd(rnT)+" · "+pc(rnT,vT),k:"k-green"},
     {l:"Resultado Bruto",v:fK(rbT),s:pc(rbT,vT)},
     {l:"Envíos",v:enT.toLocaleString("es-AR"),s:"P.Venta mix ~"+f0(d.pventa[d.pventa.length-1])},
     {l:"IVA a recuperar",v:fK(d.ivaRecup),s:"al fisco "+fK(d.fisco),k:"k-gold"}
   ]);
-  h+='<div class="grid2">'+chartCard("Ventas · Resultado · Margen mensual",d,"#38bdf8")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos (período)</h2>${structHtml(d.struct)}</div></div>`;
+  h+='<div class="grid2">'+chartCard("Facturación · Unidades · Margen mensual",d,"#38bdf8")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
   h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual</h2>`+monthTable(d,[
     {h:"Envíos",get:i=>d.envios[i],fmt:v=>v},
     {h:"Ventas",get:i=>d.ventas[i],fmt:f0u,tot:()=>f0u(vT)},
@@ -345,14 +393,14 @@ function renderML(){
   const d=DATA.ml, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), enT=sum(d.envios), divT=sum(d.dividendo), devT=sum(d.devol);
   const li=d.months.length-1, vJun=d.ventas[li], rnJun=d.resNeto[li], enJun=d.envios[li];
   let h=kpiHtml([
-    {l:"Mes en curso · "+d.months[li],v:fK(vJun),s:"Neto "+fK(rnJun)+" · "+usd(vJun)+" · "+enJun+" env.",k:"k-curso"},
+    {l:"Mes en curso · "+d.months[li],v:fK(vJun),s:"Neto "+fK(rnJun)+" · "+usd(vJun)+" · "+enJun+" u. vend.",k:"k-curso"},
     {l:"Ventas período",v:fK(vT),s:usd(vT),k:"k-gold"},
     {l:"Resultado Neto",v:fK(rnT),cls:"pos",s:usd(rnT)+" · "+pc(rnT,vT),k:"k-green"},
     {l:"Resultado Bruto",v:fK(rbT),s:pc(rbT,vT)},
     {l:"Envíos",v:enT.toLocaleString("es-AR"),s:"Devoluciones "+fK(devT),k:"k-red"},
     {l:"Dividendo /socio",v:fK(divT),s:usd(divT)}
   ]);
-  h+='<div class="grid2">'+chartCard("Ventas · Resultado · Margen mensual",d,"#fbbf24")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos (período)</h2>${structHtml(d.struct)}</div></div>`;
+  h+='<div class="grid2">'+chartCard("Facturación · Unidades · Margen mensual",d,"#fbbf24")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
   h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual</h2>`+monthTable(d,[
     {h:"Envíos",get:i=>d.envios[i],fmt:v=>v},
     {h:"Ventas",get:i=>d.ventas[i],fmt:f0u,tot:()=>f0u(vT)},
@@ -360,7 +408,7 @@ function renderML(){
     {h:"Margen Bruto",get:i=>d.margenBruto[i],fmt:f0,tot:()=>f0(sum(d.margenBruto))},
     {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0u,cls:v=>v<0?'neg':'pos',tot:()=>f0u(rnT)},
     {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",tot:()=>pc(rnT,vT)},
-    {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0,tot:()=>f0(divT)}
+    {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0u,tot:()=>f0u(divT)}
   ])+`<div class="note">Jun-26 en curso (datos al 13/06): barras rayadas y fila atenuada. No comparar de igual a igual con meses cerrados.</div></div>`;
   document.getElementById("tab_ml").innerHTML=h;
 }
@@ -370,7 +418,7 @@ function renderSF(){
   const enT=sum(d.enviosTN)+sum(d.enviosML);
   const li=d.months.length-1, vJun=d.ventas[li], rnJun=d.resNeto[li], enJun=d.enviosTN[li]+d.enviosML[li];
   let h=kpiHtml([
-    {l:"Mes en curso · "+d.months[li],v:fK(vJun),s:"Neto "+fK(rnJun)+" · "+usd(vJun)+" · "+enJun+" env.",k:"k-curso"},
+    {l:"Mes en curso · "+d.months[li],v:fK(vJun),s:"Neto "+fK(rnJun)+" · "+usd(vJun)+" · "+enJun+" u. vend.",k:"k-curso"},
     {l:"Ventas totales",v:fK(vT),s:usd(vT),k:"k-gold"},
     {l:"Resultado Neto",v:fK(rnT),cls:"pos",s:usd(rnT)+" · "+pc(rnT,vT),k:"k-green"},
     {l:"Resultado Bruto",v:fK(rbT),s:pc(rbT,vT)},
@@ -378,11 +426,14 @@ function renderSF(){
     {l:"Dividendo /socio",v:fK(divT),s:usd(divT)}
   ]);
   const marg=d.ventas.map((v,i)=>v?d.resNeto[i]/v*100:0);
+  const units=d.ventas.map((_,i)=>d.enviosTN[i]+d.enviosML[i]);
   const svg=svgBars(d.months,[
-    {name:"Ventas",color:"#475069",data:d.ventas},
-    {name:"Resultado Neto",color:"#a78bfa",data:d.resNeto,flat:true}
-  ],{partialIndex:d.partial?d.months.length-1:-1,line:{name:"Margen Neto",data:marg,color:"#e8c46a"}});
-  h+='<div class="grid2"><div class="card"><h2><span class="dot" style="background:#a78bfa"></span>Ventas · Resultado · Margen (TN+ML)</h2>'+svg+'<div class="legend"><span><i style="background:#475069"></i>Ventas</span><span><i style="background:#a78bfa"></i>Resultado Neto</span><span><i style="background:#e8c46a"></i>Margen %</span><span><i class="hatch"></i>Mes en curso</span></div></div>'+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos (período)</h2>${structHtml(d.struct)}</div></div>`;
+    {name:"Facturación",color:"#a78bfa",data:d.ventas,flat:true}
+  ],{partialIndex:d.partial?d.months.length-1:-1,lines:[
+    {name:"Margen Neto",data:marg,color:"#34d399",axis:true,suffix:"%",dec:1},
+    {name:"Unidades",data:units,color:"#c7cde0",points:true}
+  ]});
+  h+='<div class="grid2"><div class="card"><h2><span class="dot" style="background:#a78bfa"></span>Facturación · Unidades · Margen (TN+ML)</h2>'+svg+'<div class="legend"><span><i style="background:#a78bfa"></i>Facturación</span><span><i style="background:#c7cde0;border-radius:50%"></i>Unidades vendidas</span><span><i style="background:#34d399"></i>Margen %</span><span><i class="hatch"></i>Mes en curso</span></div></div>'+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
   h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual consolidado</h2>`+monthTable(d,[
     {h:"Env. TN",get:i=>d.enviosTN[i],fmt:v=>v,tot:()=>sum(d.enviosTN)},
     {h:"Env. ML",get:i=>d.enviosML[i],fmt:v=>v,tot:()=>sum(d.enviosML)},
@@ -390,7 +441,7 @@ function renderSF(){
     {h:"Res. Bruto",get:i=>d.resBruto[i],fmt:f0,cls:v=>v<0?'neg':'',tot:()=>f0(rbT)},
     {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0u,cls:v=>v<0?'neg':'pos',tot:()=>f0u(rnT)},
     {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",tot:()=>pc(rnT,vT)},
-    {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0,tot:()=>f0(divT)}
+    {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0u,tot:()=>f0u(divT)}
   ])+`<div class="note">Jun-26 en curso (datos al 13/06): barras rayadas y fila atenuada. El total incluye el acumulado real del mes, sin proyectar.</div></div>`;
   document.getElementById("tab_sf").innerHTML=h;
 }
