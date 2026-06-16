@@ -311,7 +311,7 @@ function stockTable(title,rows,color){
   rows=[...rows].sort((a,b)=>b[1]-a[1]);
   const tot=sum(rows.map(r=>r[1]));
   let h=`<div class="sub-h"><span class="sq" style="background:${color}"></span>${title} · ${f0(tot)} · <span style="color:var(--gold)">${usd(tot)}</span></div><div class="tbl-wrap"><table><thead><tr><th>Ítem</th><th>$ Stock</th><th>Cant</th><th>USD</th></tr></thead><tbody>`;
-  rows.forEach(r=>{h+=`<tr><td>${r[0]}</td><td>${f0(r[1])}</td><td>${r[2]!=null?r[2]:'—'}</td><td>${usd(r[1])}</td></tr>`;});
+  rows.forEach(r=>{h+=`<tr><td>${iconFor(r[0])} ${r[0]}</td><td>${f0(r[1])}</td><td>${r[2]!=null?r[2]:'—'}</td><td>${usd(r[1])}</td></tr>`;});
   h+=`<tr class="tot"><td>Total</td><td>${f0(tot)}</td><td></td><td>${usd(tot)}</td></tr></tbody></table></div>`;
   return h;
 }
@@ -373,6 +373,36 @@ function renderTN(){
   document.getElementById("tab_tn").innerHTML=h;
 }
 
+function iconFor(n){
+  const s=n.toLowerCase();
+  if(s.includes("estuche")||s.includes("caj"))return "\uD83D\uDCE6";
+  if(s.includes("forever"))return "\uD83D\uDC9D";
+  if(s.includes("frasq")||s.includes("frasco"))return "\uD83E\uDED9";
+  if(s.includes("puls"))return "\uD83D\uDCFF";
+  if(s.includes("2cora")||s.includes("coraz")||s.includes("cora"))return "\u2764\uFE0F";
+  if(s.includes("nudo"))return "\uD83E\uDEA2";
+  if(s.includes("cadena"))return "\uD83D\uDD17";
+  if(s.includes("anillo"))return "\uD83D\uDC8D";
+  if(s.includes("martillo"))return "\uD83D\uDD28";
+  if(s.includes("pelota"))return "\u26BD";
+  return "\uD83D\uDC8E";
+}
+
+function stockSummary(F){
+  const groups=[["Stock Casa Pichi",F.casa,"#38bdf8"],["Stock ML Full",F.full,"#a78bfa"],["Compra en tránsito",F.transito,"#e8c46a"],["En fabricación",F.fabrica,"#34d399"]];
+  const tot=g=>sum(g.map(r=>r[1])), units=g=>sum(g.map(r=>r[2]||0));
+  const grand=sum(groups.map(x=>tot(x[1]))), grandU=sum(groups.map(x=>units(x[1])));
+  const disp=tot(F.casa)+tot(F.full), cam=tot(F.transito)+tot(F.fabrica);
+  let bar='<div class="cbar">';
+  groups.forEach(x=>{const v=tot(x[1]),w=v/grand*100;bar+=`<div class="cseg" style="width:${w}%;background:${x[2]}"><span>${w>=8?Math.round(w)+'%':''}</span><div class="ctip">${x[0]}: ${f0(v)} · ${units(x[1])} u · ${w.toFixed(1)}%</div></div>`;});
+  bar+='</div>';
+  let list='<div class="clist">';
+  groups.forEach(x=>{const v=tot(x[1]);list+=`<div class="crow"><span class="cdot" style="background:${x[2]}"></span><span class="cname">${x[0]}</span><span class="cpct">${units(x[1])} u</span><span class="camt">${f0(v)} <small style="color:var(--muted);font-weight:500">${usd(v)}</small></span></div>`;});
+  list+=`<div class="crow cmargrow"><span class="cdot" style="background:#e8c46a"></span><span class="cname">TOTAL stock (4 ubicaciones)</span><span class="cpct">${grandU} u</span><span class="camt">${f0(grand)} <small>${usd(grand)}</small></span></div></div>`;
+  const nar=`Stock total: <b>${f0(grand)}</b> (${usd(grand)}) · <b>${grandU} u</b>. Disponible (casa+full): <b>${f0(disp)}</b> · En camino (tránsito+fábrica): <b>${f0(cam)}</b>.`;
+  return `<div class="cnar">${nar}</div>${bar}<div class="cbarcap">Distribución del stock por ubicación</div>${list}`;
+}
+
 function renderFS(){
   const F=FONDOS;
   let h='<div class="card"><h2><span class="dot" style="background:#34d399"></span>Fondos y Stock · capital y mercadería</h2>';
@@ -384,6 +414,7 @@ function renderFS(){
     {l:"Caja",v:fK(sum(F.caja.map(r=>r[1]))),s:usd(sum(F.caja.map(r=>r[1])))},
     {l:"Deuda",v:fK(sum(F.deuda.map(r=>r[1]))),cls:"neg",s:usd(sum(F.deuda.map(r=>r[1]))),k:"k-red"}
   ]);
+  h+='<div class="card"><h2><span class="dot" style="background:#34d399"></span>Resumen de stock</h2>'+stockSummary(F)+'</div>';
   h+='<div class="grid2">';
   h+='<div>'+stockTable("Stock Casa Pichi",F.casa,"#38bdf8")+stockTable("Stock ML Full",F.full,"#a78bfa")+'</div>';
   h+='<div>'+stockTable("Compra en tránsito",F.transito,"#e8c46a")+stockTable("En fabricación",F.fabrica,"#34d399");
