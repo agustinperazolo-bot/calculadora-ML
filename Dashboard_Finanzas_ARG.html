@@ -351,12 +351,10 @@ function renderTN(){
   const d=DATA.tn, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), enT=sum(d.envios);
   const li=d.months.length-1, vJun=d.ventas[li], rnJun=d.resNeto[li], enJun=d.envios[li];
   let h=kpiHtml([
-    {l:"Mes en curso · "+d.months[li],v:fK(vJun),cls:"",s:"Neto "+fK(rnJun)+" · "+usd(vJun)+" · "+enJun+" u. vend.",k:"k-curso"},
-    {l:"Ventas período",v:fK(vT),s:usd(vT),k:"k-blue"},
-    {l:"Resultado Neto",v:fK(rnT),cls:"pos",s:usd(rnT)+" · "+pc(rnT,vT),k:"k-green"},
-    {l:"Resultado Bruto",v:fK(rbT),s:pc(rbT,vT)},
-    {l:"Envíos",v:enT.toLocaleString("es-AR"),s:"P.Venta mix ~"+f0(d.pventa[d.pventa.length-1])},
-    {l:"IVA a recuperar",v:fK(d.ivaRecup),s:"al fisco "+fK(d.fisco),k:"k-gold"}
+    {l:"Facturación · "+d.months[li]+" (en curso)",v:fK(vJun),s:usd(vJun),k:"k-curso"},
+    {l:"Rentabilidad · "+d.months[li],v:fK(rnJun),cls:rnJun<0?"neg":"pos",s:pc(rnJun,vJun)+" margen · "+usd(rnJun),k:"k-curso"},
+    {l:"Unidades · "+d.months[li],v:enJun.toLocaleString("es-AR")+" u.",s:"vendidas en el mes (en curso)",k:"k-curso"},
+    {l:"Vendido TOTAL (período)",v:fK(vT),s:enT.toLocaleString("es-AR")+" u. · "+usd(vT),k:"k-gold"}
   ]);
   h+='<div class="grid2">'+chartCard("Facturación · Unidades · Margen mensual",d,"#38bdf8")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
   h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual</h2>`+monthTable(d,[
@@ -393,12 +391,10 @@ function renderML(){
   const d=DATA.ml, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), enT=sum(d.envios), divT=sum(d.dividendo), devT=sum(d.devol);
   const li=d.months.length-1, vJun=d.ventas[li], rnJun=d.resNeto[li], enJun=d.envios[li];
   let h=kpiHtml([
-    {l:"Mes en curso · "+d.months[li],v:fK(vJun),s:"Neto "+fK(rnJun)+" · "+usd(vJun)+" · "+enJun+" u. vend.",k:"k-curso"},
-    {l:"Ventas período",v:fK(vT),s:usd(vT),k:"k-gold"},
-    {l:"Resultado Neto",v:fK(rnT),cls:"pos",s:usd(rnT)+" · "+pc(rnT,vT),k:"k-green"},
-    {l:"Resultado Bruto",v:fK(rbT),s:pc(rbT,vT)},
-    {l:"Envíos",v:enT.toLocaleString("es-AR"),s:"Devoluciones "+fK(devT),k:"k-red"},
-    {l:"Dividendo /socio",v:fK(divT),s:usd(divT)}
+    {l:"Facturación · "+d.months[li]+" (en curso)",v:fK(vJun),s:usd(vJun),k:"k-curso"},
+    {l:"Rentabilidad · "+d.months[li],v:fK(rnJun),cls:rnJun<0?"neg":"pos",s:pc(rnJun,vJun)+" margen · "+usd(rnJun),k:"k-curso"},
+    {l:"Unidades · "+d.months[li],v:enJun.toLocaleString("es-AR")+" u.",s:"vendidas en el mes (en curso)",k:"k-curso"},
+    {l:"Vendido TOTAL (período)",v:fK(vT),s:enT.toLocaleString("es-AR")+" u. · "+usd(vT),k:"k-gold"}
   ]);
   h+='<div class="grid2">'+chartCard("Facturación · Unidades · Margen mensual",d,"#fbbf24")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
   h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual</h2>`+monthTable(d,[
@@ -416,14 +412,12 @@ function renderML(){
 function renderSF(){
   const d=DATA.sf, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), divT=sum(d.dividendo);
   const enT=sum(d.enviosTN)+sum(d.enviosML);
-  const li=d.months.length-1, vJun=d.ventas[li], rnJun=d.resNeto[li], enJun=d.enviosTN[li]+d.enviosML[li];
+  const li=d.months.length-1, vJun=d.ventas[li], rnJun=d.resNeto[li], enJunTN=d.enviosTN[li], enJunML=d.enviosML[li], enJun=enJunTN+enJunML;
   let h=kpiHtml([
-    {l:"Mes en curso · "+d.months[li],v:fK(vJun),s:"Neto "+fK(rnJun)+" · "+usd(vJun)+" · "+enJun+" u. vend.",k:"k-curso"},
-    {l:"Ventas totales",v:fK(vT),s:usd(vT),k:"k-gold"},
-    {l:"Resultado Neto",v:fK(rnT),cls:"pos",s:usd(rnT)+" · "+pc(rnT,vT),k:"k-green"},
-    {l:"Resultado Bruto",v:fK(rbT),s:pc(rbT,vT)},
-    {l:"Envíos TN+ML",v:enT.toLocaleString("es-AR"),s:sum(d.enviosTN)+" TN · "+sum(d.enviosML)+" ML",k:"k-blue"},
-    {l:"Dividendo /socio",v:fK(divT),s:usd(divT)}
+    {l:"Facturación · "+d.months[li]+" (en curso)",v:fK(vJun),s:usd(vJun),k:"k-curso"},
+    {l:"Rentabilidad · "+d.months[li],v:fK(rnJun),cls:rnJun<0?"neg":"pos",s:pc(rnJun,vJun)+" margen · "+usd(rnJun),k:"k-curso"},
+    {l:"Unidades · "+d.months[li],v:enJun.toLocaleString("es-AR")+" u.",s:enJunTN+" TN · "+enJunML+" ML (en curso)",k:"k-curso"},
+    {l:"Vendido TOTAL (período)",v:fK(vT),s:enT.toLocaleString("es-AR")+" u. · "+usd(vT),k:"k-gold"}
   ]);
   const marg=d.ventas.map((v,i)=>v?d.resNeto[i]/v*100:0);
   const units=d.ventas.map((_,i)=>d.enviosTN[i]+d.enviosML[i]);
