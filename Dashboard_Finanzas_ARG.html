@@ -41,6 +41,7 @@
   .tabs button.on.t-tn{background:linear-gradient(135deg,#38bdf8,#0ea5e9)}
   .tabs button.on.t-ml{background:linear-gradient(135deg,#fbbf24,#e8c46a);color:#231a02}
   .tabs button.on.t-sf{background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff}
+  .tabs button.on.t-fs{background:linear-gradient(135deg,#34d399,#10b981);color:#06281c}
   .tab{display:none;animation:fade .35s ease}
   .tab.show{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -128,11 +129,13 @@
       <button id="bt_tn" class="on t-tn" onclick="show('tn')">Tienda Nube</button>
       <button id="bt_ml" class="t-ml" onclick="show('ml')">Mercado Libre</button>
       <button id="bt_sf" class="t-sf" onclick="show('sf')">Consolidado ARG</button>
+      <button id="bt_fs" class="t-fs" onclick="show('fs')">Fondos y Stock</button>
     </div>
   </header>
   <div id="tab_tn" class="tab show"></div>
   <div id="tab_ml" class="tab"></div>
   <div id="tab_sf" class="tab"></div>
+  <div id="tab_fs" class="tab"></div>
   <div class="foot">Dashboard de control · Sofia Ferrer Argentina · generado desde la planilla ARG - FINZ 2025.<br>Valores en ARS salvo donde se indica USD (TC 1.440). El mes en curso (Jun-26) se muestra rayado y no debe compararse de igual a igual con meses cerrados.</div>
 </div>
 <script>
@@ -305,6 +308,7 @@ function monthTable(d, cols){
 }
 
 function stockTable(title,rows,color){
+  rows=[...rows].sort((a,b)=>b[1]-a[1]);
   const tot=sum(rows.map(r=>r[1]));
   let h=`<div class="sub-h"><span class="sq" style="background:${color}"></span>${title} · ${f0(tot)} · <span style="color:var(--gold)">${usd(tot)}</span></div><div class="tbl-wrap"><table><thead><tr><th>Ítem</th><th>$ Stock</th><th>Cant</th><th>USD</th></tr></thead><tbody>`;
   rows.forEach(r=>{h+=`<tr><td>${r[0]}</td><td>${f0(r[1])}</td><td>${r[2]!=null?r[2]:'—'}</td><td>${usd(r[1])}</td></tr>`;});
@@ -366,8 +370,12 @@ function renderTN(){
     {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0u,cls:v=>v<0?'neg':'pos',tot:()=>f0u(rnT)},
     {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",cls:v=>v<0?'neg':'',tot:()=>pc(rnT,vT)}
   ])+`<div class="note">Jun-26 es un mes en curso (datos al 13/06): sus barras aparecen rayadas y la fila va atenuada. El total del período lo incluye como acumulado real, no proyectado.</div></div>`;
+  document.getElementById("tab_tn").innerHTML=h;
+}
+
+function renderFS(){
   const F=FONDOS;
-  h+='<div class="card"><h2><span class="dot" style="background:#e8c46a"></span>Fondos y Stock (Parte B)</h2>';
+  let h='<div class="card"><h2><span class="dot" style="background:#34d399"></span>Fondos y Stock · capital y mercadería</h2>';
   h+=kpiHtml([
     {l:"Inversión inicial",v:"US$ "+F.conv.iniUSD.toLocaleString("es-AR")},
     {l:"Valor actual",v:"US$ "+F.conv.actUSD.toLocaleString("es-AR"),cls:"pos",s:F.conv.x+"x · +US$ "+F.conv.difUSD.toLocaleString("es-AR"),k:"k-green"},
@@ -384,7 +392,7 @@ function renderTN(){
   F.cobrar.forEach(r=>h+=`<tr><td>Por cobrar · ${r[0]}</td><td>${f0(r[1])}</td></tr>`);
   F.deuda.forEach(r=>h+=`<tr><td class="neg">Deuda · ${r[0]}</td><td class="neg">${f0(r[1])}</td></tr>`);
   h+='</tbody></table></div></div></div></div>';
-  document.getElementById("tab_tn").innerHTML=h;
+  document.getElementById("tab_fs").innerHTML=h;
 }
 
 function renderML(){
@@ -441,12 +449,12 @@ function renderSF(){
 }
 
 function show(k){
-  ["tn","ml","sf"].forEach(t=>{
+  ["tn","ml","sf","fs"].forEach(t=>{
     document.getElementById("tab_"+t).classList.toggle("show",t===k);
     document.getElementById("bt_"+t).classList.toggle("on",t===k);
   });
 }
-renderTN();renderML();renderSF();
+renderTN();renderML();renderSF();renderFS();
 </script>
 </body>
 </html>
