@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Rentabilidad — Tienda Nube · Sofia Ferrer</title>
+<style>
+  :root{
+    --tn:#0a3d62; --tn2:#1e6fb8; --accent:#16a34a; --ink:#1a1a2e; --muted:#6b7280;
+    --bg:#f4f6fb; --card:#ffffff; --line:#e6e9f0;
+    --green:#16a34a; --amber:#d97706; --red:#dc2626;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.4;padding:20px}
+  .wrap{max-width:1180px;margin:0 auto}
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-content:space-between;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:46px;height:46px;border-radius:12px;background:var(--tn);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  h1{font-size:20px;font-weight:700}
+  .sub{font-size:12.5px;color:var(--muted)}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  select,.usd input{font-size:14px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-weight:600;color:var(--ink)}
+  select{cursor:pointer}
+  #producto{min-width:200px}
+  #metodo{min-width:190px}
+  .usd{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+  .usd input{width:90px;font-weight:700}
+  .grid{display:grid;grid-template-columns:1.45fr 1fr;gap:18px;align-items:start}
+  @media(max-width:880px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.04)}
+  .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .card h2 .sum{font-size:12px;color:var(--red);font-weight:800;background:#fde8e8;border:1px solid #f3c2c2;padding:3px 10px;border-radius:20px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .card h2 .sum.pos{color:var(--green);background:#e7f7ee;border-color:#bfe6cd}
+  .row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px dashed #eef0f5}
+  .row:last-child{border-bottom:none}
+  .row label{flex:1;font-size:13.5px}
+  .row .pct{font-size:11px;color:var(--muted);min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
+  .row .ud{font-size:11px;color:var(--tn2);font-weight:700;min-width:74px;text-align:right;font-variant-numeric:tabular-nums;margin-left:8px}
+  .row .money{position:relative}
+  .row .money span.cur{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
+  .row input[type=number]{width:122px;padding:7px 9px 7px 20px;border:1.5px solid var(--line);border-radius:9px;font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .row input[type=number]:focus{outline:none;border-color:var(--tn2);box-shadow:0 0 0 3px rgba(30,111,184,.12)}
+  .row.pricerow input{font-size:15px;font-weight:800}
+  .row input.pctin{width:70px;padding-left:9px}
+  .row.calc{color:var(--muted)}
+  .row.calc .ro{width:122px;text-align:right;font-weight:700;font-size:13.5px;color:var(--ink);font-variant-numeric:tabular-nums;padding-right:9px}
+  .results{position:sticky;top:20px}
+  .kpi{border-radius:16px;padding:18px;margin-bottom:14px;color:#fff;position:relative;overflow:hidden}
+  .kpi .lbl{font-size:12px;opacity:.9;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+  .kpi .big{font-size:33px;font-weight:800;line-height:1.1;margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi .meta{font-size:13px;margin-top:4px;opacity:.95;font-variant-numeric:tabular-nums}
+  .kpi.good{background:linear-gradient(135deg,#16a34a,#0f8a3c)}
+  .kpi.amber{background:linear-gradient(135deg,#e0900a,#c47a00)}
+  .kpi.bad{background:linear-gradient(135deg,#dc2626,#b01c1c)}
+  .kpi.iva{background:linear-gradient(135deg,#0a3d62,#1e6fb8)}
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .metric{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .metric .ml{font-size:11px;color:var(--muted);font-weight:600}
+  .metric .mv{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+  .metric .mh{font-size:10.5px;color:var(--muted);margin-top:1px}
+  .bd{font-size:13px}
+  .bd .l{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eef0f5;font-variant-numeric:tabular-nums}
+  .bd .l:last-child{border-bottom:none}
+  .bd .l.t{font-weight:700;border-top:1.5px solid var(--line);border-bottom:none;margin-top:2px;padding-top:9px}
+  .bd .l span:last-child{font-weight:600}
+  .bd .l .ud{color:var(--tn2);font-weight:700;font-size:11px;margin-left:6px}
+  .neg{color:var(--red)}
+  .cmp .crow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed #eef0f5;cursor:pointer}
+  .cmp .crow:last-child{border-bottom:none}
+  .cmp .crow.sel{background:#f0f6fc;border-radius:8px;padding-left:8px;padding-right:8px}
+  .cmp .cname{width:120px;font-size:12.5px;font-weight:600}
+  .cmp .ctrack{flex:1;background:#eef0f5;border-radius:6px;height:22px;position:relative;overflow:hidden}
+  .cmp .cfill{height:100%;border-radius:6px}
+  .cmp .cval{width:120px;text-align:right;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}
+  .cmp .best{font-size:10px;color:var(--green);font-weight:700}
+  .toggle{display:flex;gap:4px;background:#eef0f5;border-radius:8px;padding:3px}
+  .toggle button{border:none;background:transparent;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;color:var(--muted);flex:none}
+  .toggle button.on{background:#fff;color:var(--tn);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .actions{display:flex;gap:10px;margin-top:8px}
+  .actions button{flex:1;padding:10px;border:1.5px solid var(--line);background:#fff;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink)}
+  .actions button:hover{border-color:var(--tn2);color:var(--tn2)}
+  .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:18px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">CALC</div>
+      <div>
+        <h1>Calculadora de Rentabilidad · Tienda Nube</h1>
+        <div class="sub">Sofia Ferrer Argentina · margen por producto y medio de pago</div>
+      </div>
+    </div>
+    <div class="controls">
+      <select id="producto"></select>
+      <select id="metodo"></select>
+      <span class="usd">USD/$ <input type="number" id="usd" value="1430" step="10"></span>
+    </div>
+  </header>
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Venta <span class="sum" id="sumVenta"></span></h2>
+        <div class="row pricerow"><label>Subtotal (precio lista)</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="subtotal"></div></div>
+        <div class="row"><label>Envío cobrado al cliente</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="envio"></div></div>
+        <div class="row"><label>Descuento transferencia</label><span class="pct" id="p_desc"></span><div class="money"><span class="cur">$</span><input type="number" id="desc"></div></div>
+        <div class="row calc"><label>El cliente pagó</label><span class="pct"></span><div class="ro" id="r_pago"></div></div>
+      </div>
+      <div class="card">
+        <h2>Comisiones medio de pago <span class="sum" id="sumComi"></span></h2>
+        <div class="row"><label>Comisión plataforma</label><span class="pct" id="p_comi"></span><div class="money"><span class="cur">$</span><input type="number" id="comision"></div></div>
+        <div class="row"><label>Costo cuotas sin interés</label><span class="pct" id="p_cuo"></span><div class="money"><span class="cur">$</span><input type="number" id="cuotas"></div></div>
+        <div class="row"><label>Costo Mercado Pago</label><span class="pct" id="p_mp"></span><div class="money"><span class="cur">$</span><input type="number" id="mpago"></div></div>
+        <div class="row calc"><label>Total neto recibido</label><span class="pct"></span><div class="ro" id="r_neto"></div></div>
+      </div>
+      <div class="card">
+        <h2>Impuestos <span class="sum" id="sumImp"></span></h2>
+        <div class="row"><label>Retención IIBB (% s/ total neto)</label><span class="pct"></span><input type="number" id="iibbPct" class="pctin" step="0.01"></div>
+        <div class="row calc"><label>Retención IIBB</label><span class="pct"></span><div class="ro" id="r_iibb"></div></div>
+        <div class="row calc"><label>IVA Venta (21% s/ cliente pagó)</label><span class="pct"></span><div class="ro" id="r_iva"></div></div>
+        <div class="row calc"><label>Precio después de impuestos</label><span class="pct" id="p_dpi"></span><div class="ro" id="r_dpi"></div></div>
+      </div>
+      <div class="card">
+        <h2>Costo materiales <span class="sum" id="sumCogs"></span></h2>
+        <div class="row"><label>Costo joya plata</label><span class="pct" id="p_jp"></span><div class="money"><span class="cur">$</span><input type="number" id="joyaPlata"></div></div>
+        <div class="row"><label>Costo joya acero</label><span class="pct" id="p_ja"></span><div class="money"><span class="cur">$</span><input type="number" id="joyaAcero"></div></div>
+        <div class="row"><label>Costo nacionalización</label><span class="pct" id="p_nac"></span><div class="money"><span class="cur">$</span><input type="number" id="nacionaliz"></div></div>
+        <div class="row"><label>Costo cajita</label><span class="pct" id="p_caj"></span><div class="money"><span class="cur">$</span><input type="number" id="cajita"></div></div>
+        <div class="row"><label>Costo papel / tarjeta</label><span class="pct" id="p_pap"></span><div class="money"><span class="cur">$</span><input type="number" id="papel"></div></div>
+        <div class="row"><label>Costo bolsa / sobre</label><span class="pct" id="p_bol"></span><div class="money"><span class="cur">$</span><input type="number" id="bolsa"></div></div>
+      </div>
+      <div class="card">
+        <h2>Logística &amp; operación <span class="sum" id="sumOps"></span></h2>
+        <div class="row"><label>Costo envío (Andreani)</label><span class="pct" id="p_env"></span><div class="money"><span class="cur">$</span><input type="number" id="costoEnvio"></div></div>
+        <div class="row"><label>Pick &amp; Pack (armado)</label><span class="pct" id="p_pp"></span><div class="money"><span class="cur">$</span><input type="number" id="pickpack"></div></div>
+        <div class="row"><label>Customer Service</label><span class="pct" id="p_cs"></span><div class="money"><span class="cur">$</span><input type="number" id="cs"></div></div>
+        <div class="row"><label>Costo estructura (fijos)</label><span class="pct" id="p_est"></span><div class="money"><span class="cur">$</span><input type="number" id="estructura"></div></div>
+        <div class="row"><label>Tienda Nube (cuota)</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="otrosTN"></div></div>
+        <div class="row"><label>Teléfono</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="telefono"></div></div>
+      </div>
+      <div class="card">
+        <h2>Publicidad <span class="sum" id="sumPub"></span></h2>
+        <div class="row"><label>Publicidad PPC / FB / Google</label><span class="pct" id="p_ppc"></span><div class="money"><span class="cur">$</span><input type="number" id="ppc"></div></div>
+      </div>
+      <div class="card">
+        <h2>Recupero de IVA <span class="sum pos" id="sumRecup"></span></h2>
+        <div class="row"><label>IVA recupero general (crédito fiscal)</label><span class="pct" id="p_recup"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaRecup"></div></div>
+      </div>
+    </div>
+    <div class="results">
+      <div class="kpi" id="kpiRent">
+        <div class="lbl">Rentabilidad neta</div>
+        <div class="big" id="rentBig">—</div>
+        <div class="meta" id="rentMeta"></div>
+      </div>
+      <div class="kpi iva">
+        <div class="lbl">Rentabilidad con recupero de IVA</div>
+        <div class="big" id="rentIvaBig">—</div>
+        <div class="meta" id="rentIvaMeta"></div>
+      </div>
+      <div class="card">
+        <h2>Métricas clave</h2>
+        <div class="metrics">
+          <div class="metric"><div class="ml">Costo total por venta</div><div class="mv" id="m_costo"></div><div class="mh" id="m_costo_h"></div></div>
+          <div class="metric"><div class="ml">Markup s/ costo</div><div class="mv" id="m_markup"></div><div class="mh">precio ÷ costo prod.+oper.+ads</div></div>
+          <div class="metric"><div class="ml">Precio de equilibrio</div><div class="mv" id="m_be"></div><div class="mh">margen neto = 0</div></div>
+          <div class="metric"><div class="ml">Tope de publicidad</div><div class="mv" id="m_topePub"></div><div class="mh">máx. ads con margen 0</div></div>
+        </div>
+      </div>
+      <div class="card cmp">
+        <h2>Comparación por medio de pago
+          <span class="toggle"><button id="tgNeto" class="on">Neto</button><button id="tgIva">Con IVA</button></span>
+        </h2>
+        <div id="cmpList"></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px">Margen % sobre el subtotal del producto elegido, con los costos actuales. Clic en una fila para seleccionar ese medio. ★ = más rentable.</div>
+      </div>
+      <div class="card">
+        <h2>Desglose</h2>
+        <div class="bd">
+          <div class="l"><span>Subtotal + envío</span><span id="b_bruto"></span></div>
+          <div class="l"><span>− Descuento transferencia</span><span id="b_desc" class="neg"></span></div>
+          <div class="l t"><span>= El cliente pagó</span><span id="b_pago"></span></div>
+          <div class="l"><span>− Comisiones medio de pago</span><span id="b_comi" class="neg"></span></div>
+          <div class="l t"><span>= Total neto recibido</span><span id="b_neto"></span></div>
+          <div class="l"><span>− Impuestos (IVA + IIBB)</span><span id="b_imp" class="neg"></span></div>
+          <div class="l t"><span>= Precio después de impuestos</span><span id="b_dpi"></span></div>
+          <div class="l"><span>− Costo materiales</span><span id="b_cogs" class="neg"></span></div>
+          <div class="l"><span>− Logística &amp; operación</span><span id="b_ops" class="neg"></span></div>
+          <div class="l"><span>− Publicidad</span><span id="b_publi" class="neg"></span></div>
+          <div class="l t"><span>= Rentabilidad neta</span><span id="b_rent"></span></div>
+          <div class="l"><span>+ Recupero IVA</span><span id="b_iva"></span></div>
+          <div class="l t"><span>= Rentabilidad con IVA</span><span id="b_rentiva"></span></div>
+        </div>
+        <div class="actions"><button id="reset">↺ Restaurar presets</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    Modelo basado en la planilla "TIENDA NUBE - CALCULO". IVA Venta = 21/121 del monto pagado · IIBB = % editable sobre el total neto. Costos por producto (datos reales de la planilla). Las comisiones de cada medio de pago se calculan como % del precio para que escalen a cualquier producto; todo es editable.
+  </div>
+</div>
+<script>
+const PRODUCTS = {
+  col2cora:  {n:"Collar 2 Corazones",   subtotal:59990, envio:0, iibbPct:3.70, joyaPlata:7779,  joyaAcero:0,    nacionaliz:5720,  cajita:2417,  papel:215, bolsa:215, costoEnvio:8100, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3500},
+  doble:     {n:"Doble Collar",         subtotal:99980, envio:0, iibbPct:3.70, joyaPlata:14700, joyaAcero:0,    nacionaliz:10782, cajita:4833,  papel:429, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:4931},
+  puls2cora: {n:"Pulsera 2 Corazones",  subtotal:29990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:1788, nacionaliz:1430,  cajita:2417,  papel:215, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2415},
+  cadena:    {n:"Cadena",               subtotal:34990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:2288, nacionaliz:2431,  cajita:2417,  papel:215, bolsa:215, costoEnvio:0,    pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:1108},
+  dobleP:    {n:"Doble Pulsera",        subtotal:44990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:3575, nacionaliz:2860,  cajita:2417,  papel:215, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2715},
+  anillo:    {n:"Anillo",               subtotal:48000, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:2031, nacionaliz:0,     cajita:6778,  papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190},
+  anillo4:   {n:"4 Anillos",            subtotal:71990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:4061, nacionaliz:0,     cajita:13556, papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:4614},
+  ani2puls2: {n:"2 Anillos + 2 Pulseras",subtotal:59990,envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:6321, nacionaliz:0,     cajita:6778,  papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190}
+};
+const METHODS = {
+  tarjeta: {n:"Tarjeta",        descPct:0,  comisionPct:5.10, cuotasPct:0,    mpagoPct:0, estructura:1400},
+  cuotas:  {n:"Cuotas",         descPct:0,  comisionPct:5.10, cuotasPct:10.0, mpagoPct:0, estructura:1619},
+  transfer:{n:"Transferencia",  descPct:10, comisionPct:1.86, cuotasPct:0,    mpagoPct:0, estructura:1619},
+  mp:      {n:"Mercado Pago",   descPct:0,  comisionPct:2.0,  cuotasPct:0,    mpagoPct:5, estructura:1619}
+};
+const PRODF=["subtotal","envio","iibbPct","joyaPlata","joyaAcero","nacionaliz","cajita","papel","bolsa","costoEnvio","pickpack","cs","ppc","otrosTN","telefono","ivaRecup"];
+const PAYF=["desc","comision","cuotas","mpago","estructura"];
+const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
+const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
+let USD=1430, cmpMode="neto";
+const ud=n=>"US$ "+(n/(USD||1)).toLocaleString("es-AR",{minimumFractionDigits:1,maximumFractionDigits:1});
+const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
+const v=id=>parseFloat(document.getElementById(id).value)||0;
+const selP=document.getElementById("producto"), selM=document.getElementById("metodo");
+Object.keys(PRODUCTS).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=PRODUCTS[k].n;selP.appendChild(o);});
+Object.keys(METHODS).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=METHODS[k].n;selM.appendChild(o);});
+document.querySelectorAll(".row").forEach(row=>{
+  const inp=row.querySelector("input[type=number]")||row.querySelector(".ro");
+  if(!inp||row.querySelector(".ud")||row.querySelector(".pctin"))return;
+  const s=document.createElement("span");s.className="ud";row.appendChild(s);
+});
+function payAmounts(m, subtotal, envio){
+  const desc=m.descPct/100*subtotal;
+  const cp=subtotal+envio-desc;
+  return {desc, comision:m.comisionPct/100*cp, cuotas:m.cuotasPct/100*cp, mpago:m.mpagoPct/100*cp, estructura:m.estructura};
+}
+function loadProduct(pk){PRODF.forEach(f=>document.getElementById(f).value=PRODUCTS[pk][f]);applyMethod(selM.value);}
+function applyMethod(mk){const pa=payAmounts(METHODS[mk],v("subtotal"),v("envio"));PAYF.forEach(f=>document.getElementById(f).value=Math.round(pa[f]));calc();}
+function scenario(s, pay){
+  const clientePago=s.subtotal+s.envio-pay.desc;
+  const totalNeto=clientePago-pay.comision-pay.cuotas-pay.mpago;
+  const iva=clientePago*0.21/1.21;
+  const iibb=totalNeto*s.iibbPct/100;
+  const dpi=totalNeto-iva-iibb;
+  const cogs=s.joyaPlata+s.joyaAcero+s.nacionaliz+s.cajita+s.papel+s.bolsa;
+  const ops=s.costoEnvio+s.pickpack+s.cs+pay.estructura+s.otrosTN+s.telefono;
+  const publi=s.ppc;
+  const rent=dpi-cogs-ops-publi;
+  const rentIva=rent+s.ivaRecup;
+  return {clientePago,totalNeto,iva,iibb,dpi,cogs,ops,publi,rent,rentIva,
+    margen:s.subtotal?rent/s.subtotal*100:0, margenIva:s.subtotal?rentIva/s.subtotal*100:0};
+}
+function readShared(){const s={};PRODF.forEach(f=>s[f]=v(f));return s;}
+function readPay(){const p={};PAYF.forEach(f=>p[f]=v(f));return p;}
+const cls=m=>m<0?"bad":m<10?"amber":"good";
+function breakevenPrice(s,mk){
+  let lo=0, hi=3000000;
+  for(let i=0;i<60;i++){const mid=(lo+hi)/2;const pa=payAmounts(METHODS[mk],mid,s.envio);const r=scenario(Object.assign({},s,{subtotal:mid}),pa);if(r.rent>0)hi=mid;else lo=mid;}
+  return (lo+hi)/2;
+}
+function calc(){
+  USD=v("usd")||1;
+  const s=readShared(), pay=readPay();
+  const r=scenario(s,pay);
+  const sub=s.subtotal;
+  const imp=r.iva+r.iibb;
+  const comi=pay.comision+pay.cuotas+pay.mpago;
+  const costoProdOp=r.cogs+r.ops+r.publi;
+  const costoTotal=pay.desc+comi+imp+r.cogs+r.ops+r.publi;
+  document.getElementById("r_pago").textContent=fmt(r.clientePago);
+  document.getElementById("r_neto").textContent=fmt(r.totalNeto);
+  document.getElementById("r_iibb").textContent=fmt(r.iibb);
+  document.getElementById("r_iva").textContent=fmt(r.iva);
+  document.getElementById("r_dpi").textContent=fmt(r.dpi);
+  document.getElementById("p_dpi").textContent=pct(r.dpi,sub);
+  [["p_desc","desc"],["p_comi","comision"],["p_cuo","cuotas"],["p_mp","mpago"],
+   ["p_jp","joyaPlata"],["p_ja","joyaAcero"],["p_nac","nacionaliz"],["p_caj","cajita"],["p_pap","papel"],["p_bol","bolsa"],
+   ["p_env","costoEnvio"],["p_pp","pickpack"],["p_cs","cs"],["p_est","estructura"],["p_ppc","ppc"],["p_recup","ivaRecup"]]
+   .forEach(function(a){document.getElementById(a[0]).textContent=pct(v(a[1]),sub);});
+  const sV=document.getElementById("sumVenta");sV.textContent=fmt(r.clientePago)+" · "+pct(r.clientePago,sub);sV.className="sum pos";
+  document.getElementById("sumComi").textContent="−"+fmt(comi)+" · "+pct(comi,sub);
+  document.getElementById("sumImp").textContent="−"+fmt(imp)+" · "+pct(imp,sub);
+  document.getElementById("sumCogs").textContent=fmt(r.cogs)+" · "+pct(r.cogs,sub);
+  document.getElementById("sumOps").textContent=fmt(r.ops)+" · "+pct(r.ops,sub);
+  document.getElementById("sumPub").textContent=fmt(r.publi)+" · "+pct(r.publi,sub);
+  const sR=document.getElementById("sumRecup");sR.textContent="+"+fmt(s.ivaRecup)+" · "+pct(s.ivaRecup,sub);sR.className="sum pos";
+  const k=document.getElementById("kpiRent");k.className="kpi "+cls(r.margen);
+  document.getElementById("rentBig").textContent=fmt(r.rent)+"  ·  "+r.margen.toFixed(1)+"%";
+  document.getElementById("rentMeta").textContent="USD "+(r.rent/USD).toFixed(1)+" por venta";
+  document.getElementById("rentIvaBig").textContent=fmt(r.rentIva)+"  ·  "+r.margenIva.toFixed(1)+"%";
+  document.getElementById("rentIvaMeta").textContent="USD "+(r.rentIva/USD).toFixed(1)+" · recupero "+fmt(s.ivaRecup);
+  document.getElementById("m_costo").textContent=fmt(costoTotal);
+  document.getElementById("m_costo_h").textContent=pct(costoTotal,sub)+" del precio";
+  document.getElementById("m_markup").textContent=(costoProdOp?sub/costoProdOp:0).toFixed(2)+"x";
+  document.getElementById("m_be").textContent=fmt(breakevenPrice(s,selM.value));
+  const topePub=r.publi+r.rent;
+  const tp=document.getElementById("m_topePub");tp.textContent=fmt(topePub);tp.style.color=topePub<0?"var(--red)":"";
+  document.getElementById("b_bruto").innerHTML=both(s.subtotal+s.envio);
+  document.getElementById("b_desc").innerHTML="−"+both(pay.desc);
+  document.getElementById("b_pago").innerHTML=both(r.clientePago);
+  document.getElementById("b_comi").innerHTML="−"+both(comi);
+  document.getElementById("b_neto").innerHTML=both(r.totalNeto);
+  document.getElementById("b_imp").innerHTML="−"+both(imp);
+  document.getElementById("b_dpi").innerHTML=both(r.dpi);
+  document.getElementById("b_cogs").innerHTML="−"+both(r.cogs);
+  document.getElementById("b_ops").innerHTML="−"+both(r.ops);
+  document.getElementById("b_publi").innerHTML="−"+both(r.publi);
+  const br=document.getElementById("b_rent");br.innerHTML=both(r.rent)+" ("+r.margen.toFixed(1)+"%)";br.className=r.rent<0?"neg":"";
+  document.getElementById("b_iva").innerHTML="+"+both(s.ivaRecup);
+  const bri=document.getElementById("b_rentiva");bri.innerHTML=both(r.rentIva)+" ("+r.margenIva.toFixed(1)+"%)";bri.className=r.rentIva<0?"neg":"";
+  document.querySelectorAll(".row .ud").forEach(function(sp){
+    const row=sp.closest(".row");const inp=row.querySelector("input[type=number]");
+    let val=0;
+    if(inp) val=parseFloat(inp.value)||0;
+    else{const ro=row.querySelector(".ro");val=ro?parseFloat(ro.textContent.replace(/[^\d-]/g,""))||0:0;}
+    sp.textContent=ud(val);
+  });
+  const useIva=cmpMode==="iva";
+  const res=Object.keys(METHODS).map(function(mk){const pa=payAmounts(METHODS[mk],s.subtotal,s.envio);const sc=scenario(s,pa);return {mk:mk,n:METHODS[mk].n,rent:useIva?sc.rentIva:sc.rent,m:useIva?sc.margenIva:sc.margen};});
+  const maxAbs=Math.max.apply(null,res.map(function(x){return Math.abs(x.m);}).concat([1]));
+  const best=res.reduce(function(a,b){return b.m>a.m?b:a;});
+  const cur=selM.value;
+  document.getElementById("cmpList").innerHTML=res.map(function(x){
+    const w=Math.abs(x.m)/maxAbs*100;
+    const col=x.m<0?"var(--red)":x.m<10?"var(--amber)":"var(--green)";
+    return '<div class="crow '+(x.mk===cur?'sel':'')+'" data-k="'+x.mk+'">'+
+      '<div class="cname">'+x.n+(x.mk===best.mk?' <span class="best">★</span>':'')+'</div>'+
+      '<div class="ctrack"><div class="cfill" style="width:'+w+'%;background:'+col+'"></div></div>'+
+      '<div class="cval">'+fmt(x.rent)+'<br><span style="font-weight:600;color:'+col+'">'+x.m.toFixed(1)+'%</span></div></div>';
+  }).join("");
+  document.querySelectorAll(".cmp .crow").forEach(function(row){row.addEventListener("click",function(){selM.value=row.dataset.k;applyMethod(row.dataset.k);});});
+}
+selP.addEventListener("change",function(e){loadProduct(e.target.value);});
+selM.addEventListener("change",function(e){applyMethod(e.target.value);});
+document.getElementById("reset").addEventListener("click",function(){loadProduct(selP.value);});
+document.getElementById("tgNeto").addEventListener("click",function(){cmpMode="neto";this.classList.add("on");document.getElementById("tgIva").classList.remove("on");calc();});
+document.getElementById("tgIva").addEventListener("click",function(){cmpMode="iva";this.classList.add("on");document.getElementById("tgNeto").classList.remove("on");calc();});
+["usd"].concat(PRODF,PAYF).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
+loadProduct("col2cora");
+</script>
+</body>
+</html>
