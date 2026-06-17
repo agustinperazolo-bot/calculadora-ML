@@ -98,6 +98,12 @@
   .struct .sfill{height:100%;border-radius:7px;transition:width .6s ease}
   .struct .sval{width:155px;text-align:right;font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums}
   .struct .sval small{color:var(--muted);font-weight:500}
+  .struct-sm{gap:5px}
+  .struct-sm .srow{gap:10px}
+  .struct-sm .sname{width:120px;font-size:11px}
+  .struct-sm .strack{height:14px;border-radius:5px}
+  .struct-sm .sfill{border-radius:5px}
+  .struct-sm .sval{width:115px;font-size:10.5px}
   .sub-h{font-size:11.5px;font-weight:800;color:var(--ink);margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
   .sub-h .sq{width:9px;height:9px;border-radius:2px}
   .cnar{font-size:12.5px;color:var(--ink2);background:rgba(52,211,153,.08);border-left:3px solid #34d399;padding:10px 13px;border-radius:0 9px 9px 0;margin-bottom:15px;line-height:1.55}
@@ -561,7 +567,7 @@ function renderIMPO(){
     {l:"Costo NAC unit. acero",v:"US$ "+d2(aceroP),s:"puls nudo US$ "+d2(UCOST["Pulsera Nudo"])+" · puls 2c US$ "+d2(UCOST["Puls 2cora"])+" · cadena US$ "+d2(UCOST["Cadena"])+" · forever s/d",k:"k-steel"},
     {l:"Costo NAC unit. estuche blanco",v:"US$ "+d2(estP),s:"anillo US$ "+d2(ESTUCHE[0][2])+" · puls 2x US$ "+d2(ESTUCHE[1][2]),k:"k-gold"}
   ]);
-  let bar='<div class="card"><h2><span class="dot" style="background:#fb923c"></span>Unidades importadas por producto</h2><div class="struct">';
+  let bar='<div class="card"><h2><span class="dot" style="background:#fb923c"></span>Unidades importadas por producto</h2><div class="struct struct-sm">';
   prodArr.forEach(p=>{const w=p[1]/totPU*100;const c=IMPO_COL[p[0]]||"#64748b";bar+=`<div class="srow"><div class="sname">${iconFor(p[0])} ${p[0]}</div><div class="strack"><div class="sfill" style="width:${w}%;background:linear-gradient(90deg,${c},${c}bb)"></div></div><div class="sval">${p[1].toLocaleString("es-AR")} u <small>· ${w.toFixed(0)}%</small></div></div>`;});
   bar+=`<div style="font-size:11px;color:var(--muted);margin-top:8px">Total: <b style="color:var(--ink)">${totPU.toLocaleString("es-AR")} u</b> · parseo de la descripción de cada guía. 2 guías sin detalle de unidades (test inicial y compra de acero).</div></div>`;
   let ct='<div class="card"><h2><span class="dot" style="background:#38bdf8"></span>Costo unitario nacionalizado · USD por categoría</h2><div class="tbl-wrap"><table><thead><tr><th>Producto</th><th>Detalle</th><th>USD/u</th></tr></thead><tbody>';
@@ -576,10 +582,10 @@ function renderIMPO(){
   ct+=catHdr("Componentes base","#64748b");
   [["Anillo","unidad suelta"],["Pulsera Nudo","unidad suelta"],["Estuche Blanco","caja blanca"]].forEach(b=>ct+=pRow(b[0],b[1],UCOST[b[0]]));
   ct+='</tbody></table></div><div class="note">Costo nacionalizado por unidad (FOB China + flete + IVA + derechos) según panel de la planilla. Estuche Blanco = combos armados (anillos/pulseras + caja blanca). Forever sin costo nacionalizado cargado (solo en tránsito, FOB). Plata 925 bajó a ~US$ 7,5/u al eliminar el impuesto interno (CNGUA462/464); prom histórico ~US$ 9.</div></div>';
-  h+='<div class="grid2">'+bar+ct+'</div>';
   h+='<div class="card"><h2><span class="dot" style="background:#fbbf24"></span>En camino · próximas entregas</h2><div class="tbl-wrap"><table><thead><tr><th>Guía</th><th>Contenido</th><th>Compra</th><th>ETA entrega</th><th>Unid.</th></tr></thead><tbody>';
   cam.forEach(r=>{h+=`<tr><td>${r.guia}</td><td>${r.items.map(i=>iconFor(i[0])+" "+i[1]+" "+i[0]).join(" · ")}</td><td>${r.comp||"—"}</td><td><b>${r.ent}</b></td><td>${qOf(r)}</td></tr>`;});
   h+=`<tr class="tot"><td colspan="4">Total en camino · ${cam.length} guías</td><td>${cam.reduce((a,r)=>a+qOf(r),0).toLocaleString("es-AR")}</td></tr></tbody></table></div></div>`;
+  h+='<div class="grid2">'+bar+ct+'</div>';
   h+='<div class="card"><h2><span class="dot"></span>Listado completo de importaciones</h2><div class="tbl-wrap"><table><thead><tr><th>N°</th><th>Guía</th><th>Descripción</th><th>Compra</th><th>Entrega</th><th>Estado</th><th>Unid.</th><th>USD/u</th><th>USD nac.</th></tr></thead><tbody>';
   R.forEach(r=>{const q=qOf(r);h+=`<tr><td>${r.n}</td><td>${r.guia}</td><td>${r.desc}</td><td>${r.comp||"—"}</td><td>${r.ent}</td><td>${r.entregada?'<span class="bdg bok">Entregada</span>':'<span class="bdg bcam">En camino</span>'}</td><td>${q?q:"s/d"}</td><td>${r.usd!=null?"US$ "+r.usd.toFixed(2):"—"}</td><td>${r.nac!=null?"US$ "+r.nac.toLocaleString("es-AR"):"—"}</td></tr>`;});
   h+=`<tr class="tot"><td colspan="6">TOTAL · ${totG} guías</td><td>${totU.toLocaleString("es-AR")}</td><td></td><td>US$ ${nacTot.toLocaleString("es-AR")}</td></tr></tbody></table></div><div class="note">Fuente: hoja "Importaciones" de ARG - FINZ 2025. "s/d": guía sin detalle de unidades. USD nacionalizado disponible solo en guías con costo cargado.</div></div>`;
