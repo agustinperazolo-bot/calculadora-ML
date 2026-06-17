@@ -51,8 +51,8 @@
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   /* KPIs */
   .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:13px;margin-bottom:18px}
-  .kpi{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));
-    border:1px solid var(--line);border-radius:16px;padding:16px 17px;overflow:hidden}
+  .kpi{position:relative;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--line);border-radius:16px;padding:15px 17px;overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
   .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--violet)}
   .kpi.k-gold::before{background:var(--gold)} .kpi.k-green::before{background:var(--green)}
   .kpi.k-red::before{background:var(--red)} .kpi.k-blue::before{background:var(--tn)}
@@ -63,9 +63,12 @@
   .kpi.k-curso{background:linear-gradient(180deg,rgba(124,58,237,.24),rgba(124,58,237,.05));border-color:rgba(167,139,250,.45)}
   .kpi.k-curso::before{background:var(--violet);width:4px}
   .kpi.k-curso .l{color:var(--violet)}
+  .kpi.k-steel::before{background:#94a3b8}
+  .kpi:hover{transform:translateY(-2px);border-color:var(--line2);box-shadow:0 10px 24px rgba(0,0,0,.4)}
   /* CARDS */
   .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
-    border-radius:18px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
+    border-radius:18px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow);transition:border-color .2s ease}
+  .card:hover{border-color:var(--line2)}
   .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);
     margin-bottom:14px;display:flex;align-items:center;gap:8px}
   .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--violet)}
@@ -549,13 +552,13 @@ function renderIMPO(){
   const estP=(ESTUCHE[0][2]+ESTUCHE[1][2])/2;
   const MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
   const fmtF=s=>{const x=s.split("/");return x[0]+"-"+MES[+x[1]-1]+"-"+x[2].slice(-2);};
-  const px=cam.slice(0,2).map(r=>`${r.guia} · ${r.items.map(i=>iconFor(i[0])+" "+i[1]).join(" ")} · ${fmtF(r.ent)}`).join("<br>");
+  const px=cam.slice(0,2).map(r=>`<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="font-size:12px;font-weight:700">${r.items.map(i=>iconFor(i[0])+" "+i[1]).join(" ")} <span style="color:var(--ink2);font-weight:600">${r.guia}</span></span><span style="font-size:11px;color:var(--amber);font-weight:700;white-space:nowrap">${fmtF(r.ent)}</span></div>`).join("");
   let h=kpiHtml([
     {l:"Importaciones totales",v:totG+" guías",s:"desde jul-2025",k:"k-gold"},
     {l:"Entregadas · En camino",v:'<span style="color:#34d399">'+entr.length+'</span> · <span style="color:#fbbf24">'+cam.length+'</span>',s:"recibidas · en tránsito",k:"k-green"},
-    {l:"Próximas 2 entregas",v:`<span style="font-size:13.5px;line-height:1.55;font-weight:700">${px}</span>`,s:"",k:"k-curso"},
-    {l:"Costo NAC unit. plata 925",v:`<span style="font-size:15px;line-height:1.5;font-weight:700">Nudo US$ ${d2(UCOST["Nudo"])}<br>2cora US$ ${d2(UCOST["2cora"])}</span>`,s:"prom hist · 2cora US$ "+d2(PLATA_HIST["2cora"])+" · nudo US$ "+d2(PLATA_HIST["Nudo"]),k:"k-blue"},
-    {l:"Costo NAC unit. acero",v:"US$ "+d2(aceroP),s:"puls nudo US$ "+d2(UCOST["Pulsera Nudo"])+" · puls 2c US$ "+d2(UCOST["Puls 2cora"])+" · cadena US$ "+d2(UCOST["Cadena"])+" · forever s/d"},
+    {l:"Próximas 2 entregas",v:`<div style="display:flex;flex-direction:column;gap:7px;margin-top:4px">${px}</div>`,s:"",k:"k-curso"},
+    {l:"Costo NAC unit. plata 925",v:`<span style="font-size:17px;line-height:1.6;font-weight:800">${iconFor("Nudo")} Nudo US$ ${d2(UCOST["Nudo"])}<br>${iconFor("2cora")} 2cora US$ ${d2(UCOST["2cora"])}</span>`,s:"prom hist · 2cora US$ "+d2(PLATA_HIST["2cora"])+" · nudo US$ "+d2(PLATA_HIST["Nudo"]),k:"k-blue"},
+    {l:"Costo NAC unit. acero",v:"US$ "+d2(aceroP),s:"puls nudo US$ "+d2(UCOST["Pulsera Nudo"])+" · puls 2c US$ "+d2(UCOST["Puls 2cora"])+" · cadena US$ "+d2(UCOST["Cadena"])+" · forever s/d",k:"k-steel"},
     {l:"Costo NAC unit. estuche blanco",v:"US$ "+d2(estP),s:"anillo US$ "+d2(ESTUCHE[0][2])+" · puls 2x US$ "+d2(ESTUCHE[1][2]),k:"k-gold"}
   ]);
   let bar='<div class="card"><h2><span class="dot" style="background:#fb923c"></span>Unidades importadas por producto</h2><div class="struct">';
