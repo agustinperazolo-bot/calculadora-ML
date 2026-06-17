@@ -381,9 +381,11 @@ function renderTN(){
 
 function iconFor(n){
   const s=n.toLowerCase();
-  if(s.includes("estuche")||s.includes("caj"))return "\uD83D\uDCE6";
+  if(s.includes("estuche"))return "\u2B1C";
+  if(s.includes("caj"))return "\uD83D\uDCE6";
   if(s.includes("forever"))return "\uD83D\uDC9D";
   if(s.includes("frasq")||s.includes("frasco"))return "\uD83E\uDED9";
+  if(s.includes("puls")&&s.includes("2cora"))return "\uD83D\uDC95";
   if(s.includes("puls"))return "\uD83D\uDCFF";
   if(s.includes("2cora")||s.includes("coraz")||s.includes("cora"))return "\u2764\uFE0F";
   if(s.includes("nudo"))return "\uD83E\uDEA2";
@@ -507,9 +509,9 @@ const IMPO=[
  {n:19,guia:"CNGUA425",desc:"500 cajas",comp:"14/4/2026",ent:"12/5/2026",entregada:true,items:[["Cajas",500]],usd:1.29,nac:644},
  {n:20,guia:"CNGUA441",desc:"300 2cora",comp:"14/4/2026",ent:"21/5/2026",entregada:true,items:[["2cora",300]],usd:9.10,nac:2729},
  {n:21,guia:"CNGUA449",desc:"400 anillos · 200 estuches",comp:"14/4/2026",ent:"22/5/2026",entregada:true,items:[["Anillos",400],["Estuches",200]],usd:5.87,nac:1174},
- {n:22,guia:"CNGUA462",desc:"500 2cora",comp:"4/5/2026",ent:"17/6/2026",entregada:true,items:[["2cora",500]],usd:null,nac:null},
+ {n:22,guia:"CNGUA462",desc:"500 2cora",comp:"4/5/2026",ent:"17/6/2026",entregada:true,items:[["2cora",500]],usd:7.61,nac:3805},
  {n:23,guia:"CNGUA472",desc:"500 cajas",comp:"4/5/2026",ent:"19/6/2026",entregada:false,items:[["Cajas",500]],usd:null,nac:null},
- {n:24,guia:"CNGUA464",desc:"300 nudos",comp:"4/5/2026",ent:"17/6/2026",entregada:true,items:[["Nudo",300]],usd:null,nac:null},
+ {n:24,guia:"CNGUA464",desc:"300 nudos",comp:"4/5/2026",ent:"17/6/2026",entregada:true,items:[["Nudo",300]],usd:7.39,nac:2217},
  {n:25,guia:"CNGUA474",desc:"200 puls 2cora",comp:"4/5/2026",ent:"21/6/2026",entregada:false,items:[["Puls 2cora",200]],usd:null,nac:null},
  {n:26,guia:"CNGUA480",desc:"200 frasquito",comp:"4/5/2026",ent:"24/6/2026",entregada:false,items:[["Frasquito",200]],usd:null,nac:null},
  {n:27,guia:"CNGUA473",desc:"200 forever · 100 cadena",comp:"15/5/2026",ent:"21/6/2026",entregada:false,items:[["Forever",200],["Cadena",100]],usd:null,nac:null},
@@ -517,7 +519,8 @@ const IMPO=[
  {n:29,guia:"—",desc:"500 cajas",comp:"9/6/2026",ent:"15/7/2026",entregada:false,items:[["Cajas",500]],usd:null,nac:null}
 ];
 const IMPO_COL={"2cora":"#ef4444","Nudo":"#a855f7","Pulsera Nudo":"#38bdf8","Cajas":"#f59e0b","Puls 2cora":"#ec4899","Anillos":"#e8c46a","Estuches":"#cbd5e1","Frasquito":"#34d399","Forever":"#f472b6","Cadena":"#94a3b8"};
-const UCOST={"2cora":9.1,"Nudo":8.8,"Pulsera Nudo":1.55,"Puls 2cora":2.3,"Cadena":3.3,"Forever":null,"Anillo":0.7,"Estuche Blanco":4.7};
+const PLATA_HIST={"2cora":9.12,"Nudo":8.92};
+const UCOST={"2cora":7.61,"Nudo":7.39,"Pulsera Nudo":1.55,"Puls 2cora":2.3,"Cadena":3.3,"Forever":null,"Anillo":0.7,"Estuche Blanco":4.7};
 const UCAT={plata:["2cora","Nudo"],acero:["Pulsera Nudo","Puls 2cora","Forever","Cadena"]};
 const ESTUCHE=[["Estuche Anillo","2 anillos + estuche blanco",2*UCOST["Anillo"]+UCOST["Estuche Blanco"]],["Estuche Puls 2x","2 puls nudo + estuche blanco",2*UCOST["Pulsera Nudo"]+UCOST["Estuche Blanco"]]];
 function avgCat(list){const v=list.map(k=>UCOST[k]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:0;}
@@ -541,16 +544,19 @@ function renderIMPO(){
   doc.forEach(r=>{const k=r.items.length===1?r.items[0][0]:"Anillos (+cajas)";(cost[k]=cost[k]||[]).push({usd:r.usd,u:qOf(r)});});
   const d2=n=>n.toFixed(2).replace(".",",");
   const plataP=avgCat(UCAT.plata);
+  const plataHistP=(PLATA_HIST["2cora"]+PLATA_HIST["Nudo"])/2;
   const aceroP=avgCat(UCAT.acero);
   const estP=(ESTUCHE[0][2]+ESTUCHE[1][2])/2;
-  const px=cam.slice(0,2).map(r=>`${r.ent} · ${r.guia} · ${r.items.map(i=>iconFor(i[0])+" "+i[1]).join(" ")}`).join("<br>");
+  const MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  const fmtF=s=>{const x=s.split("/");return x[0]+"-"+MES[+x[1]-1]+"-"+x[2].slice(-2);};
+  const px=cam.slice(0,2).map(r=>`${r.guia} · ${r.items.map(i=>iconFor(i[0])+" "+i[1]).join(" ")} · ${fmtF(r.ent)}`).join("<br>");
   let h=kpiHtml([
     {l:"Importaciones totales",v:totG+" guías",s:"desde jul-2025",k:"k-gold"},
     {l:"Entregadas · En camino",v:'<span style="color:#34d399">'+entr.length+'</span> · <span style="color:#fbbf24">'+cam.length+'</span>',s:"recibidas · en tránsito",k:"k-green"},
-    {l:"Próximas 2 entregas",v:`<span style="font-size:13.5px;line-height:1.55;font-weight:700">${px}</span>`,s:"fecha · guía CNGUA",k:"k-curso"},
-    {l:"Costo unit. plata 925",v:"US$ "+d2(plataP),s:"2cora "+d2(UCOST["2cora"])+" · nudo "+d2(UCOST["Nudo"]),k:"k-blue"},
-    {l:"Costo unit. acero",v:"US$ "+d2(aceroP),s:"puls nudo "+d2(UCOST["Pulsera Nudo"])+" · puls 2c "+d2(UCOST["Puls 2cora"])+" · cadena "+d2(UCOST["Cadena"])+" · forever s/d"},
-    {l:"Costo unit. estuche blanco",v:"US$ "+d2(estP),s:"anillo "+d2(ESTUCHE[0][2])+" · puls 2x "+d2(ESTUCHE[1][2]),k:"k-gold"}
+    {l:"Próximas 2 entregas",v:`<span style="font-size:13.5px;line-height:1.55;font-weight:700">${px}</span>`,s:"",k:"k-curso"},
+    {l:"Costo NAC unit. plata 925",v:`<span style="font-size:15px;line-height:1.5;font-weight:700">Nudo US$ ${d2(UCOST["Nudo"])}<br>2cora US$ ${d2(UCOST["2cora"])}</span>`,s:"prom hist · 2cora US$ "+d2(PLATA_HIST["2cora"])+" · nudo US$ "+d2(PLATA_HIST["Nudo"]),k:"k-blue"},
+    {l:"Costo NAC unit. acero",v:"US$ "+d2(aceroP),s:"puls nudo US$ "+d2(UCOST["Pulsera Nudo"])+" · puls 2c US$ "+d2(UCOST["Puls 2cora"])+" · cadena US$ "+d2(UCOST["Cadena"])+" · forever s/d"},
+    {l:"Costo NAC unit. estuche blanco",v:"US$ "+d2(estP),s:"anillo US$ "+d2(ESTUCHE[0][2])+" · puls 2x US$ "+d2(ESTUCHE[1][2]),k:"k-gold"}
   ]);
   let bar='<div class="card"><h2><span class="dot" style="background:#fb923c"></span>Unidades importadas por producto</h2><div class="struct">';
   prodArr.forEach(p=>{const w=p[1]/totPU*100;const c=IMPO_COL[p[0]]||"#64748b";bar+=`<div class="srow"><div class="sname">${iconFor(p[0])} ${p[0]}</div><div class="strack"><div class="sfill" style="width:${w}%;background:linear-gradient(90deg,${c},${c}bb)"></div></div><div class="sval">${p[1].toLocaleString("es-AR")} u <small>· ${w.toFixed(0)}%</small></div></div>`;});
@@ -559,14 +565,14 @@ function renderIMPO(){
   const catHdr=(t,c)=>`<tr style="background:rgba(255,255,255,.035)"><td colspan="3"><b style="color:${c}">● ${t}</b></td></tr>`;
   const pRow=(name,det,usd)=>`<tr><td>${iconFor(name)} ${name}</td><td style="color:var(--ink2)">${det}</td><td><b>${usd!=null?("US$ "+d2(usd)):"<span style='color:var(--muted)'>s/d</span>"}</b></td></tr>`;
   ct+=catHdr("Plata 925","#cbd5e1");
-  UCAT.plata.forEach(k=>ct+=pRow(k,"collar plata 925",UCOST[k]));
+  UCAT.plata.forEach(k=>ct+=pRow(k,"plata 925 · antes "+d2(PLATA_HIST[k]),UCOST[k]));
   ct+=catHdr("Acero","#94a3b8");
   UCAT.acero.forEach(k=>ct+=pRow(k,k==="Forever"?"en tránsito · sin nacionalizar":"acero quirúrgico",UCOST[k]));
   ct+=catHdr("Estuche Blanco","#f59e0b");
   ESTUCHE.forEach(e=>ct+=pRow(e[0],e[1],e[2]));
   ct+=catHdr("Componentes base","#64748b");
   [["Anillo","unidad suelta"],["Pulsera Nudo","unidad suelta"],["Estuche Blanco","caja blanca"]].forEach(b=>ct+=pRow(b[0],b[1],UCOST[b[0]]));
-  ct+='</tbody></table></div><div class="note">Costo nacionalizado por unidad (FOB China + flete + IVA + derechos) según panel de la planilla. Estuche Blanco = combos armados (anillos/pulseras + caja blanca). Forever sin costo nacionalizado cargado (solo en tránsito, FOB). Plata 925 ~US$ 9/u.</div></div>';
+  ct+='</tbody></table></div><div class="note">Costo nacionalizado por unidad (FOB China + flete + IVA + derechos) según panel de la planilla. Estuche Blanco = combos armados (anillos/pulseras + caja blanca). Forever sin costo nacionalizado cargado (solo en tránsito, FOB). Plata 925 bajó a ~US$ 7,5/u al eliminar el impuesto interno (CNGUA462/464); prom histórico ~US$ 9.</div></div>';
   h+='<div class="grid2">'+bar+ct+'</div>';
   h+='<div class="card"><h2><span class="dot" style="background:#fbbf24"></span>En camino · próximas entregas</h2><div class="tbl-wrap"><table><thead><tr><th>Guía</th><th>Contenido</th><th>Compra</th><th>ETA entrega</th><th>Unid.</th></tr></thead><tbody>';
   cam.forEach(r=>{h+=`<tr><td>${r.guia}</td><td>${r.items.map(i=>iconFor(i[0])+" "+i[1]+" "+i[0]).join(" · ")}</td><td>${r.comp||"—"}</td><td><b>${r.ent}</b></td><td>${qOf(r)}</td></tr>`;});
