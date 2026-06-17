@@ -494,7 +494,7 @@ const IMPO=[
  {n:6,guia:"CNGUA318",desc:"300 nudo",comp:"27/11/2025",ent:"27/12/2025",entregada:true,items:[["Nudo",300]],usd:null,nac:null},
  {n:7,guia:"CNGUA319",desc:"600 cajas",comp:"30/11/2025",ent:"27/12/2025",entregada:true,items:[["Cajas",600]],usd:null,nac:null},
  {n:8,guia:"CNGUA347",desc:"Múltiple compra de acero",comp:"26/12/2025",ent:"28/1/2026",entregada:true,items:[],usd:null,nac:null},
- {n:9,guia:"CNGUA367",desc:"200 anillos · 100 cajas",comp:"10/1/2026",ent:"19/2/2026",entregada:true,items:[["Anillos",200],["Cajas",100]],usd:null,nac:null},
+ {n:9,guia:"CNGUA367",desc:"200 anillos · 100 estuches",comp:"10/1/2026",ent:"19/2/2026",entregada:true,items:[["Anillos",200],["Estuches",100]],usd:null,nac:null},
  {n:10,guia:"CNGUA371",desc:"300 2cora",comp:"13/1/2026",ent:"24/2/2026",entregada:true,items:[["2cora",300]],usd:9.20,nac:2760},
  {n:11,guia:"CNGUA370",desc:"200 nudos",comp:"22/1/2026",ent:"24/2/2026",entregada:true,items:[["Nudo",200]],usd:8.90,nac:1781},
  {n:12,guia:"CNGUA372",desc:"200 2cora",comp:"22/1/2026",ent:"24/2/2026",entregada:true,items:[["2cora",200]],usd:9.33,nac:1865},
@@ -506,7 +506,7 @@ const IMPO=[
  {n:18,guia:"CNGUA424",desc:"300 pulsera nudo",comp:"14/4/2026",ent:"12/5/2026",entregada:true,items:[["Pulsera Nudo",300]],usd:1.54,nac:463},
  {n:19,guia:"CNGUA425",desc:"500 cajas",comp:"14/4/2026",ent:"12/5/2026",entregada:true,items:[["Cajas",500]],usd:1.29,nac:644},
  {n:20,guia:"CNGUA441",desc:"300 2cora",comp:"14/4/2026",ent:"21/5/2026",entregada:true,items:[["2cora",300]],usd:9.10,nac:2729},
- {n:21,guia:"CNGUA449",desc:"400 anillos · 200 cajas",comp:"14/4/2026",ent:"22/5/2026",entregada:true,items:[["Anillos",400],["Cajas",200]],usd:5.87,nac:1174},
+ {n:21,guia:"CNGUA449",desc:"400 anillos · 200 estuches",comp:"14/4/2026",ent:"22/5/2026",entregada:true,items:[["Anillos",400],["Estuches",200]],usd:5.87,nac:1174},
  {n:22,guia:"CNGUA462",desc:"500 2cora",comp:"4/5/2026",ent:"17/6/2026",entregada:true,items:[["2cora",500]],usd:null,nac:null},
  {n:23,guia:"CNGUA472",desc:"500 cajas",comp:"4/5/2026",ent:"19/6/2026",entregada:false,items:[["Cajas",500]],usd:null,nac:null},
  {n:24,guia:"CNGUA464",desc:"300 nudos",comp:"4/5/2026",ent:"17/6/2026",entregada:true,items:[["Nudo",300]],usd:null,nac:null},
@@ -516,7 +516,11 @@ const IMPO=[
  {n:28,guia:"—",desc:"500 cajas",comp:"5/6/2026",ent:"15/7/2026",entregada:false,items:[["Cajas",500]],usd:null,nac:null},
  {n:29,guia:"—",desc:"500 cajas",comp:"9/6/2026",ent:"15/7/2026",entregada:false,items:[["Cajas",500]],usd:null,nac:null}
 ];
-const IMPO_COL={"2cora":"#ef4444","Nudo":"#a855f7","Pulsera Nudo":"#38bdf8","Cajas":"#f59e0b","Puls 2cora":"#ec4899","Anillos":"#e8c46a","Frasquito":"#34d399","Forever":"#f472b6","Cadena":"#94a3b8"};
+const IMPO_COL={"2cora":"#ef4444","Nudo":"#a855f7","Pulsera Nudo":"#38bdf8","Cajas":"#f59e0b","Puls 2cora":"#ec4899","Anillos":"#e8c46a","Estuches":"#cbd5e1","Frasquito":"#34d399","Forever":"#f472b6","Cadena":"#94a3b8"};
+const UCOST={"2cora":9.1,"Nudo":8.8,"Pulsera Nudo":1.55,"Puls 2cora":2.3,"Cadena":3.3,"Forever":null,"Anillo":0.7,"Estuche Blanco":4.7};
+const UCAT={plata:["2cora","Nudo"],acero:["Pulsera Nudo","Puls 2cora","Forever","Cadena"]};
+const ESTUCHE=[["Estuche Anillo","2 anillos + estuche blanco",2*UCOST["Anillo"]+UCOST["Estuche Blanco"]],["Estuche Puls 2x","2 puls nudo + estuche blanco",2*UCOST["Pulsera Nudo"]+UCOST["Estuche Blanco"]]];
+function avgCat(list){const v=list.map(k=>UCOST[k]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:0;}
 function qOf(r){return r.items.reduce((a,b)=>a+b[1],0);}
 function cmpDate(a,b){const p=s=>{const x=s.split("/");return new Date(+x[2],+x[1]-1,+x[0]).getTime();};return p(a)-p(b);}
 function renderIMPO(){
@@ -535,20 +539,34 @@ function renderIMPO(){
   const totPU=prodArr.reduce((a,b)=>a+b[1],0);
   const cost={};
   doc.forEach(r=>{const k=r.items.length===1?r.items[0][0]:"Anillos (+cajas)";(cost[k]=cost[k]||[]).push({usd:r.usd,u:qOf(r)});});
+  const d2=n=>n.toFixed(2).replace(".",",");
+  const plataP=avgCat(UCAT.plata);
+  const aceroP=avgCat(UCAT.acero);
+  const estP=(ESTUCHE[0][2]+ESTUCHE[1][2])/2;
+  const px=cam.slice(0,2).map(r=>`${r.ent} · ${r.guia} · ${r.items.map(i=>iconFor(i[0])+" "+i[1]).join(" ")}`).join("<br>");
   let h=kpiHtml([
     {l:"Importaciones totales",v:totG+" guías",s:"desde jul-2025",k:"k-gold"},
-    {l:"Entregadas",v:""+entr.length,cls:"pos",s:"recibidas y nacionalizadas",k:"k-green"},
-    {l:"En camino",v:""+cam.length,s:"próximas: "+cam.slice(0,2).map(r=>r.ent).join(" · "),k:"k-curso"},
-    {l:"Unidades importadas",v:totU.toLocaleString("es-AR")+" u",s:"según descripción · "+conDet+" guías c/ detalle"},
-    {l:"USD nacionalizado (doc.)",v:"US$ "+nacTot.toLocaleString("es-AR"),s:doc.length+" guías con costo · "+docU.toLocaleString("es-AR")+" u",k:"k-blue"},
-    {l:"Costo unit. plata 925",v:"US$ ~9",s:"2cora 9,17 · nudo 8,92 (nacionaliz.)"}
+    {l:"Entregadas · En camino",v:'<span style="color:#34d399">'+entr.length+'</span> · <span style="color:#fbbf24">'+cam.length+'</span>',s:"recibidas · en tránsito",k:"k-green"},
+    {l:"Próximas 2 entregas",v:`<span style="font-size:13.5px;line-height:1.55;font-weight:700">${px}</span>`,s:"fecha · guía CNGUA",k:"k-curso"},
+    {l:"Costo unit. plata 925",v:"US$ "+d2(plataP),s:"2cora "+d2(UCOST["2cora"])+" · nudo "+d2(UCOST["Nudo"]),k:"k-blue"},
+    {l:"Costo unit. acero",v:"US$ "+d2(aceroP),s:"puls nudo "+d2(UCOST["Pulsera Nudo"])+" · puls 2c "+d2(UCOST["Puls 2cora"])+" · cadena "+d2(UCOST["Cadena"])+" · forever s/d"},
+    {l:"Costo unit. estuche blanco",v:"US$ "+d2(estP),s:"anillo "+d2(ESTUCHE[0][2])+" · puls 2x "+d2(ESTUCHE[1][2]),k:"k-gold"}
   ]);
   let bar='<div class="card"><h2><span class="dot" style="background:#fb923c"></span>Unidades importadas por producto</h2><div class="struct">';
   prodArr.forEach(p=>{const w=p[1]/totPU*100;const c=IMPO_COL[p[0]]||"#64748b";bar+=`<div class="srow"><div class="sname">${iconFor(p[0])} ${p[0]}</div><div class="strack"><div class="sfill" style="width:${w}%;background:linear-gradient(90deg,${c},${c}bb)"></div></div><div class="sval">${p[1].toLocaleString("es-AR")} u <small>· ${w.toFixed(0)}%</small></div></div>`;});
   bar+=`<div style="font-size:11px;color:var(--muted);margin-top:8px">Total: <b style="color:var(--ink)">${totPU.toLocaleString("es-AR")} u</b> · parseo de la descripción de cada guía. 2 guías sin detalle de unidades (test inicial y compra de acero).</div></div>`;
-  let ct='<div class="card"><h2><span class="dot" style="background:#38bdf8"></span>Costo unitario nacionalizado · USD</h2><div class="tbl-wrap"><table><thead><tr><th>Producto</th><th>Costo prom</th><th>Rango</th><th>Unid. doc.</th></tr></thead><tbody>';
-  Object.entries(cost).forEach(([k,arr])=>{const us=arr.map(x=>x.usd);const avg=us.reduce((a,b)=>a+b,0)/us.length;const mn=Math.min.apply(null,us),mx=Math.max.apply(null,us);const u=arr.reduce((a,x)=>a+x.u,0);ct+=`<tr><td>${iconFor(k)} ${k}</td><td><b>US$ ${avg.toFixed(2)}</b></td><td>${mn.toFixed(2)}–${mx.toFixed(2)}</td><td>${u.toLocaleString("es-AR")}</td></tr>`;});
-  ct+='</tbody></table></div><div class="note">Costo nacionalizado = FOB China + flete + IVA + derechos, dividido por unidad. Solo guías con costo cargado (12 de 29). La plata 925 ronda US$ 9/u; cajas y pulseras de acero, US$ 1,3–1,5/u.</div></div>';
+  let ct='<div class="card"><h2><span class="dot" style="background:#38bdf8"></span>Costo unitario nacionalizado · USD por categoría</h2><div class="tbl-wrap"><table><thead><tr><th>Producto</th><th>Detalle</th><th>USD/u</th></tr></thead><tbody>';
+  const catHdr=(t,c)=>`<tr style="background:rgba(255,255,255,.035)"><td colspan="3"><b style="color:${c}">● ${t}</b></td></tr>`;
+  const pRow=(name,det,usd)=>`<tr><td>${iconFor(name)} ${name}</td><td style="color:var(--ink2)">${det}</td><td><b>${usd!=null?("US$ "+d2(usd)):"<span style='color:var(--muted)'>s/d</span>"}</b></td></tr>`;
+  ct+=catHdr("Plata 925","#cbd5e1");
+  UCAT.plata.forEach(k=>ct+=pRow(k,"collar plata 925",UCOST[k]));
+  ct+=catHdr("Acero","#94a3b8");
+  UCAT.acero.forEach(k=>ct+=pRow(k,k==="Forever"?"en tránsito · sin nacionalizar":"acero quirúrgico",UCOST[k]));
+  ct+=catHdr("Estuche Blanco","#f59e0b");
+  ESTUCHE.forEach(e=>ct+=pRow(e[0],e[1],e[2]));
+  ct+=catHdr("Componentes base","#64748b");
+  [["Anillo","unidad suelta"],["Pulsera Nudo","unidad suelta"],["Estuche Blanco","caja blanca"]].forEach(b=>ct+=pRow(b[0],b[1],UCOST[b[0]]));
+  ct+='</tbody></table></div><div class="note">Costo nacionalizado por unidad (FOB China + flete + IVA + derechos) según panel de la planilla. Estuche Blanco = combos armados (anillos/pulseras + caja blanca). Forever sin costo nacionalizado cargado (solo en tránsito, FOB). Plata 925 ~US$ 9/u.</div></div>';
   h+='<div class="grid2">'+bar+ct+'</div>';
   h+='<div class="card"><h2><span class="dot" style="background:#fbbf24"></span>En camino · próximas entregas</h2><div class="tbl-wrap"><table><thead><tr><th>Guía</th><th>Contenido</th><th>Compra</th><th>ETA entrega</th><th>Unid.</th></tr></thead><tbody>';
   cam.forEach(r=>{h+=`<tr><td>${r.guia}</td><td>${r.items.map(i=>iconFor(i[0])+" "+i[1]+" "+i[0]).join(" · ")}</td><td>${r.comp||"—"}</td><td><b>${r.ent}</b></td><td>${qOf(r)}</td></tr>`;});
