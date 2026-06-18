@@ -129,6 +129,19 @@
   .note{font-size:11px;color:var(--muted);margin-top:8px;padding:8px 11px;background:rgba(167,139,250,.07);
     border-left:2px solid var(--violet);border-radius:0 8px 8px 0}
   .foot{font-size:11px;color:var(--faint);text-align:center;margin-top:22px;line-height:1.7;color:var(--muted)}
+  .tabs button.on.t-pt{background:linear-gradient(135deg,#f472b6,#db2777);color:#2a0712}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
+  .pcard{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:13px 14px;transition:transform .18s ease,border-color .18s ease}
+  .pcard:hover{transform:translateY(-2px);border-color:var(--line2)}
+  .pcard .ph{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .pcard .pic{font-size:16px}
+  .pcard .pnm{font-size:12.5px;font-weight:700;color:var(--ink)}
+  .pcard .ptot{margin-left:auto;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+  .pbars{display:flex;align-items:flex-end;gap:3px;height:44px}
+  .pbars .pb{flex:1;border-radius:3px 3px 0 0;min-height:2px;opacity:.9;transition:filter .15s}
+  .pbars .pb.cur{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.3),rgba(255,255,255,.3) 2px,transparent 2px,transparent 4px)}
+  .pbars .pb:hover{filter:brightness(1.3)}
+  .plbl{display:flex;justify-content:space-between;font-size:8.5px;color:var(--faint);margin-top:5px}
 </style>
 </head>
 <body>
@@ -147,6 +160,7 @@
       <button id="bt_sf" class="t-sf" onclick="show('sf')">Consolidado ARG</button>
       <button id="bt_fs" class="t-fs" onclick="show('fs')">Fondos y Stock</button>
       <button id="bt_im" class="t-im" onclick="show('im')">Importaciones</button>
+      <button id="bt_pt" class="t-pt" onclick="show('pt')">Pedidos TN</button>
     </div>
   </header>
   <div id="tab_tn" class="tab show"></div>
@@ -154,6 +168,7 @@
   <div id="tab_sf" class="tab"></div>
   <div id="tab_fs" class="tab"></div>
   <div id="tab_im" class="tab"></div>
+  <div id="tab_pt" class="tab"></div>
   <div class="foot">Dashboard de control · Sofia Ferrer Argentina · generado desde la planilla ARG - FINZ 2025.<br>Valores en ARS salvo donde se indica USD (TC 1.455). El mes en curso (Jun-26) se muestra rayado y no debe compararse de igual a igual con meses cerrados.</div>
 </div>
 <script>
@@ -628,13 +643,70 @@ function renderIMPO(){
   document.getElementById("tab_im").innerHTML=h;
 }
 
+const PEDTN={partial:true,
+ months:["Set-25","Oct-25","Nov-25","Dic-25","Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26"],
+ prod:["2cora","Nudo","Cadena","Puls 2cora","Puls 2c ext","Pelota","Martillo","Puls Nudo","Estuche Anillo"],
+ data:[[17,7,1,8,0,0,0,0,0],[74,22,1,2,0,0,0,0,0],[49,74,7,10,0,0,0,0,0],[132,23,8,6,0,0,0,0,0],[72,37,4,0,0,0,0,0,0],[20,19,0,0,0,0,0,0,0],[97,17,2,2,0,1,1,36,5],[84,25,1,2,10,2,2,8,37],[128,8,2,0,8,0,0,14,43],[96,9,2,0,2,0,1,21,15]]};
+const PEDFULL={partial:true,
+ months:["Set-25","Oct-25","Nov-25","Dic-25","Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26"],
+ prod:["2cora","Nudo","Cadena","Puls 2cora","Puls 2c ext","Pelota","Martillo","Puls Nudo","Estuche Anillo"],
+ data:[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[21,88,0,0,0,0,0,0,0],[131,85,12,27,0,24,18,50,0],[54,72,6,0,31,0,6,39,0],[203,98,2,0,12,0,6,30,0],[26,15,0,0,3,2,0,36,40]]};
+const PED_IC={"2cora":"❤️","Nudo":"🪢","Cadena":"🔗","Puls 2cora":"💕","Puls 2c ext":"💞","Pelota":"⚽","Martillo":"🔨","Puls Nudo":"📿","Estuche Anillo":"💍"};
+const PED_CO={"2cora":"#f472b6","Nudo":"#a78bfa","Cadena":"#94a3b8","Puls 2cora":"#fb7185","Puls 2c ext":"#f59e0b","Pelota":"#34d399","Martillo":"#f87171","Puls Nudo":"#38bdf8","Estuche Anillo":"#e8c46a"};
+const PED_SH={"2cora":"2cora","Nudo":"Nudo","Cadena":"Cadena","Puls 2cora":"P.2cora","Puls 2c ext":"P.2c ext","Pelota":"Pelota","Martillo":"Mart.","Puls Nudo":"P.Nudo","Estuche Anillo":"Est.Ani"};
+function pedTot(D){return D.prod.map((p,j)=>D.data.reduce((a,r)=>a+r[j],0));}
+function pedWidgets(D,grand){
+  const M=D.months,J=D.prod,li=M.length-1,totP=pedTot(D);
+  const ord=J.map((p,j)=>[p,totP[j],j]).sort((a,b)=>b[1]-a[1]);
+  let pg='<div class="pgrid">';
+  ord.forEach(([p,tot,j])=>{
+    if(!tot)return;
+    const col=PED_CO[p],ser=D.data.map(r=>r[j]),mx=Math.max(...ser)||1;
+    const bars=ser.map((v,i)=>`<div class="pb ${i===li?'cur':''}" title="${M[i]}: ${v} u" style="height:${Math.round(v/mx*40)+2}px;background:${col}"></div>`).join("");
+    pg+=`<div class="pcard"><div class="ph"><span class="pic">${PED_IC[p]}</span><span class="pnm">${p}</span><span class="ptot" style="color:${col}">${tot}</span></div><div class="pbars">${bars}</div><div class="plbl"><span>${M[0]}</span><span>${pc(tot,grand)} del total</span><span>${M[li]}</span></div></div>`;
+  });
+  return pg+'</div>';
+}
+function pedTable(D){
+  const M=D.months,J=D.prod,li=M.length-1,totP=pedTot(D),totM=M.map((m,i)=>sum(D.data[i])),grand=sum(totP);
+  let t='<div class="tbl-wrap"><table><thead><tr><th>Mes</th>'+J.map(p=>`<th>${PED_IC[p]} ${PED_SH[p]}</th>`).join('')+'<th>Total</th></tr></thead><tbody>';
+  M.forEach((m,i)=>{const isP=i===li;t+=`<tr class="${isP?'partial':''}"><td>${m}${isP?'<span class="tag">en curso</span>':''}</td>`+J.map((p,j)=>`<td>${D.data[i][j]||'·'}</td>`).join('')+`<td><b>${totM[i]}</b></td></tr>`;});
+  t+='<tr class="tot"><td>TOTAL</td>'+totP.map(v=>`<td>${v}</td>`).join('')+`<td>${grand}</td></tr></tbody></table></div>`;
+  return t;
+}
+function renderPED(){
+  const D=PEDTN,M=D.months,J=D.prod,li=M.length-1;
+  const totP=pedTot(D),totM=M.map((m,i)=>sum(D.data[i])),grand=sum(totP),junT=totM[li];
+  const ord=J.map((p,j)=>[p,totP[j]]).sort((a,b)=>b[1]-a[1]);
+  const t3=ord.slice(0,3).map((e,i)=>`<div style="display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;line-height:1.55"><span style="color:var(--faint);font-size:10px;width:9px">${i+1}</span><span style="font-size:15px">${PED_IC[e[0]]}</span>${e[0]}<span style="margin-left:auto;color:${PED_CO[e[0]]};font-variant-numeric:tabular-nums">${e[1]}</span></div>`).join("");
+  const closedAvg=Math.round((grand-junT)/(M.length-1));
+  let h=kpiHtml([
+    {l:"Unidades período · TN",v:grand.toLocaleString("es-AR")+" u",s:M[0]+" a "+M[li],k:"k-gold"},
+    {l:"Unidades "+M[li]+" (en curso)",v:junT.toLocaleString("es-AR")+" u",s:"despachadas este mes",k:"k-curso"},
+    {l:"Top 3 productos · período",v:t3,k:"k-blue"},
+    {l:"Prom. mensual (cerrados)",v:closedAvg+" u",s:M[0]+" a "+M[li-1]}
+  ]);
+  h+=`<div class="card"><h2><span class="dot" style="background:#f472b6"></span>Pedidos mensuales por producto · unidades</h2><div class="cnar" style="background:rgba(244,114,182,.08);border-left-color:#f472b6">Unidades despachadas por mes de cada joya en pedidos de <b>Tienda Nube</b> (Set-25 → Jun-26). La barra rayada es <b>Jun-26 (en curso)</b>. Total período: <b>${grand.toLocaleString("es-AR")} u</b> · líder <b>${PED_IC[ord[0][0]]} ${ord[0][0]}</b> (${pc(ord[0][1],grand)}).</div>${pedWidgets(D,grand)}</div>`;
+  const svg=svgBars(M,[{name:"Unidades",color:"#f472b6",data:totM,flat:true}],{partialIndex:li});
+  h+=`<div class="card"><h2><span class="dot" style="background:#f472b6"></span>Unidades despachadas por mes · Tienda Nube</h2>${svg}<div class="legend"><span><i style="background:#f472b6"></i>Unidades / mes</span><span><i class="hatch"></i>Mes en curso (parcial)</span></div></div>`;
+  h+=`<div class="card"><h2><span class="dot" style="background:#f472b6"></span>Detalle mensual por producto · TN</h2>${pedTable(D)}<div class="note">Fuente: hoja "STK Joyas" (Pedidos ARG) · unidades por joya descontadas en cada pedido de Tienda Nube. Excluye packaging y restocks a ML Full. Jun-26 en curso (datos al 18/06).</div></div>`;
+  const FD=PEDFULL,fTotP=pedTot(FD),fGrand=sum(fTotP),fTotM=FD.months.map((m,i)=>sum(FD.data[i]));
+  const fOrd=FD.prod.map((p,j)=>[p,fTotP[j]]).sort((a,b)=>b[1]-a[1]);
+  const fk=kpiHtml([
+    {l:"Restock total · ML Full",v:fGrand.toLocaleString("es-AR")+" u",s:"13 envíos · Feb-26 a Jun-26",k:"k-gold"},
+    {l:"Restock "+FD.months[li]+" (en curso)",v:fTotM[li].toLocaleString("es-AR")+" u",s:"enviado este mes",k:"k-curso"},
+    {l:"Más repuesto · período",v:PED_IC[fOrd[0][0]]+" "+fOrd[0][0],s:fOrd[0][1].toLocaleString("es-AR")+" u · "+pc(fOrd[0][1],fGrand)+" del restock"}
+  ]);
+  h+=`<div class="card" style="border-color:rgba(167,139,250,.35)"><h2 style="border-left-color:var(--violet)"><span class="dot" style="background:var(--violet)"></span>Restocks a ML Full · unidades por producto</h2><div class="cnar" style="background:rgba(167,139,250,.08);border-left-color:var(--violet)">Unidades enviadas a reponer stock de <b>Mercado Full</b>, en bloque (registradas aparte de los pedidos TN). <b>${fGrand.toLocaleString("es-AR")} u</b> en <b>13 envíos</b> entre Feb y Jun-26. NO son ventas: es reposición de inventario.</div>${fk}${pedWidgets(FD,fGrand)}${pedTable(FD)}<div class="note">Fuente: filas marcadas "FULL" en hoja "STK Joyas". Restocks arrancan en Feb-26. Jun-26 en curso (datos al 18/06).</div></div>`;
+  document.getElementById("tab_pt").innerHTML=h;
+}
 function show(k){
-  ["tn","ml","sf","fs","im"].forEach(t=>{
+  ["tn","ml","sf","fs","im","pt"].forEach(t=>{
     document.getElementById("tab_"+t).classList.toggle("show",t===k);
     document.getElementById("bt_"+t).classList.toggle("on",t===k);
   });
 }
-renderTN();renderML();renderSF();renderFS();renderIMPO();
+renderTN();renderML();renderSF();renderFS();renderIMPO();renderPED();
 </script>
 </body>
 </html>
