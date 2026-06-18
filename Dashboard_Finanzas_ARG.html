@@ -69,8 +69,10 @@
   .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
     border-radius:18px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow);transition:border-color .2s ease}
   .card:hover{border-color:var(--line2)}
-  .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);
-    margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--ink2);font-weight:700;
+    margin:-3px -5px 16px;display:flex;align-items:center;gap:8px;padding:9px 13px;
+    background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(255,255,255,.012));
+    border:1px solid var(--line);border-left:3px solid var(--violet);border-radius:9px}
   .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--violet)}
   .grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
   @media(max-width:860px){.grid2{grid-template-columns:1fr}}
@@ -182,6 +184,7 @@ const DATA={
     partial:true,
     months:["Nov-25","Dic-25","Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26"],
     envios:[47,110,107,226,185,218,215,182],
+    unidades:[69,110,112,234,211,232,225,204],
     pventa:[37624,47447,48674,57471,54706,55696,53917,51734],
     ventas:[1768310,5219206,5208125,12988451,10120565,12141747,11592241,9415500],
     devol:[59970,315930,142291,148170,446320,495962,95320,123000],
@@ -342,7 +345,7 @@ function chartCard(title,d,accent){
   return `<div class="card"><h2><span class="dot" style="background:${accent}"></span>${title}</h2>${svg}
     <div class="legend">
       <span><i style="background:${accent}"></i>Facturación</span>
-      <span><i style="background:#c7cde0;border-radius:50%"></i>Unidades vendidas</span>
+      <span><i style="background:#c7cde0;border-radius:50%"></i>Pedidos</span>
       <span><i style="background:#34d399"></i>Margen Neto %</span>
       <span><i class="hatch"></i>Mes en curso</span>
     </div></div>`;
@@ -354,6 +357,7 @@ function costBreakdown(struct, vT, rnT){
   const pct=v=>v/vT*100;
   const segs=struct.map(it=>[it[0],it[1],it[2]]);
   segs.push(["Impuestos y otros",bal,"#64748b"]);
+  segs.sort((a,b)=>b[1]-a[1]);
   let bar='<div class="cbar">';
   segs.forEach(it=>{const w=pct(it[1]);bar+=`<div class="cseg" style="width:${w}%;background:${it[2]}"><span>${w>=7?Math.round(w)+'%':''}</span><div class="ctip">${it[0]}: ${f0(it[1])} · ${w.toFixed(1)}% de ventas</div></div>`;});
   const rnPct=pct(rnT);
@@ -372,10 +376,10 @@ function renderTN(){
   let h=kpiHtml([
     {l:"Facturación · "+d.months[li]+" (en curso)",v:fK(vJun),s:usd(vJun),k:"k-curso"},
     {l:"Rentabilidad · "+d.months[li],v:fK(rnJun),cls:rnJun<0?"neg":"pos",s:pc(rnJun,vJun)+" margen · "+usd(rnJun),k:"k-curso"},
-    {l:"Unidades · "+d.months[li],v:enJun.toLocaleString("es-AR")+" u.",s:"vendidas en el mes (en curso)",k:"k-curso"},
-    {l:"Vendido TOTAL (período)",v:fK(vT),s:enT.toLocaleString("es-AR")+" u. · "+usd(vT),k:"k-gold"}
+    {l:"Pedidos · "+d.months[li],v:enJun.toLocaleString("es-AR")+" ped.",s:"pedidos del mes (en curso)",k:"k-curso"},
+    {l:"Vendido TOTAL (período)",v:fK(vT),s:enT.toLocaleString("es-AR")+" ped. · "+usd(vT),k:"k-gold"}
   ]);
-  h+='<div class="grid2">'+chartCard("Facturación · Unidades · Margen mensual",d,"#38bdf8")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
+  h+='<div class="grid2">'+chartCard("Facturación · Pedidos · Margen mensual",d,"#38bdf8")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
   h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual</h2>`+monthTable(d,[
     {h:"Envíos",get:i=>d.envios[i],fmt:v=>v},
     {h:"Ventas",get:i=>d.ventas[i],fmt:f0u,tot:()=>f0u(vT)},
@@ -449,10 +453,10 @@ function renderML(){
   let h=kpiHtml([
     {l:"Facturación · "+d.months[li]+" (en curso)",v:fK(vJun),s:usd(vJun),k:"k-curso"},
     {l:"Rentabilidad · "+d.months[li],v:fK(rnJun),cls:rnJun<0?"neg":"pos",s:pc(rnJun,vJun)+" margen · "+usd(rnJun),k:"k-curso"},
-    {l:"Unidades · "+d.months[li],v:enJun.toLocaleString("es-AR")+" u.",s:"vendidas en el mes (en curso)",k:"k-curso"},
-    {l:"Vendido TOTAL (período)",v:fK(vT),s:enT.toLocaleString("es-AR")+" u. · "+usd(vT),k:"k-gold"}
+    {l:"Pedidos · "+d.months[li],v:enJun.toLocaleString("es-AR")+" ped.",s:(d.unidades?d.unidades[li].toLocaleString("es-AR")+" unidades vendidas":"pedidos del mes"),k:"k-curso"},
+    {l:"Vendido TOTAL (período)",v:fK(vT),s:enT.toLocaleString("es-AR")+" ped. · "+usd(vT),k:"k-gold"}
   ]);
-  h+='<div class="grid2">'+chartCard("Facturación · Unidades · Margen mensual",d,"#fbbf24")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
+  h+='<div class="grid2">'+chartCard("Facturación · Pedidos · Margen mensual",d,"#fbbf24")+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
   h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual</h2>`+monthTable(d,[
     {h:"Envíos",get:i=>d.envios[i],fmt:v=>v},
     {h:"Ventas",get:i=>d.ventas[i],fmt:f0u,tot:()=>f0u(vT)},
@@ -472,8 +476,8 @@ function renderSF(){
   let h=kpiHtml([
     {l:"Facturación · "+d.months[li]+" (en curso)",v:fK(vJun),s:usd(vJun),k:"k-curso"},
     {l:"Rentabilidad · "+d.months[li],v:fK(rnJun),cls:rnJun<0?"neg":"pos",s:pc(rnJun,vJun)+" margen · "+usd(rnJun),k:"k-curso"},
-    {l:"Unidades · "+d.months[li],v:enJun.toLocaleString("es-AR")+" u.",s:enJunTN+" TN · "+enJunML+" ML (en curso)",k:"k-curso"},
-    {l:"Vendido TOTAL (período)",v:fK(vT),s:enT.toLocaleString("es-AR")+" u. · "+usd(vT),k:"k-gold"}
+    {l:"Pedidos · "+d.months[li],v:enJun.toLocaleString("es-AR")+" ped.",s:enJunTN+" TN · "+enJunML+" ML (en curso)",k:"k-curso"},
+    {l:"Vendido TOTAL (período)",v:fK(vT),s:enT.toLocaleString("es-AR")+" ped. · "+usd(vT),k:"k-gold"}
   ]);
   const marg=d.ventas.map((v,i)=>v?d.resNeto[i]/v*100:0);
   const units=d.ventas.map((_,i)=>d.enviosTN[i]+d.enviosML[i]);
@@ -483,7 +487,7 @@ function renderSF(){
     {name:"Margen Neto",data:marg,color:"#34d399",axis:true,suffix:"%",dec:1},
     {name:"Unidades",data:units,color:"#c7cde0",points:true}
   ]});
-  h+='<div class="grid2"><div class="card"><h2><span class="dot" style="background:#a78bfa"></span>Facturación · Unidades · Margen (TN+ML)</h2>'+svg+'<div class="legend"><span><i style="background:#a78bfa"></i>Facturación</span><span><i style="background:#c7cde0;border-radius:50%"></i>Unidades vendidas</span><span><i style="background:#34d399"></i>Margen %</span><span><i class="hatch"></i>Mes en curso</span></div></div>'+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
+  h+='<div class="grid2"><div class="card"><h2><span class="dot" style="background:#a78bfa"></span>Facturación · Pedidos · Margen (TN+ML)</h2>'+svg+'<div class="legend"><span><i style="background:#a78bfa"></i>Facturación</span><span><i style="background:#c7cde0;border-radius:50%"></i>Pedidos</span><span><i style="background:#34d399"></i>Margen %</span><span><i class="hatch"></i>Mes en curso</span></div></div>'+`<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
   h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual consolidado</h2>`+monthTable(d,[
     {h:"Env. TN",get:i=>d.enviosTN[i],fmt:v=>v,tot:()=>sum(d.enviosTN)},
     {h:"Env. ML",get:i=>d.enviosML[i],fmt:v=>v,tot:()=>sum(d.enviosML)},
@@ -524,8 +528,8 @@ const IMPO=[
  {n:25,guia:"CNGUA474",desc:"200 puls 2cora",comp:"4/5/2026",ent:"21/6/2026",entregada:false,items:[["Puls 2cora",200]],usd:null,nac:null},
  {n:26,guia:"CNGUA480",desc:"200 frasquito",comp:"4/5/2026",ent:"24/6/2026",entregada:false,items:[["Frasquito",200]],usd:null,nac:null},
  {n:27,guia:"CNGUA473",desc:"200 forever · 100 cadena",comp:"15/5/2026",ent:"21/6/2026",entregada:false,items:[["Forever",200],["Cadena",100]],usd:null,nac:null},
- {n:28,guia:"—",desc:"500 cajas",comp:"5/6/2026",ent:"15/7/2026",entregada:false,items:[["Cajas",500]],usd:null,nac:null},
- {n:29,guia:"—",desc:"500 cajas",comp:"9/6/2026",ent:"15/7/2026",entregada:false,items:[["Cajas",500]],usd:null,nac:null}
+ {n:28,guia:"CNGUAxxx",desc:"500 cajas",comp:"5/6/2026",ent:"15/7/2026",entregada:false,items:[["Cajas",500]],usd:null,nac:null},
+ {n:29,guia:"CNGUAxxx",desc:"500 cajas",comp:"9/6/2026",ent:"15/7/2026",entregada:false,items:[["Cajas",500]],usd:null,nac:null}
 ];
 const IMPO_COL={"2cora":"#ef4444","Nudo":"#a855f7","Pulsera Nudo":"#38bdf8","Cajas":"#f59e0b","Puls 2cora":"#ec4899","Anillos":"#e8c46a","Estuches":"#cbd5e1","Frasquito":"#34d399","Forever":"#f472b6","Cadena":"#94a3b8"};
 const PLATA_HIST={"2cora":9.12,"Nudo":8.92};
