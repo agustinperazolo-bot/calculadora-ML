@@ -130,6 +130,7 @@
     border-left:2px solid var(--violet);border-radius:0 8px 8px 0}
   .foot{font-size:11px;color:var(--faint);text-align:center;margin-top:22px;line-height:1.7;color:var(--muted)}
   .tabs button.on.t-pt{background:linear-gradient(135deg,#f472b6,#db2777);color:#2a0712}
+  .tabs button.on.t-rf{background:linear-gradient(135deg,#c4b5fd,#8b5cf6);color:#1e1138}
   .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
   .pcard{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:13px 14px;transition:transform .18s ease,border-color .18s ease}
   .pcard:hover{transform:translateY(-2px);border-color:var(--line2)}
@@ -169,6 +170,7 @@
       <button id="bt_fs" class="t-fs" onclick="show('fs')">Fondos y Stock</button>
       <button id="bt_im" class="t-im" onclick="show('im')">Importaciones</button>
       <button id="bt_pt" class="t-pt" onclick="show('pt')">Pedidos TN</button>
+      <button id="bt_rf" class="t-rf" onclick="show('rf')">Restock Full</button>
     </div>
   </header>
   <div id="tab_tn" class="tab show"></div>
@@ -177,6 +179,7 @@
   <div id="tab_fs" class="tab"></div>
   <div id="tab_im" class="tab"></div>
   <div id="tab_pt" class="tab"></div>
+  <div id="tab_rf" class="tab"></div>
   <div class="foot">Dashboard de control · Sofia Ferrer Argentina · generado desde la planilla ARG - FINZ 2025.<br>Valores en ARS salvo donde se indica USD (TC 1.455). El mes en curso (Jun-26) se muestra rayado y no debe compararse de igual a igual con meses cerrados.</div>
 </div>
 <script>
@@ -695,27 +698,35 @@ function renderPED(){
     {l:"Top 3 productos · período",v:t3,k:"k-blue"},
     {l:"Prom. mensual (cerrados)",v:closedAvg+" u",s:M[0]+" a "+M[li-1]}
   ]);
-  h+=`<div class="card"><h2><span class="dot" style="background:#f472b6"></span>Pedidos mensuales por producto · unidades</h2><div class="cnar" style="background:rgba(244,114,182,.08);border-left-color:#f472b6">Unidades despachadas por mes de cada joya en pedidos de <b>Tienda Nube</b> (Set-25 → Jun-26). La barra rayada es <b>Jun-26 (en curso)</b>. Total período: <b>${grand.toLocaleString("es-AR")} u</b> · líder <b>${PED_IC[ord[0][0]]} ${ord[0][0]}</b> (${pc(ord[0][1],grand)}).</div>${pedWidgets(D,grand)}</div>`;
+  h+=`<div class="card"><h2><span class="dot" style="background:#f472b6"></span>Pedidos mensuales por producto · unidades</h2><div class="cnar" style="background:rgba(244,114,182,.08);border-left-color:#f472b6">Unidades despachadas por mes de cada joya en pedidos de <b>Tienda Nube</b> (Set-25 → ${M[li]}). Eje Y = unidades, eje X = inicial del mes; la barra rayada/violeta es <b>${M[li]} (en curso)</b>. Total período: <b>${grand.toLocaleString("es-AR")} u</b> · líder <b>${PED_IC[ord[0][0]]} ${ord[0][0]}</b> (${pc(ord[0][1],grand)}).</div>${pedWidgets(D,grand)}</div>`;
   const svg=svgBars(M,[{name:"Unidades",color:"#f472b6",data:totM,flat:true}],{partialIndex:li});
   h+=`<div class="card"><h2><span class="dot" style="background:#f472b6"></span>Unidades despachadas por mes · Tienda Nube</h2>${svg}<div class="legend"><span><i style="background:#f472b6"></i>Unidades / mes</span><span><i class="hatch"></i>Mes en curso (parcial)</span></div></div>`;
-  h+=`<div class="card"><h2><span class="dot" style="background:#f472b6"></span>Detalle mensual por producto · TN</h2>${pedTable(D)}<div class="note">Fuente: hoja "STK Joyas" (Pedidos ARG) · unidades por joya descontadas en cada pedido de Tienda Nube. Excluye packaging y restocks a ML Full. Jun-26 en curso (datos al 18/06).</div></div>`;
-  const FD=PEDFULL,fTotP=pedTot(FD),fGrand=sum(fTotP),fTotM=FD.months.map((m,i)=>sum(FD.data[i]));
-  const fOrd=FD.prod.map((p,j)=>[p,fTotP[j]]).sort((a,b)=>b[1]-a[1]);
-  const fk=kpiHtml([
-    {l:"Restock total · ML Full",v:fGrand.toLocaleString("es-AR")+" u",s:"13 envíos · Feb-26 a Jun-26",k:"k-gold"},
-    {l:"Restock "+FD.months[li]+" (en curso)",v:fTotM[li].toLocaleString("es-AR")+" u",s:"enviado este mes",k:"k-curso"},
-    {l:"Más repuesto · período",v:PED_IC[fOrd[0][0]]+" "+fOrd[0][0],s:fOrd[0][1].toLocaleString("es-AR")+" u · "+pc(fOrd[0][1],fGrand)+" del restock"}
-  ]);
-  h+=`<div class="card" style="border-color:rgba(167,139,250,.35)"><h2 style="border-left-color:var(--violet)"><span class="dot" style="background:var(--violet)"></span>Restocks a ML Full · unidades por producto</h2><div class="cnar" style="background:rgba(167,139,250,.08);border-left-color:var(--violet)">Unidades enviadas a reponer stock de <b>Mercado Full</b>, en bloque (registradas aparte de los pedidos TN). <b>${fGrand.toLocaleString("es-AR")} u</b> en <b>13 envíos</b> entre Feb y Jun-26. NO son ventas: es reposición de inventario.</div>${fk}${pedWidgets(FD,fGrand)}${pedTable(FD)}<div class="note">Fuente: filas marcadas "FULL" en hoja "STK Joyas". Restocks arrancan en Feb-26. Jun-26 en curso (datos al 18/06).</div></div>`;
+  h+=`<div class="card"><h2><span class="dot" style="background:#f472b6"></span>Detalle mensual por producto · TN</h2>${pedTable(D)}<div class="note">Fuente: hoja "STK Joyas" (Pedidos ARG) · unidades por joya descontadas en cada pedido de Tienda Nube. Excluye packaging y restocks a ML Full (ver pestaña Restock Full). Jun-26 en curso (datos al 18/06).</div></div>`;
   document.getElementById("tab_pt").innerHTML=h;
 }
+function renderRF(){
+  const FD=PEDFULL,M=FD.months,J=FD.prod,li=M.length-1;
+  const fTotP=pedTot(FD),fGrand=sum(fTotP),fTotM=M.map((m,i)=>sum(FD.data[i]));
+  const fOrd=J.map((p,j)=>[p,fTotP[j]]).sort((a,b)=>b[1]-a[1]);
+  const t3=fOrd.slice(0,3).map((e,i)=>`<div style="display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;line-height:1.55"><span style="color:var(--faint);font-size:10px;width:9px">${i+1}</span><span style="font-size:15px">${PED_IC[e[0]]}</span>${e[0]}<span style="margin-left:auto;color:${PED_CO[e[0]]};font-variant-numeric:tabular-nums">${e[1]}</span></div>`).join("");
+  let h=kpiHtml([
+    {l:"Restock total · ML Full",v:fGrand.toLocaleString("es-AR")+" u",s:"Feb-26 a "+M[li],k:"k-gold"},
+    {l:"Restock "+M[li]+" (en curso)",v:fTotM[li].toLocaleString("es-AR")+" u",s:"repuesto este mes",k:"k-curso"},
+    {l:"Top 3 repuestos · período",v:t3,k:"k-blue"}
+  ]);
+  h+=`<div class="card" style="border-color:rgba(167,139,250,.35)"><h2 style="border-left-color:var(--violet)"><span class="dot" style="background:var(--violet)"></span>Restock mensual por producto · ML Full</h2><div class="cnar" style="background:rgba(167,139,250,.08);border-left-color:var(--violet)">Unidades enviadas a reponer stock de <b>Mercado Full</b>, en bloque (aparte de los pedidos de Tienda Nube). <b>NO son ventas</b>: es reposición de inventario. Eje Y = unidades, eje X = inicial del mes. Total período: <b>${fGrand.toLocaleString("es-AR")} u</b> · más repuesto <b>${PED_IC[fOrd[0][0]]} ${fOrd[0][0]}</b> (${pc(fOrd[0][1],fGrand)}).</div>${pedWidgets(FD,fGrand)}</div>`;
+  const svg=svgBars(M,[{name:"Unidades",color:"#a78bfa",data:fTotM,flat:true}],{partialIndex:li});
+  h+=`<div class="card"><h2 style="border-left-color:var(--violet)"><span class="dot" style="background:var(--violet)"></span>Restock por mes · ML Full</h2>${svg}<div class="legend"><span><i style="background:#a78bfa"></i>Unidades / mes</span><span><i class="hatch"></i>Mes en curso</span></div></div>`;
+  h+=`<div class="card"><h2 style="border-left-color:var(--violet)"><span class="dot" style="background:var(--violet)"></span>Detalle mensual de restock</h2>${pedTable(FD)}<div class="note">Fuente: filas marcadas "FULL" en hoja "STK Joyas". Los restocks arrancan en Feb-26. Jun-26 en curso (datos al 18/06).</div></div>`;
+  document.getElementById("tab_rf").innerHTML=h;
+}
 function show(k){
-  ["tn","ml","sf","fs","im","pt"].forEach(t=>{
+  ["tn","ml","sf","fs","im","pt","rf"].forEach(t=>{
     document.getElementById("tab_"+t).classList.toggle("show",t===k);
     document.getElementById("bt_"+t).classList.toggle("on",t===k);
   });
 }
-renderTN();renderML();renderSF();renderFS();renderIMPO();renderPED();
+renderTN();renderML();renderSF();renderFS();renderIMPO();renderPED();renderRF();
 </script>
 </body>
 </html>
