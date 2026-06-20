@@ -6,90 +6,119 @@
 <title>Calculadora de Rentabilidad — Mercado Libre · Sofia Ferrer</title>
 <style>
   :root{
-    --ml-yellow:#ffe600; --ml-blue:#3483fa; --ink:#1a1a2e; --muted:#6b7280;
-    --bg:#f4f6fb; --card:#ffffff; --line:#e6e9f0;
-    --green:#16a34a; --green-bg:#e7f7ee; --amber:#d97706; --amber-bg:#fdf3e3; --red:#dc2626; --red-bg:#fde8e8;
+    --bg:#0b0d14; --bg2:#0e1119; --panel:#151926; --panel2:#1b2030; --line:#262c3d; --line2:#323a50;
+    --ink:#eef1f8; --ink2:#c7cde0; --muted:#8b93ab; --faint:#5b647d;
+    --gold:#e8c46a; --gold2:#c79a3a; --violet:#a78bfa; --violet2:#7c3aed;
+    --ml:#fbbf24; --tn:#38bdf8;
+    --green:#34d399; --green2:#10b981; --red:#f87171; --amber:#fbbf24;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.4;padding:20px}
-  .wrap{max-width:1180px;margin:0 auto}
-  header{display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-content:space-between;margin-bottom:18px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:46px;height:46px;border-radius:12px;background:var(--ml-yellow);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-  h1{font-size:20px;font-weight:700}
-  .sub{font-size:12.5px;color:var(--muted)}
+  html,body{background:var(--bg)}
+  body{font-family:'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:var(--ink);line-height:1.45;
+    padding:28px 20px 40px;background:
+      radial-gradient(1200px 500px at 80% -10%, rgba(124,58,237,.16), transparent 60%),
+      radial-gradient(900px 500px at -5% 0%, rgba(251,191,36,.08), transparent 55%),
+      var(--bg);min-height:100vh}
+  .wrap{max-width:1240px;margin:0 auto}
+  /* HEADER */
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-content:space-between;
+    margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:52px;height:52px;border-radius:14px;
+    background:linear-gradient(135deg,#7c3aed 0%,#fbbf24 100%);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;
+    box-shadow:0 6px 18px rgba(124,58,237,.45);letter-spacing:.5px}
+  h1{font-size:21px;font-weight:700;letter-spacing:-.2px}
+  .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .sub b{color:var(--gold);font-weight:600}
   .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-  select,.usd input{font-size:14px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-weight:600;color:var(--ink)}
-  select{min-width:240px;cursor:pointer}
-  .usd{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
-  .usd input{width:90px;font-weight:700}
-  .tag{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:.3px}
-  .tag.full{background:#e7f0ff;color:var(--ml-blue)}
-  .tag.nofull{background:#f0f0f0;color:#555}
+  select{font-size:13.5px;padding:10px 14px;border:1px solid var(--line2);border-radius:11px;
+    background:var(--panel);font-weight:600;color:var(--ink);min-width:240px;cursor:pointer;transition:border-color .18s ease}
+  select:hover{border-color:var(--violet)}
+  .usd{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .usd input{width:88px;font-size:13.5px;padding:10px 12px;border:1px solid var(--line2);border-radius:11px;
+    background:var(--panel);font-weight:700;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+  .tag{font-size:10px;font-weight:700;padding:4px 10px;border-radius:7px;letter-spacing:.4px;text-transform:uppercase}
+  .tag.full{background:rgba(251,191,36,.16);color:var(--ml);border:1px solid rgba(251,191,36,.35)}
+  .tag.nofull{background:rgba(139,147,171,.15);color:var(--muted);border:1px solid var(--line2)}
   .grid{display:grid;grid-template-columns:1.45fr 1fr;gap:18px;align-items:start}
   @media(max-width:880px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.04)}
-  .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .card h2 .sum{font-size:12px;color:var(--red);font-weight:800;background:var(--red-bg);border:1px solid #f3c2c2;padding:3px 10px;border-radius:20px;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .card h2 .sum.pos{color:var(--green);background:var(--green-bg);border-color:#bfe6cd}
+  /* CARDS */
+  .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:18px;padding:16px 18px;margin-bottom:16px;box-shadow:var(--shadow);transition:border-color .2s ease}
+  .card:hover{border-color:var(--line2)}
+  .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--ink2);font-weight:700;
+    margin:-2px -4px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 13px;
+    background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(255,255,255,.012));
+    border:1px solid var(--line);border-left:3px solid var(--violet);border-radius:9px}
+  .card h2 .sum{font-size:11.5px;font-weight:800;color:var(--red);background:rgba(248,113,113,.14);
+    border:1px solid rgba(248,113,113,.3);padding:3px 10px;border-radius:20px;font-variant-numeric:tabular-nums;white-space:nowrap;text-transform:none;letter-spacing:0}
+  .card h2 .sum.pos{color:var(--green);background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.3)}
   .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .metric{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-  .metric .ml{font-size:11px;color:var(--muted);font-weight:600}
-  .metric .mv{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
-  .metric .mh{font-size:10.5px;color:var(--muted);margin-top:1px}
-  .row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px dashed #eef0f5}
+  .metric{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .metric .ml{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .metric .mv{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px;letter-spacing:-.3px}
+  .metric .mh{font-size:10px;color:var(--faint);margin-top:2px}
+  .row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
   .row:last-child{border-bottom:none}
-  .row label{flex:1;font-size:13.5px}
+  .row label{flex:1;font-size:13px;color:var(--ink2)}
   .row .pct{font-size:11px;color:var(--muted);min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
-  .row .ud{font-size:11px;color:var(--ml-blue);font-weight:700;min-width:74px;text-align:right;font-variant-numeric:tabular-nums;margin-left:8px}
+  .row .ud{font-size:11px;color:var(--tn);font-weight:700;min-width:74px;text-align:right;font-variant-numeric:tabular-nums;margin-left:8px}
   .row .money{position:relative}
-  .row .money span.cur{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
-  .row input[type=number]{width:122px;padding:7px 9px 7px 20px;border:1.5px solid var(--line);border-radius:9px;font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-  .row input[type=number]:focus{outline:none;border-color:var(--ml-blue);box-shadow:0 0 0 3px rgba(52,131,250,.12)}
-  .row.price input{font-size:15px;font-weight:800}
-  .row.calc{color:var(--muted)}
-  .row.calc .ro{width:122px;text-align:right;font-weight:700;font-size:13.5px;color:var(--ink);font-variant-numeric:tabular-nums;padding-right:9px}
+  .row .money span.cur{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
+  .row input[type=number]{width:122px;padding:8px 9px 8px 22px;border:1px solid var(--line2);border-radius:9px;
+    font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;background:var(--panel);color:var(--ink)}
+  .row input[type=number]:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(167,139,250,.18)}
+  .row.price input{font-size:15px;font-weight:800;color:var(--gold);border-color:var(--gold2)}
+  .row.calc label{color:var(--muted)}
+  .row.calc .ro{width:122px;text-align:right;font-weight:700;font-size:13.5px;color:var(--ink2);font-variant-numeric:tabular-nums;padding-right:9px}
+  .row.auto label::after{content:"AUTO";font-size:8.5px;font-weight:800;color:var(--violet);background:rgba(167,139,250,.16);
+    border:1px solid rgba(167,139,250,.3);padding:1px 5px;border-radius:5px;margin-left:7px;vertical-align:middle;letter-spacing:.5px}
   .results{position:sticky;top:20px}
-  .kpi{border-radius:16px;padding:18px;margin-bottom:14px;color:#fff;position:relative;overflow:hidden}
-  .kpi .lbl{font-size:12px;opacity:.9;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
-  .kpi .big{font-size:34px;font-weight:800;line-height:1.1;margin-top:4px;font-variant-numeric:tabular-nums}
-  .kpi .meta{font-size:13px;margin-top:4px;opacity:.95;font-variant-numeric:tabular-nums}
-  .kpi.good{background:linear-gradient(135deg,#16a34a,#0f8a3c)}
-  .kpi.amber{background:linear-gradient(135deg,#e0900a,#c47a00)}
-  .kpi.bad{background:linear-gradient(135deg,#dc2626,#b01c1c)}
-  .kpi.iva{background:linear-gradient(135deg,#3483fa,#1f5fd0)}
-  .bd{font-size:13px}
-  .bd .l{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eef0f5;font-variant-numeric:tabular-nums}
+  /* KPIs */
+  .kpi{position:relative;border-radius:16px;padding:16px 18px;margin-bottom:13px;overflow:hidden;
+    background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);transition:transform .18s ease,box-shadow .18s ease}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.4)}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--violet)}
+  .kpi.good::before{background:var(--green)} .kpi.amber::before{background:var(--amber)}
+  .kpi.bad::before{background:var(--red)} .kpi.iva::before{background:var(--tn)}
+  .kpi .lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+  .kpi .big{font-size:30px;font-weight:800;line-height:1.1;margin-top:5px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .kpi.good .big{color:var(--green)} .kpi.amber .big{color:var(--amber)} .kpi.bad .big{color:var(--red)} .kpi.iva .big{color:var(--tn)}
+  .kpi .meta{font-size:12px;margin-top:4px;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .bd{font-size:12.5px}
+  .bd .l{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;color:var(--ink2)}
   .bd .l:last-child{border-bottom:none}
-  .bd .l.t{font-weight:700;border-top:1.5px solid var(--line);border-bottom:none;margin-top:2px;padding-top:9px}
-  .bd .l span:last-child{font-weight:600}
-  .bd .l .ud{color:var(--ml-blue);font-weight:700;font-size:11px;margin-left:6px}
-  .neg{color:var(--red)}
-  .bar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 4px}
-  .bar div{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;text-shadow:0 1px 1px rgba(0,0,0,.25);overflow:hidden}
-  .seg-cogs{background:#f59e0b}.seg-ml{background:#3483fa}.seg-imp{background:#9333ea}.seg-publi{background:#ec4899}.seg-rent{background:#16a34a}.seg-rentneg{background:#dc2626}
-  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--muted);margin-top:8px}
-  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
-  .actions{display:flex;gap:10px;margin-top:4px}
-  button{flex:1;padding:10px;border:1.5px solid var(--line);background:#fff;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink)}
-  button:hover{border-color:var(--ml-blue);color:var(--ml-blue)}
-  .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:18px;line-height:1.6}
+  .bd .l.t{font-weight:700;border-top:1.5px solid var(--line2);border-bottom:none;margin-top:2px;padding-top:9px;color:#fff}
+  .bd .l span:last-child{font-weight:600;color:var(--ink)}
+  .bd .l .ud{color:var(--tn);font-weight:700;font-size:11px;margin-left:6px}
+  .neg{color:var(--red)!important}
+  .bar{display:flex;height:32px;border-radius:9px;overflow:hidden;margin:6px 0 4px;box-shadow:inset 0 0 0 1px var(--line)}
+  .bar div{height:100%;display:flex;align-items:center;justify-content:center;color:rgba(0,0,0,.55);font-size:10.5px;font-weight:800;font-variant-numeric:tabular-nums;overflow:hidden}
+  .seg-cogs{background:#f59e0b}.seg-ml{background:#38bdf8}.seg-imp{background:#a78bfa}.seg-publi{background:#ec4899}.seg-rent{background:#34d399}.seg-rentneg{background:#f87171}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--ink2);margin-top:10px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:middle}
+  .actions{display:flex;gap:10px;margin-top:6px}
+  button{flex:1;padding:10px;border:1px solid var(--line2);background:var(--panel);border-radius:11px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink2);transition:all .18s ease}
+  button:hover{border-color:var(--violet);color:#fff}
+  .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:20px;line-height:1.7}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div class="brand">
-      <div class="logo">JOY</div>
+      <div class="logo">SF</div>
       <div>
         <h1>Calculadora de Rentabilidad · Mercado Libre</h1>
-        <div class="sub">Sofia Ferrer Argentina · costo y margen por unidad vendida</div>
+        <div class="sub">Sofia Ferrer Argentina · costo y margen por unidad vendida · comisión ML fija <b>16,3%</b></div>
       </div>
     </div>
     <div class="controls">
       <select id="prod"></select>
       <span class="tag" id="canalTag"></span>
-      <span class="usd">USD/$ <input type="number" id="usd" value="1440" step="10"></span>
+      <span class="usd">USD/$ <input type="number" id="usd" value="1455" step="5"></span>
     </div>
   </header>
   <div class="grid">
@@ -97,7 +126,7 @@
       <div class="card">
         <h2>Impuestos <span class="sum" id="sumPrice"></span></h2>
         <div class="row price"><label>Precio de venta</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="precio"></div></div>
-        <div class="row calc"><label>IVA Venta (21%)</label><span class="pct" id="p_iva"></span><div class="ro" id="r_iva"></div></div>
+        <div class="row calc auto"><label>IVA Venta (21%)</label><span class="pct" id="p_iva"></span><div class="ro" id="r_iva"></div></div>
         <div class="row"><label>Retención IIBB</label><span class="pct" id="p_iibb"></span><div class="money"><span class="cur">$</span><input type="number" id="iibb"></div></div>
         <div class="row calc"><label>Precio después de impuestos</label><span class="pct" id="p_dpi"></span><div class="ro" id="r_dpi"></div></div>
       </div>
@@ -111,7 +140,7 @@
       </div>
       <div class="card">
         <h2>Costos Mercado Libre <span class="sum" id="sumMl"></span></h2>
-        <div class="row"><label>Tarifa ML (comisión)</label><span class="pct" id="p_tar"></span><div class="money"><span class="cur">$</span><input type="number" id="tar"></div></div>
+        <div class="row calc auto"><label>Tarifa ML (comisión 16,3%)</label><span class="pct" id="p_tar"></span><div class="ro" id="r_tar"></div></div>
         <div class="row"><label>Cargo fijo ML</label><span class="pct" id="p_cf"></span><div class="money"><span class="cur">$</span><input type="number" id="cf"></div></div>
         <div class="row"><label>Costo envío ML</label><span class="pct" id="p_env"></span><div class="money"><span class="cur">$</span><input type="number" id="env"></div></div>
         <div class="row"><label>Costo cuotas sin interés</label><span class="pct" id="p_cuo"></span><div class="money"><span class="cur">$</span><input type="number" id="cuo"></div></div>
@@ -126,7 +155,7 @@
         <div class="row"><label>IVA compra joya / producto</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaJoya"></div></div>
         <div class="row"><label>IVA compra caja</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaCaja"></div></div>
         <div class="row"><label>IVA envíos ML</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaEnv"></div></div>
-        <div class="row"><label>IVA comisión ML</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaMl"></div></div>
+        <div class="row calc auto"><label>IVA comisión ML</label><span class="pct"></span><div class="ro" id="r_ivaMl"></div></div>
       </div>
     </div>
     <div class="results">
@@ -178,28 +207,29 @@
     </div>
   </div>
   <div class="foot">
-    Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta se calcula automático (21/121 del precio). El resto son montos fijos editables.<br>
+    Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta (21/121 del precio) y la <b>Tarifa ML (16,3% del precio)</b> se calculan automáticamente; el IVA de comisión ML sale de esa comisión (21/121). El resto son montos fijos editables.<br>
     El costo se calcula por unidad vendida; si enviás más de una unidad, los costos de envío se suman.
   </div>
 </div>
 <script>
+const MLFEE=0.163;
 const P = {
-  "2cora_full":   {n:"COLLAR 2CORA",        canal:"FULL",   precio:59990, iibb:2220, joya:7632, nac:5429, caja:2434, tarj:110, arm:2880, tar:9802, cf:0,    env:6080, cuo:3000, alm:20, pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:1055, ivaMl:1701},
-  "nudo_full":    {n:"COLLAR NUDO",         canal:"FULL",   precio:56990, iibb:2109, joya:7272, nac:5429, caja:2434, tarj:110, arm:2880, tar:9312, cf:0,    env:6080, cuo:2850, alm:20, pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:1055, ivaMl:1616},
-  "pulsnudo_full":{n:"2x PULSERA NUDO",     canal:"FULL",   precio:37990, iibb:1406, joya:4435, nac:0,    caja:6768, tarj:110, arm:2880, tar:6208, cf:0,    env:5620, cuo:1900, alm:20, pub:1600, ivaJoya:931,  ivaCaja:0,   ivaEnv:975,  ivaMl:1077},
-  "anillo_full":  {n:"ANILLO",              canal:"FULL",   precio:37990, iibb:1406, joya:2016, nac:0,    caja:6768, tarj:110, arm:2880, tar:6208, cf:0,    env:5620, cuo:1900, alm:20, pub:1600, ivaJoya:423,  ivaCaja:0,   ivaEnv:975,  ivaMl:1077},
-  "pulsera_full": {n:"PULSERA NUDO (acero)",canal:"FULL",   precio:22990, iibb:851,  joya:2232, nac:0,    caja:2434, tarj:110, arm:2880, tar:3757, cf:2455, env:0,    cuo:1150, alm:20, pub:1600, ivaJoya:469,  ivaCaja:184, ivaEnv:0,    ivaMl:652},
-  "nudo_nofull":  {n:"COLLAR NUDO",         canal:"NO FULL",precio:39990, iibb:1480, joya:8800, nac:0,    caja:0,    tarj:110, arm:2160, tar:6646, cf:0,    env:5383, cuo:1960, alm:0,  pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:934,  ivaMl:1153},
-  "2cora_nofull": {n:"COLLAR 2CORA",        canal:"NO FULL",precio:49990, iibb:1850, joya:7834, nac:5760, caja:2434, tarj:110, arm:2880, tar:8308, cf:0,    env:5383, cuo:2450, alm:0,  pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:934,  ivaMl:1442},
-  "puls2cora_nf": {n:"PULSERA 2CORA inox",  canal:"NO FULL",precio:29990, iibb:1200, joya:2362, nac:1889, caja:2434, tarj:110, arm:2880, tar:4984, cf:2230, env:0,    cuo:1470, alm:0,  pub:0,    ivaJoya:0,    ivaCaja:0,   ivaEnv:0,    ivaMl:865},
-  "pulsnudo_nf":  {n:"PULSERA NUDO inox",   canal:"NO FULL",precio:19990, iibb:740,  joya:2304, nac:0,    caja:2434, tarj:220, arm:2880, tar:3266, cf:2300, env:0,    cuo:1000, alm:0,  pub:0,    ivaJoya:484,  ivaCaja:184, ivaEnv:0,    ivaMl:567},
-  "cadena_nf":    {n:"CADENA",              canal:"NO FULL",precio:23740, iibb:878,  joya:2304, nac:2448, caja:2434, tarj:200, arm:2880, tar:3879, cf:2300, env:0,    cuo:1187, alm:0,  pub:0,    ivaJoya:484,  ivaCaja:189, ivaEnv:0,    ivaMl:673},
-  "martillo_full":{n:"MARTILLO",            canal:"FULL",   precio:18990, iibb:703,  joya:8064, nac:0,    caja:2434, tarj:200, arm:2160, tar:3103, cf:2455, env:0,    cuo:950,  alm:0,  pub:0,    ivaJoya:1693, ivaCaja:189, ivaEnv:0,    ivaMl:539}
+  "2cora_full":   {n:"COLLAR 2CORA",        canal:"FULL",   precio:59990, iibb:2220, joya:7632, nac:5429, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, cuo:3000, alm:20, pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
+  "nudo_full":    {n:"COLLAR NUDO",         canal:"FULL",   precio:56990, iibb:2109, joya:7272, nac:5429, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, cuo:2850, alm:20, pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
+  "pulsnudo_full":{n:"2x PULSERA NUDO",     canal:"FULL",   precio:37990, iibb:1406, joya:4435, nac:0,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, cuo:1900, alm:20, pub:1600, ivaJoya:931,  ivaCaja:0,   ivaEnv:975},
+  "anillo_full":  {n:"ANILLO",              canal:"FULL",   precio:37990, iibb:1406, joya:2016, nac:0,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, cuo:1900, alm:20, pub:1600, ivaJoya:423,  ivaCaja:0,   ivaEnv:975},
+  "pulsera_full": {n:"PULSERA NUDO (acero)",canal:"FULL",   precio:22990, iibb:851,  joya:2232, nac:0,    caja:2434, tarj:110, arm:2880, cf:2455, env:0,    cuo:1150, alm:20, pub:1600, ivaJoya:469,  ivaCaja:184, ivaEnv:0},
+  "nudo_nofull":  {n:"COLLAR NUDO",         canal:"NO FULL",precio:39990, iibb:1480, joya:8800, nac:0,    caja:0,    tarj:110, arm:2160, cf:0,    env:5383, cuo:1960, alm:0,  pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:934},
+  "2cora_nofull": {n:"COLLAR 2CORA",        canal:"NO FULL",precio:49990, iibb:1850, joya:7834, nac:5760, caja:2434, tarj:110, arm:2880, cf:0,    env:5383, cuo:2450, alm:0,  pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:934},
+  "puls2cora_nf": {n:"PULSERA 2CORA inox",  canal:"NO FULL",precio:29990, iibb:1200, joya:2362, nac:1889, caja:2434, tarj:110, arm:2880, cf:2230, env:0,    cuo:1470, alm:0,  pub:0,    ivaJoya:0,    ivaCaja:0,   ivaEnv:0},
+  "pulsnudo_nf":  {n:"PULSERA NUDO inox",   canal:"NO FULL",precio:19990, iibb:740,  joya:2304, nac:0,    caja:2434, tarj:220, arm:2880, cf:2300, env:0,    cuo:1000, alm:0,  pub:0,    ivaJoya:484,  ivaCaja:184, ivaEnv:0},
+  "cadena_nf":    {n:"CADENA",              canal:"NO FULL",precio:23740, iibb:878,  joya:2304, nac:2448, caja:2434, tarj:200, arm:2880, cf:2300, env:0,    cuo:1187, alm:0,  pub:0,    ivaJoya:484,  ivaCaja:189, ivaEnv:0},
+  "martillo_full":{n:"MARTILLO",            canal:"FULL",   precio:18990, iibb:703,  joya:8064, nac:0,    caja:2434, tarj:200, arm:2160, cf:2455, env:0,    cuo:950,  alm:0,  pub:0,    ivaJoya:1693, ivaCaja:189, ivaEnv:0}
 };
-const FIELDS=["iibb","joya","nac","caja","tarj","arm","tar","cf","env","cuo","alm","pub","ivaJoya","ivaCaja","ivaEnv","ivaMl"];
+const FIELDS=["iibb","joya","nac","caja","tarj","arm","cf","env","cuo","alm","pub","ivaJoya","ivaCaja","ivaEnv"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
 const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
-let USD=1440;
+let USD=1455;
 const ud=n=>"US$ "+(n/(USD||1)).toLocaleString("es-AR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
 const v=id=>parseFloat(document.getElementById(id).value)||0;
@@ -221,23 +251,28 @@ function load(k){
 function calc(){
   const precio=v("precio");
   const ivaVenta=precio*0.21/1.21;
+  const tar=precio*MLFEE;
+  const ivaMl=tar*0.21/1.21;
   const iibb=v("iibb");
   const dpi=precio-ivaVenta-iibb;
   const cogs=v("joya")+v("nac")+v("caja")+v("tarj")+v("arm");
-  const ml=v("tar")+v("cf")+v("env")+v("cuo")+v("alm");
+  const ml=tar+v("cf")+v("env")+v("cuo")+v("alm");
   const pub=v("pub");
   const imp=ivaVenta+iibb;
   const rent=dpi-cogs-ml-pub;
-  const recup=v("ivaJoya")+v("ivaCaja")+v("ivaEnv")+v("ivaMl");
+  const recup=v("ivaJoya")+v("ivaCaja")+v("ivaEnv")+ivaMl;
   const rentIva=rent+recup;
   const usd=v("usd")||1; USD=usd;
   document.getElementById("r_iva").textContent=fmt(ivaVenta);
   document.getElementById("r_dpi").textContent=fmt(dpi);
+  document.getElementById("r_tar").textContent=fmt(tar);
+  document.getElementById("r_ivaMl").textContent=fmt(ivaMl);
   document.getElementById("p_iva").textContent=pct(ivaVenta,precio);
   document.getElementById("p_iibb").textContent=pct(iibb,precio);
   document.getElementById("p_dpi").textContent=pct(dpi,precio);
+  document.getElementById("p_tar").textContent=pct(tar,precio);
   [["p_joya","joya"],["p_nac","nac"],["p_caja","caja"],["p_tarj","tarj"],["p_arm","arm"],
-   ["p_tar","tar"],["p_cf","cf"],["p_env","env"],["p_cuo","cuo"],["p_alm","alm"],["p_pub","pub"]]
+   ["p_cf","cf"],["p_env","env"],["p_cuo","cuo"],["p_alm","alm"],["p_pub","pub"]]
    .forEach(function(a){document.getElementById(a[0]).textContent=pct(v(a[1]),precio);});
   document.getElementById("sumPrice").textContent=fmt(imp)+" · "+pct(imp,precio);
   document.getElementById("sumCogs").textContent=fmt(cogs)+" · "+pct(cogs,precio);
@@ -249,8 +284,8 @@ function calc(){
   document.getElementById("m_costo").textContent=fmt(costoTotal);
   document.getElementById("m_costo_h").textContent=pct(costoTotal,precio)+" del precio";
   document.getElementById("m_markup").textContent=(costoProdOp?precio/costoProdOp:0).toFixed(2)+"x";
-  const factor=1-0.21/1.21;
-  const be=factor?(iibb+cogs+ml+pub)/factor:0;
+  const factor=1-0.21/1.21-MLFEE;
+  const be=factor?(iibb+cogs+v("cf")+v("env")+v("cuo")+v("alm")+pub)/factor:0;
   document.getElementById("m_be").textContent=fmt(be);
   const topePub=pub+rent;
   const tp=document.getElementById("m_topePub");tp.textContent=fmt(topePub);tp.style.color=topePub<0?"var(--red)":"";
