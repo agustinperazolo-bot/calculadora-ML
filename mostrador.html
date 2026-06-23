@@ -210,7 +210,8 @@ const P = {
   "forever":   {n:"Forever Love",         precio:39990, joya:6364,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:897,  ivaCaja:525},
   "estuche":   {n:"Estuche Blanco",       precio:39990, joya:6778,  caja:0,    tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:955,  ivaCaja:0},
   "estuchePuls":   {n:"Estuche Puls 2x Nudo", precio:39990, joya:6778, caja:0, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:955, ivaCaja:0},
-  "estucheAnillos":{n:"Estuche Anillos",      precio:39990, joya:6778, caja:0, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:955, ivaCaja:0}
+  "estucheAnillos":{n:"Estuche Anillos",      precio:39990, joya:6778, caja:0, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:955, ivaCaja:0},
+  "comboPulsAni":  {n:"Estuche Blanco 2 Puls Nudo + 2 Anillos", precio:39990, joya:6660, caja:6778, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:938, ivaCaja:955}
 };
 const FIELDS=["iibb","joya","caja","tarj","arm","emp","pub","ivaJoya","ivaCaja"];
 const IIBB_R=0.037;
@@ -294,8 +295,13 @@ function calc(){
   });
   const bar=document.getElementById("bar");bar.innerHTML="";
   const segs=[["seg-cogs",cogs],["seg-imp",imp],["seg-emp",emp],["seg-publi",pub],[rent<0?"seg-rentneg":"seg-rent",Math.abs(rent)]];
-  const tot=segs.reduce(function(a,s){return a+s[1];},0)||1;
   segs.forEach(function(sg){if(sg[1]<=0)return;const w=sg[1]/tot*100;const d=document.createElement("div");d.className=sg[0];d.style.width=w+"%";d.title=fmt(sg[1]);if(w>=7)d.textContent=Math.round(w)+"%";bar.appendChild(d);});
 }
 sel.addEventListener("change",function(e){load(e.target.value);});
-document.getE
+document.getElementById("reset").addEventListener("click",function(){load(sel.value);});
+document.getElementById("precio").addEventListener("input",function(){document.getElementById("iva").value=Math.round(v("precio")*0.21/1.21);calc();});
+["usd","iva"].concat(FIELDS).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
+load("2cora");
+</script>
+</body>
+</html>
