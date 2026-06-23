@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Rentabilidad — Mostrador · Sofia Ferrer</title>
+<style>
+  :root{
+    --bg:#0b0d14; --panel:#151926; --panel2:#1b2030; --line:#262c3d; --line2:#323a50;
+    --ink:#eef1f8; --ink2:#c7cde0; --muted:#8b93ab; --faint:#5b647d;
+    --gold:#e8c46a; --gold2:#c79a3a; --violet:#a78bfa; --tn:#38bdf8;
+    --green:#34d399; --red:#f87171; --amber:#fbbf24;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg)}
+  body{font-family:'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:var(--ink);line-height:1.45;
+    padding:28px 20px 40px;background:
+      radial-gradient(1200px 500px at 80% -10%, rgba(124,58,237,.16), transparent 60%),
+      radial-gradient(900px 500px at -5% 0%, rgba(251,191,36,.08), transparent 55%),
+      var(--bg);min-height:100vh}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-content:space-between;
+    margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:52px;height:52px;border-radius:14px;
+    background:linear-gradient(135deg,#7c3aed 0%,#fbbf24 100%);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;
+    box-shadow:0 6px 18px rgba(124,58,237,.45);letter-spacing:.5px}
+  h1{font-size:21px;font-weight:700;letter-spacing:-.2px}
+  .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .sub b{color:var(--gold);font-weight:600}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  select{font-size:13.5px;padding:10px 14px;border:1px solid var(--line2);border-radius:11px;
+    background:var(--panel);font-weight:600;color:var(--ink);min-width:220px;cursor:pointer;transition:border-color .18s ease}
+  select:hover{border-color:var(--violet)}
+  .usd{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .usd input{width:88px;font-size:13.5px;padding:10px 12px;border:1px solid var(--line2);border-radius:11px;
+    background:var(--panel);font-weight:700;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+  .tag{font-size:10px;font-weight:700;padding:4px 10px;border-radius:7px;letter-spacing:.4px;text-transform:uppercase;
+    background:rgba(167,139,250,.16);color:var(--violet);border:1px solid rgba(167,139,250,.35)}
+  .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:18px;padding:16px 18px;margin-bottom:16px;box-shadow:var(--shadow);transition:border-color .2s ease}
+  .card:hover{border-color:var(--line2)}
+  .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--ink2);font-weight:700;
+    margin:-2px -4px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 13px;
+    background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(255,255,255,.012));
+    border:1px solid var(--line);border-left:3px solid var(--violet);border-radius:9px}
+  .card h2 .sum{font-size:11.5px;font-weight:800;color:var(--red);background:rgba(248,113,113,.14);
+    border:1px solid rgba(248,113,113,.3);padding:3px 10px;border-radius:20px;font-variant-numeric:tabular-nums;white-space:nowrap;text-transform:none;letter-spacing:0}
+  .card h2 .sum.pos{color:var(--green);background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.3)}
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .metric{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .metric .ml{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .metric .mv{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px;letter-spacing:-.3px}
+  .metric .mh{font-size:10px;color:var(--faint);margin-top:2px}
+  .row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row label{flex:1;font-size:13px;color:var(--ink2)}
+  .row .pct{font-size:11px;color:var(--muted);min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
+  .row .ud{font-size:11px;color:var(--tn);font-weight:700;min-width:74px;text-align:right;font-variant-numeric:tabular-nums;margin-left:8px}
+  .row .money{position:relative}
+  .row .money span.cur{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
+  .row input[type=number]{width:122px;padding:8px 9px 8px 22px;border:1px solid var(--line2);border-radius:9px;
+    font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;background:var(--panel);color:var(--ink)}
+  .row input[type=number]:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(167,139,250,.18)}
+  .row.price input{font-size:15px;font-weight:800;color:var(--gold);border-color:var(--gold2)}
+  .row.calc label{color:var(--muted)}
+  .row.calc .ro{width:122px;text-align:right;font-weight:700;font-size:13.5px;color:var(--ink2);font-variant-numeric:tabular-nums;padding-right:9px}
+  .row.auto label::after{content:"AUTO";font-size:8.5px;font-weight:800;color:var(--violet);background:rgba(167,139,250,.16);
+    border:1px solid rgba(167,139,250,.3);padding:1px 5px;border-radius:5px;margin-left:7px;vertical-align:middle;letter-spacing:.5px}
+  .results{position:sticky;top:20px}
+  .kpi{position:relative;border-radius:16px;padding:16px 18px;margin-bottom:13px;overflow:hidden;
+    background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);transition:transform .18s ease,box-shadow .18s ease}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.4)}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--violet)}
+  .kpi.good::before{background:var(--green)} .kpi.amber::before{background:var(--amber)} .kpi.bad::before{background:var(--red)} .kpi.iva::before{background:var(--tn)}
+  .kpi .lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+  .kpi .big{font-size:30px;font-weight:800;line-height:1.1;margin-top:5px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .kpi.good .big{color:var(--green)} .kpi.amber .big{color:var(--amber)} .kpi.bad .big{color:var(--red)} .kpi.iva .big{color:var(--tn)}
+  .kpi .meta{font-size:12px;margin-top:4px;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .bd{font-size:12.5px}
+  .bd .l{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;color:var(--ink2)}
+  .bd .l:last-child{border-bottom:none}
+  .bd .l.t{font-weight:700;border-top:1.5px solid var(--line2);border-bottom:none;margin-top:2px;padding-top:9px;color:#fff}
+  .bd .l span:last-child{font-weight:600;color:var(--ink)}
+  .bd .l .ud{color:var(--tn);font-weight:700;font-size:11px;margin-left:6px}
+  .neg{color:var(--red)!important}
+  .bar{display:flex;height:32px;border-radius:9px;overflow:hidden;margin:6px 0 4px;box-shadow:inset 0 0 0 1px var(--line)}
+  .bar div{height:100%;display:flex;align-items:center;justify-content:center;color:rgba(0,0,0,.55);font-size:10.5px;font-weight:800;font-variant-numeric:tabular-nums;overflow:hidden}
+  .seg-cogs{background:#f59e0b}.seg-imp{background:#a78bfa}.seg-emp{background:#38bdf8}.seg-publi{background:#ec4899}.seg-rent{background:#34d399}.seg-rentneg{background:#f87171}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--ink2);margin-top:10px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:middle}
+  .actions{display:flex;gap:10px;margin-top:6px}
+  button{flex:1;padding:10px;border:1px solid var(--line2);background:var(--panel);border-radius:11px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink2);transition:all .18s ease}
+  button:hover{border-color:var(--violet);color:#fff}
+  .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:20px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">SF</div>
+      <div>
+        <h1>Calculadora de Rentabilidad · Mostrador</h1>
+        <div class="sub">Sofia Ferrer Argentina · venta en mostrador · costo y margen por unidad · basada en hoja <b>Rent Mostrador</b></div>
+      </div>
+    </div>
+    <div class="controls">
+      <select id="prod"></select>
+      <span class="tag">MOSTRADOR</span>
+      <span class="usd">USD/$ <input type="number" id="usd" value="1480" step="5"></span>
+    </div>
+  </header>
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Impuestos <span class="sum" id="sumPrice"></span></h2>
+        <div class="row price"><label>Precio de venta</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="precio"></div></div>
+        <div class="row calc auto"><label>IVA Venta (21%)</label><span class="pct" id="p_iva"></span><div class="ro" id="r_iva"></div></div>
+        <div class="row"><label>Retención IIBB (3,7%)</label><span class="pct" id="p_iibb"></span><div class="money"><span class="cur">$</span><input type="number" id="iibb"></div></div>
+        <div class="row calc"><label>Precio después de impuestos</label><span class="pct" id="p_dpi"></span><div class="ro" id="r_dpi"></div></div>
+      </div>
+      <div class="card">
+        <h2>COGS — Costo del producto <span class="sum" id="sumCogs"></span></h2>
+        <div class="row"><label>Costo joya nacionalizada ($ un. nac)</label><span class="pct" id="p_joya"></span><div class="money"><span class="cur">$</span><input type="number" id="joya"></div></div>
+        <div class="row"><label>Costo cajita / estuche</label><span class="pct" id="p_caja"></span><div class="money"><span class="cur">$</span><input type="number" id="caja"></div></div>
+        <div class="row"><label>Costo tarjeta</label><span class="pct" id="p_tarj"></span><div class="money"><span class="cur">$</span><input type="number" id="tarj"></div></div>
+        <div class="row"><label>Costo armado</label><span class="pct" id="p_arm"></span><div class="money"><span class="cur">$</span><input type="number" id="arm"></div></div>
+      </div>
+      <div class="card">
+        <h2>Otros costos <span class="sum" id="sumOtros"></span></h2>
+        <div class="row"><label>Costo empresa</label><span class="pct" id="p_emp"></span><div class="money"><span class="cur">$</span><input type="number" id="emp"></div></div>
+        <div class="row"><label>Publicidad</label><span class="pct" id="p_pub"></span><div class="money"><span class="cur">$</span><input type="number" id="pub"></div></div>
+      </div>
+      <div class="card">
+        <h2>Recupero de IVA (crédito fiscal) <span class="sum" id="sumIva"></span></h2>
+        <div class="row"><label>IVA compra joya</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaJoya"></div></div>
+        <div class="row"><label>IVA compra caja</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaCaja"></div></div>
+      </div>
+    </div>
+    <div class="results">
+      <div class="kpi" id="kpiRent">
+        <div class="lbl">Rentabilidad neta</div>
+        <div class="big" id="rentBig">—</div>
+        <div class="meta" id="rentMeta"></div>
+      </div>
+      <div class="kpi iva">
+        <div class="lbl">Rentabilidad con recupero de IVA</div>
+        <div class="big" id="rentIvaBig">—</div>
+        <div class="meta" id="rentIvaMeta"></div>
+      </div>
+      <div class="card">
+        <h2>Métricas clave</h2>
+        <div class="metrics">
+          <div class="metric"><div class="ml">Costo total por unidad</div><div class="mv" id="m_costo"></div><div class="mh" id="m_costo_h"></div></div>
+          <div class="metric"><div class="ml">Markup s/ costo</div><div class="mv" id="m_markup"></div><div class="mh">precio ÷ costos directos</div></div>
+          <div class="metric"><div class="ml">Precio de equilibrio</div><div class="mv" id="m_be"></div><div class="mh">margen neto = 0</div></div>
+          <div class="metric"><div class="ml">Ganancia en USD</div><div class="mv" id="m_usd"></div><div class="mh">por unidad</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>¿A dónde va el precio?</h2>
+        <div class="bar" id="bar"></div>
+        <div class="legend">
+          <span><i class="seg-cogs"></i>Producto</span>
+          <span><i class="seg-imp"></i>Impuestos</span>
+          <span><i class="seg-emp"></i>Empresa</span>
+          <span><i class="seg-publi"></i>Publi</span>
+          <span><i class="seg-rent"></i>Ganancia</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Desglose</h2>
+        <div class="bd">
+          <div class="l"><span>Precio de venta</span><span id="b_precio"></span></div>
+          <div class="l"><span>− Impuestos (IVA + IIBB)</span><span id="b_imp" class="neg"></span></div>
+          <div class="l t"><span>= Precio después de impuestos</span><span id="b_dpi"></span></div>
+          <div class="l"><span>− Costo producto (COGS)</span><span id="b_cogs" class="neg"></span></div>
+          <div class="l"><span>− Costo empresa</span><span id="b_emp" class="neg"></span></div>
+          <div class="l"><span>− Publicidad</span><span id="b_pub" class="neg"></span></div>
+          <div class="l t"><span>= Rentabilidad neta</span><span id="b_rent"></span></div>
+          <div class="l"><span>+ Recupero IVA</span><span id="b_iva"></span></div>
+          <div class="l t"><span>= Rentabilidad con IVA</span><span id="b_rentiva"></span></div>
+        </div>
+        <div class="actions"><button id="reset">↺ Restaurar preset</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    Modelo Mostrador (venta en persona): sin envío, sin comisión Mercado Libre, sin cuotas.<br>
+    El <b>costo joya</b> usa el <b>$ un. nac</b> (costo unitario nacionalizado) de cada producto. IVA Venta = 21/121 del precio (auto). El resto son montos editables tomados de la hoja Rent Mostrador.
+  </div>
+</div>
+<script>
+// $ un. nac (costo unitario nacionalizado) de la hoja Rent Mostrador / STK CASA PICHI · precios mostrador editables
+const P = {
+  "2cora":     {n:"Collar 2 Corazones",  precio:56990, joya:11692, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1647, ivaCaja:525},
+  "nudo":      {n:"Collar Nudo",          precio:56990, joya:11574, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1631, ivaCaja:525},
+  "cadena":    {n:"Cadena",               precio:24990, joya:4903,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:691,  ivaCaja:525},
+  "puls2cora": {n:"Pulsera 2 Corazones",  precio:29990, joya:3330,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:469,  ivaCaja:525},
+  "puls2cext": {n:"Pulsera 2 Cora + ext", precio:39990, joya:4369,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:616,  ivaCaja:525},
+  "pulsnudo":  {n:"Pulsera Nudo",         precio:19990, joya:2279,  caja:2501, tarj:220, arm:2960, emp:1500, pub:0, ivaJoya:321,  ivaCaja:525},
+  "martillo":  {n:"Martillo",             precio:18990, joya:8338,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:1175, ivaCaja:525},
+  "pelota":    {n:"Pelota",               precio:18990, joya:4809,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:678,  ivaCaja:525},
+  "anillo":    {n:"Anillo",               precio:14990, joya:1051,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:148,  ivaCaja:525},
+  "forever":   {n:"Forever Love",         precio:24990, joya:6364,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:897,  ivaCaja:525},
+  "estuche":   {n:"Estuche Blanco",       precio:12000, joya:6778,  caja:0,    tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:955,  ivaCaja:0},
+  "2coradef":  {n:"2cora (defect)",       precio:39990, joya:11692, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1647, ivaCaja:525}
+};
+const FIELDS=["iibb","joya","caja","tarj","arm","emp","pub","ivaJoya","ivaCaja"];
+const IIBB_R=0.037;
+const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
+const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
+let USD=1480;
+const ud=n=>"US$ "+(n/(USD||1)).toLocaleString("es-AR",{minimumFractionDigits:1,maximumFractionDigits:1});
+const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
+const v=id=>parseFloat(document.getElementById(id).value)||0;
+const sel=document.getElementById("prod");
+Object.keys(P).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=P[k].n;sel.appendChild(o);});
+document.querySelectorAll(".row").forEach(row=>{
+  const inp=row.querySelector("input[type=number]")||row.querySelector(".ro");
+  if(!inp||row.querySelector(".ud"))return;
+  const s=document.createElement("span");s.className="ud";row.appendChild(s);
+});
+function load(k){
+  const d=P[k];
+  document.getElementById("precio").value=d.precio;
+  document.getElementById("iibb").value=0; // mostrador sin retención por defecto
+  FIELDS.filter(f=>f!=="iibb").forEach(f=>document.getElementById(f).value=d[f]);
+  calc();
+}
+function calc(){
+  const precio=v("precio");
+  const ivaVenta=precio*0.21/1.21;
+  const iibb=v("iibb");
+  const dpi=precio-ivaVenta-iibb;
+  const cogs=v("joya")+v("caja")+v("tarj")+v("arm");
+  const emp=v("emp");
+  const pub=v("pub");
+  const imp=ivaVenta+iibb;
+  const rent=dpi-cogs-emp-pub;
+  const recup=v("ivaJoya")+v("ivaCaja");
+  const rentIva=rent+recup;
+  const usd=v("usd")||1; USD=usd;
+  document.getElementById("r_iva").textContent=fmt(ivaVenta);
+  document.getElementById("r_dpi").textContent=fmt(dpi);
+  document.getElementById("p_iva").textContent=pct(ivaVenta,precio);
+  document.getElementById("p_iibb").textContent=pct(iibb,precio);
+  document.getElementById("p_dpi").textContent=pct(dpi,precio);
+  [["p_joya","joya"],["p_caja","caja"],["p_tarj","tarj"],["p_arm","arm"],["p_emp","emp"],["p_pub","pub"]]
+   .forEach(function(a){document.getElementById(a[0]).textContent=pct(v(a[1]),precio);});
+  document.getElementById("sumPrice").textContent=fmt(imp)+" · "+pct(imp,precio);
+  document.getElementById("sumCogs").textContent=fmt(cogs)+" · "+pct(cogs,precio);
+  document.getElementById("sumOtros").textContent=fmt(emp+pub)+" · "+pct(emp+pub,precio);
+  const sIva=document.getElementById("sumIva");sIva.textContent="+"+fmt(recup)+" · "+pct(recup,precio);sIva.className="sum pos";
+  const costoDir=cogs+emp+pub;
+  const costoTotal=imp+costoDir;
+  document.getElementById("m_costo").textContent=fmt(costoTotal);
+  document.getElementById("m_costo_h").textContent=pct(costoTotal,precio)+" del precio";
+  document.getElementById("m_markup").textContent=(costoDir?precio/costoDir:0).toFixed(2)+"x";
+  const factor=1-0.21/1.21-IIBB_R;
+  const be=factor?(cogs+emp+pub)/factor:0;
+  document.getElementById("m_be").textContent=fmt(be);
+  document.getElementById("m_usd").textContent="US$ "+(rent/usd).toFixed(1);
+  const rp=precio?rent/precio*100:0;
+  const k=document.getElementById("kpiRent");
+  k.className="kpi "+(rp<0?"bad":rp<10?"amber":"good");
+  document.getElementById("rentBig").textContent=fmt(rent)+"  ·  "+rp.toFixed(1)+"%";
+  document.getElementById("rentMeta").textContent="USD "+(rent/usd).toFixed(1)+" por unidad";
+  const rip=precio?rentIva/precio*100:0;
+  document.getElementById("rentIvaBig").textContent=fmt(rentIva)+"  ·  "+rip.toFixed(1)+"%";
+  document.getElementById("rentIvaMeta").textContent="USD "+(rentIva/usd).toFixed(1)+" · recupero "+fmt(recup);
+  document.getElementById("b_precio").innerHTML=both(precio);
+  document.getElementById("b_imp").innerHTML="−"+both(imp);
+  document.getElementById("b_dpi").innerHTML=both(dpi);
+  document.getElementById("b_cogs").innerHTML="−"+both(cogs);
+  document.getElementById("b_emp").innerHTML="−"+both(emp);
+  document.getElementById("b_pub").innerHTML="−"+both(pub);
+  const br=document.getElementById("b_rent");br.innerHTML=both(rent)+" ("+rp.toFixed(1)+"%)";br.className=rent<0?"neg":"";
+  document.getElementById("b_iva").innerHTML="+"+both(recup);
+  const bri=document.getElementById("b_rentiva");bri.innerHTML=both(rentIva)+" ("+rip.toFixed(1)+"%)";bri.className=rentIva<0?"neg":"";
+  document.querySelectorAll(".row .ud").forEach(function(s){
+    const row=s.closest(".row");
+    const inp=row.querySelector("input[type=number]");
+    let val=0;
+    if(inp) val=parseFloat(inp.value)||0;
+    else {const ro=row.querySelector(".ro");val=ro?parseFloat(ro.textContent.replace(/[^\d-]/g,""))||0:0;}
+    s.textContent=ud(val);
+  });
+  const bar=document.getElementById("bar");bar.innerHTML="";
+  const segs=[["seg-cogs",cogs],["seg-imp",imp],["seg-emp",emp],["seg-publi",pub],[rent<0?"seg-rentneg":"seg-rent",Math.abs(rent)]];
+  const tot=segs.reduce(function(a,s){return a+s[1];},0)||1;
+  segs.forEach(function(sg){if(sg[1]<=0)return;const w=sg[1]/tot*100;const d=document.createElement("div");d.className=sg[0];d.style.width=w+"%";d.title=fmt(sg[1]);if(w>=7)d.textContent=Math.round(w)+"%";bar.appendChild(d);});
+}
+sel.addEventListener("change",function(e){load(e.target.value);});
+document.getElementById("reset").addEventListener("click",function(){load(sel.value);});
+["precio","usd"].concat(FIELDS).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
+load("2cora");
+</script>
+</body>
+</html>
