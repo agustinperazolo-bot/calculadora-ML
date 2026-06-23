@@ -120,7 +120,7 @@
       <div class="card">
         <h2>Impuestos <span class="sum" id="sumPrice"></span></h2>
         <div class="row price"><label>Precio de venta</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="precio"></div></div>
-        <div class="row calc auto"><label>IVA Venta (21%)</label><span class="pct" id="p_iva"></span><div class="ro" id="r_iva"></div></div>
+        <div class="row"><label>IVA Venta (21%)</label><span class="pct" id="p_iva"></span><div class="money"><span class="cur">$</span><input type="number" id="iva"></div></div>
         <div class="row"><label>Retención IIBB (3,7%)</label><span class="pct" id="p_iibb"></span><div class="money"><span class="cur">$</span><input type="number" id="iibb"></div></div>
         <div class="row calc"><label>Precio después de impuestos</label><span class="pct" id="p_dpi"></span><div class="ro" id="r_dpi"></div></div>
       </div>
@@ -192,24 +192,25 @@
   </div>
   <div class="foot">
     Modelo Mostrador (venta en persona): sin envío, sin comisión Mercado Libre, sin cuotas.<br>
-    El <b>costo joya</b> usa el <b>$ un. nac</b> (costo unitario nacionalizado) de cada producto. IVA Venta = 21/121 del precio (auto). El resto son montos editables tomados de la hoja Rent Mostrador.
+    El <b>costo joya</b> usa el <b>$ un. nac</b> (costo unitario nacionalizado) de cada producto. El IVA Venta se precarga en 21/121 del precio y es editable. El resto son montos editables tomados de la hoja Rent Mostrador.
   </div>
 </div>
 <script>
 // $ un. nac (costo unitario nacionalizado) de la hoja Rent Mostrador / STK CASA PICHI · precios mostrador editables
 const P = {
-  "2cora":     {n:"Collar 2 Corazones",  precio:56990, joya:11692, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1647, ivaCaja:525},
-  "nudo":      {n:"Collar Nudo",          precio:56990, joya:11574, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1631, ivaCaja:525},
-  "cadena":    {n:"Cadena",               precio:24990, joya:4903,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:691,  ivaCaja:525},
-  "puls2cora": {n:"Pulsera 2 Corazones",  precio:29990, joya:3330,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:469,  ivaCaja:525},
+  "2cora":     {n:"Collar 2 Corazones",  precio:39990, joya:11692, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1647, ivaCaja:525},
+  "nudo":      {n:"Collar Nudo",          precio:39990, joya:11574, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1631, ivaCaja:525},
+  "cadena":    {n:"Cadena",               precio:39990, joya:4903,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:691,  ivaCaja:525},
+  "puls2cora": {n:"Pulsera 2 Corazones",  precio:39990, joya:3330,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:469,  ivaCaja:525},
   "puls2cext": {n:"Pulsera 2 Cora + ext", precio:39990, joya:4369,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:616,  ivaCaja:525},
-  "pulsnudo":  {n:"Pulsera Nudo",         precio:19990, joya:2279,  caja:2501, tarj:220, arm:2960, emp:1500, pub:0, ivaJoya:321,  ivaCaja:525},
-  "martillo":  {n:"Martillo",             precio:18990, joya:8338,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:1175, ivaCaja:525},
-  "pelota":    {n:"Pelota",               precio:18990, joya:4809,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:678,  ivaCaja:525},
-  "anillo":    {n:"Anillo",               precio:14990, joya:1051,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:148,  ivaCaja:525},
-  "forever":   {n:"Forever Love",         precio:24990, joya:6364,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:897,  ivaCaja:525},
-  "estuche":   {n:"Estuche Blanco",       precio:12000, joya:6778,  caja:0,    tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:955,  ivaCaja:0},
-  "2coradef":  {n:"2cora (defect)",       precio:39990, joya:11692, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1647, ivaCaja:525}
+  "pulsnudo":  {n:"Pulsera Nudo",         precio:39990, joya:2279,  caja:2501, tarj:220, arm:2960, emp:1500, pub:0, ivaJoya:321,  ivaCaja:525},
+  "martillo":  {n:"Martillo",             precio:39990, joya:8338,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:1175, ivaCaja:525},
+  "pelota":    {n:"Pelota",               precio:39990, joya:4809,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:678,  ivaCaja:525},
+  "anillo":    {n:"Anillo",               precio:39990, joya:1051,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:148,  ivaCaja:525},
+  "forever":   {n:"Forever Love",         precio:39990, joya:6364,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:897,  ivaCaja:525},
+  "estuche":   {n:"Estuche Blanco",       precio:39990, joya:6778,  caja:0,    tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:955,  ivaCaja:0},
+  "estuchePuls":   {n:"Estuche Puls 2x Nudo", precio:39990, joya:6778, caja:0, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:955, ivaCaja:0},
+  "estucheAnillos":{n:"Estuche Anillos",      precio:39990, joya:6778, caja:0, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:955, ivaCaja:0}
 };
 const FIELDS=["iibb","joya","caja","tarj","arm","emp","pub","ivaJoya","ivaCaja"];
 const IIBB_R=0.037;
@@ -230,12 +231,13 @@ function load(k){
   const d=P[k];
   document.getElementById("precio").value=d.precio;
   document.getElementById("iibb").value=0; // mostrador sin retención por defecto
+  document.getElementById("iva").value=Math.round(d.precio*0.21/1.21); // IVA auto-precargado, editable
   FIELDS.filter(f=>f!=="iibb").forEach(f=>document.getElementById(f).value=d[f]);
   calc();
 }
 function calc(){
   const precio=v("precio");
-  const ivaVenta=precio*0.21/1.21;
+  const ivaVenta=v("iva");
   const iibb=v("iibb");
   const dpi=precio-ivaVenta-iibb;
   const cogs=v("joya")+v("caja")+v("tarj")+v("arm");
@@ -246,7 +248,6 @@ function calc(){
   const recup=v("ivaJoya")+v("ivaCaja");
   const rentIva=rent+recup;
   const usd=v("usd")||1; USD=usd;
-  document.getElementById("r_iva").textContent=fmt(ivaVenta);
   document.getElementById("r_dpi").textContent=fmt(dpi);
   document.getElementById("p_iva").textContent=pct(ivaVenta,precio);
   document.getElementById("p_iibb").textContent=pct(iibb,precio);
@@ -297,9 +298,4 @@ function calc(){
   segs.forEach(function(sg){if(sg[1]<=0)return;const w=sg[1]/tot*100;const d=document.createElement("div");d.className=sg[0];d.style.width=w+"%";d.title=fmt(sg[1]);if(w>=7)d.textContent=Math.round(w)+"%";bar.appendChild(d);});
 }
 sel.addEventListener("change",function(e){load(e.target.value);});
-document.getElementById("reset").addEventListener("click",function(){load(sel.value);});
-["precio","usd"].concat(FIELDS).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
-load("2cora");
-</script>
-</body>
-</html>
+document.getE
