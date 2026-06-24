@@ -350,6 +350,7 @@ function renderProdGrid(){
 document.getElementById("usd").addEventListener("input",renderProdGrid);
 load("2cora_full");
 renderProdGrid();
+fetch("tc.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.usd){document.getElementById("usd").value=d.usd;calc();renderProdGrid();}}).catch(function(){});
 </script>
 </body>
 </html>

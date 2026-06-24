@@ -245,7 +245,7 @@ function load(k){
   const d=P[k];
   document.getElementById("precio").value=d.precio;
   document.getElementById("iibb").value=0; // mostrador sin retención por defecto
-  document.getElementById("iva").value=Math.round(d.precio*0.21/1.21); // IVA auto-precargado, editable
+  document.getElementById("iva").value=0; // IVA en 0 por defecto, editable
   FIELDS.filter(f=>f!=="iibb").forEach(f=>document.getElementById(f).value=d[f]);
   calc();
 }
@@ -313,7 +313,7 @@ function calc(){
 }
 sel.addEventListener("change",function(e){load(e.target.value);renderProdGrid();});
 document.getElementById("reset").addEventListener("click",function(){load(sel.value);});
-document.getElementById("precio").addEventListener("input",function(){document.getElementById("iva").value=Math.round(v("precio")*0.21/1.21);calc();});
+document.getElementById("precio").addEventListener("input",calc);
 ["usd","iva"].concat(FIELDS).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
 const ICONS={"2cora":"\uD83D\uDC9E","nudo":"\uD83E\uDEA2","cadena":"\u26D3\uFE0F","puls2cora":"\uD83D\uDC95","puls2cext":"\uD83D\uDC9D","pulsnudo":"\uD83D\uDCFF","martillo":"\uD83D\uDD28","pelota":"\u26BD","anillo":"\uD83D\uDC8D","forever":"\u267E\uFE0F","estuchePuls":"\uD83C\uDF81","estucheAnillos":"\uD83C\uDF81","comboPulsAni":"\uD83C\uDF81"};
 function renderProdGrid(){
@@ -328,6 +328,7 @@ function renderProdGrid(){
 document.getElementById("usd").addEventListener("input",renderProdGrid);
 load("2cora");
 renderProdGrid();
+fetch("tc.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.usd){document.getElementById("usd").value=d.usd;calc();renderProdGrid();}}).catch(function(){});
 </script>
 </body>
 </html>
