@@ -99,7 +99,7 @@
   .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px}
   .pchip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;transition:border-color .15s ease,background .15s ease}
   .pchip:hover{border-color:var(--violet);background:rgba(167,139,250,.08)}
-  .pchip.sel{border-color:var(--gold);background:rgba(232,196,106,.16);box-shadow:0 0 0 2px rgba(232,196,106,.55)}
+  .pchip.sel{border-color:var(--gold)!important;background:rgba(232,196,106,.20)!important;box-shadow:inset 0 0 0 2px var(--gold)}
   .pchip .ic{font-size:22px;line-height:1;flex:0 0 auto}
   .pchip .pn{font-size:12px;font-weight:600;color:var(--ink);line-height:1.2}
   .pchip .pc{font-size:11.5px;color:var(--gold);font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
@@ -210,19 +210,19 @@
 <script>
 // $ un. nac (costo unitario nacionalizado) de la hoja Rent Mostrador / STK CASA PICHI · precios mostrador editables
 const P = {
-  "2cora":     {n:"Collar 2 Corazones",  precio:39990, joya:11692, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1647, ivaCaja:525},
-  "nudo":      {n:"Collar Nudo",          precio:39990, joya:11574, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1631, ivaCaja:525},
-  "cadena":    {n:"Cadena",               precio:39990, joya:4903,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:691,  ivaCaja:525},
-  "puls2cora": {n:"Pulsera 2 Corazones",  precio:39990, joya:3330,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:469,  ivaCaja:525},
-  "puls2cext": {n:"Pulsera 2 Cora + ext", precio:39990, joya:4369,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:616,  ivaCaja:525},
-  "pulsnudo":  {n:"Pulsera Nudo",         precio:39990, joya:2279,  caja:2501, tarj:220, arm:2960, emp:1500, pub:0, ivaJoya:321,  ivaCaja:525},
-  "martillo":  {n:"Martillo",             precio:39990, joya:8338,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:1175, ivaCaja:525},
-  "pelota":    {n:"Pelota",               precio:39990, joya:4809,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:678,  ivaCaja:525},
-  "anillo":    {n:"Anillo",               precio:39990, joya:1051,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:148,  ivaCaja:525},
-  "forever":   {n:"Forever Love",         precio:39990, joya:6364,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:897,  ivaCaja:525},
-  "estuchePuls":   {n:"Estuche Puls 2x Nudo", precio:39990, joya:4558, caja:6778, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:642, ivaCaja:955},
-  "estucheAnillos":{n:"Estuche Anillos",      precio:39990, joya:2102, caja:6778, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:296, ivaCaja:955},
-  "comboPulsAni":  {n:"Estuche Blanco 2 Puls Nudo + 2 Anillos", precio:39990, joya:6660, caja:6778, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:938, ivaCaja:955}
+  "2cora":     {n:"Collar 2 Corazones",  precio:29990, joya:11692, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1647, ivaCaja:525},
+  "nudo":      {n:"Collar Nudo",          precio:29990, joya:11574, caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:1631, ivaCaja:525},
+  "cadena":    {n:"Cadena",               precio:19990, joya:4903,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:691,  ivaCaja:525},
+  "puls2cora": {n:"Pulsera 2 Corazones",  precio:19990, joya:3330,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:469,  ivaCaja:525},
+  "puls2cext": {n:"Pulsera 2 Cora + ext", precio:19990, joya:4369,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:616,  ivaCaja:525},
+  "pulsnudo":  {n:"Pulsera Nudo",         precio:19990, joya:2279,  caja:2501, tarj:220, arm:2960, emp:1500, pub:0, ivaJoya:321,  ivaCaja:525},
+  "martillo":  {n:"Martillo",             precio:19990, joya:8338,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:1175, ivaCaja:525},
+  "pelota":    {n:"Pelota",               precio:19990, joya:4809,  caja:2501, tarj:200, arm:2960, emp:1500, pub:0, ivaJoya:678,  ivaCaja:525},
+  "anillo":    {n:"Anillo",               precio:19990, joya:1051,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:148,  ivaCaja:525},
+  "forever":   {n:"Forever Love",         precio:22990, joya:6364,  caja:2501, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:897,  ivaCaja:525},
+  "estuchePuls":   {n:"Estuche Puls 2x Nudo", precio:22990, joya:4558, caja:6778, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:642, ivaCaja:955},
+  "estucheAnillos":{n:"Estuche Anillos",      precio:22990, joya:2102, caja:6778, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:296, ivaCaja:955},
+  "comboPulsAni":  {n:"Estuche Blanco 2 Puls Nudo + 2 Anillos", precio:26990, joya:6660, caja:6778, tarj:110, arm:2960, emp:1500, pub:0, ivaJoya:938, ivaCaja:955}
 };
 const FIELDS=["iibb","joya","caja","tarj","arm","emp","pub","ivaJoya","ivaCaja"];
 const IIBB_R=0.037;
@@ -239,7 +239,9 @@ document.querySelectorAll(".row").forEach(row=>{
   if(!inp||row.querySelector(".ud"))return;
   const s=document.createElement("span");s.className="ud";row.appendChild(s);
 });
+var SELECTED="2cora";
 function load(k){
+  SELECTED=k;
   const d=P[k];
   document.getElementById("precio").value=d.precio;
   document.getElementById("iibb").value=0; // mostrador sin retención por defecto
@@ -306,6 +308,7 @@ function calc(){
   });
   const bar=document.getElementById("bar");bar.innerHTML="";
   const segs=[["seg-cogs",cogs],["seg-imp",imp],["seg-emp",emp],["seg-publi",pub],[rent<0?"seg-rentneg":"seg-rent",Math.abs(rent)]];
+  const tot=segs.reduce(function(a,s){return a+s[1];},0)||1;
   segs.forEach(function(sg){if(sg[1]<=0)return;const w=sg[1]/tot*100;const d=document.createElement("div");d.className=sg[0];d.style.width=w+"%";d.title=fmt(sg[1]);if(w>=7)d.textContent=Math.round(w)+"%";bar.appendChild(d);});
 }
 sel.addEventListener("change",function(e){load(e.target.value);renderProdGrid();});
@@ -316,15 +319,15 @@ const ICONS={"2cora":"\uD83D\uDC9E","nudo":"\uD83E\uDEA2","cadena":"\u26D3\uFE0F
 function renderProdGrid(){
   const g=document.getElementById("prodGrid");g.innerHTML="";
   Object.keys(P).forEach(function(k){
-    const d=P[k];const c=document.createElement("div");c.className="pchip"+(sel.value===k?" sel":"");c.title="Cargar "+d.n;
+    const d=P[k];const c=document.createElement("div");c.className="pchip"+(SELECTED===k?" sel":"");c.title="Cargar "+d.n;
     c.innerHTML='<span class="ic">'+(ICONS[k]||"\uD83D\uDD39")+'</span><div><div class="pn">'+d.n+'</div><div class="pc">'+fmt(d.joya+d.caja)+' <small>'+ud(d.joya+d.caja)+'</small></div></div>';
     c.addEventListener("click",function(){sel.value=k;load(k);renderProdGrid();window.scrollTo({top:0,behavior:"smooth"});});
     g.appendChild(c);
   });
 }
 document.getElementById("usd").addEventListener("input",renderProdGrid);
-renderProdGrid();
 load("2cora");
+renderProdGrid();
 </script>
 </body>
 </html>
