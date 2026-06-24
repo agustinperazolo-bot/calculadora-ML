@@ -358,6 +358,7 @@ function renderTN(){
     {h:"Ventas",get:i=>d.ventas[i],fmt:f0u,tot:()=>f0u(vT)},
     {h:"Costos Var.",get:i=>d.cv[i],fmt:f0,tot:()=>f0(sum(d.cv))},
     {h:"Margen Bruto",get:i=>d.margenBruto[i],fmt:f0,tot:()=>f0(sum(d.margenBruto))},
+    {h:"MB %",get:i=>d.margenBruto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",cls:v=>v<0?'neg':'pos',tot:()=>pc(sum(d.margenBruto),vT)},
     {h:"Corpo",get:i=>d.corpo[i],fmt:f0,tot:()=>f0(sum(d.corpo))},
     {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0u,cls:v=>v<0?'neg':'pos',tot:()=>f0u(rnT)},
     {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",cls:v=>v<0?'neg':'',tot:()=>pc(rnT,vT)}
@@ -435,6 +436,7 @@ function renderML(){
     {h:"Ventas",get:i=>d.ventas[i],fmt:f0u,tot:()=>f0u(vT)},
     {h:"Devol.",get:i=>d.devol[i],fmt:f0,cls:()=>'neg',tot:()=>f0(devT)},
     {h:"Margen Bruto",get:i=>d.margenBruto[i],fmt:f0,tot:()=>f0(sum(d.margenBruto))},
+    {h:"MB %",get:i=>d.margenBruto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",cls:v=>v<0?'neg':'pos',tot:()=>pc(sum(d.margenBruto),vT)},
     {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0u,cls:v=>v<0?'neg':'pos',tot:()=>f0u(rnT)},
     {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",tot:()=>pc(rnT,vT)},
     {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0u,tot:()=>f0u(divT)}
@@ -466,6 +468,7 @@ function renderSF(){
     {h:"Env. ML",get:i=>d.enviosML[i],fmt:v=>v,tot:()=>sum(d.enviosML)},
     {h:"Ventas",get:i=>d.ventas[i],fmt:f0u,tot:()=>f0u(vT)},
     {h:"Res. Bruto",get:i=>d.resBruto[i],fmt:f0,cls:v=>v<0?'neg':'',tot:()=>f0(rbT)},
+    {h:"MB %",get:i=>d.resBruto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",cls:v=>v<0?'neg':'pos',tot:()=>pc(rbT,vT)},
     {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0u,cls:v=>v<0?'neg':'pos',tot:()=>f0u(rnT)},
     {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",tot:()=>pc(rnT,vT)},
     {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0u,tot:()=>f0u(divT)}
