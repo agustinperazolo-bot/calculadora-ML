@@ -79,6 +79,14 @@
   .actions{display:flex;gap:10px;margin-top:8px}
   .actions button{flex:1;padding:10px;border:1.5px solid var(--line);background:#fff;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink)}
   .actions button:hover{border-color:var(--tn2);color:var(--tn2)}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px}
+  .pchip{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+  .pchip:hover{border-color:var(--tn2);box-shadow:0 2px 8px rgba(10,61,98,.10)}
+  .pchip.sel{border-color:var(--tn)!important;background:#eaf2fb!important;box-shadow:inset 0 0 0 2px var(--tn2)}
+  .pchip .ic{font-size:22px;line-height:1;flex:0 0 auto}
+  .pchip .pn{font-size:12px;font-weight:600;color:var(--ink);line-height:1.2}
+  .pchip .pc{font-size:11.5px;color:var(--tn);font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+  .pchip .pc small{color:var(--accent);font-weight:700;margin-left:5px}
   .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:18px;line-height:1.6}
 </style>
 </head>
@@ -98,6 +106,10 @@
       <span class="usd">USD/$ <input type="number" id="usd" value="1430" step="10"></span>
     </div>
   </header>
+  <div class="card">
+    <h2>Productos · elegí con un toque <span class="sum pos">precio de venta</span></h2>
+    <div class="pgrid" id="prodGrid"></div>
+  </div>
   <div class="grid">
     <div>
       <div class="card">
@@ -238,7 +250,8 @@ function payAmounts(m, subtotal, envio){
   const cp=subtotal+envio-desc;
   return {desc, comision:m.comisionPct/100*cp, cuotas:m.cuotasPct/100*cp, mpago:m.mpagoPct/100*cp, estructura:m.estructura};
 }
-function loadProduct(pk){PRODF.forEach(f=>document.getElementById(f).value=PRODUCTS[pk][f]);applyMethod(selM.value);}
+var SELECTED="col2cora";
+function loadProduct(pk){SELECTED=pk;PRODF.forEach(f=>document.getElementById(f).value=PRODUCTS[pk][f]);applyMethod(selM.value);}
 function applyMethod(mk){const pa=payAmounts(METHODS[mk],v("subtotal"),v("envio"));PAYF.forEach(f=>document.getElementById(f).value=Math.round(pa[f]));calc();}
 function scenario(s, pay){
   const clientePago=s.subtotal+s.envio-pay.desc;
@@ -334,13 +347,26 @@ function calc(){
   }).join("");
   document.querySelectorAll(".cmp .crow").forEach(function(row){row.addEventListener("click",function(){selM.value=row.dataset.k;applyMethod(row.dataset.k);});});
 }
-selP.addEventListener("change",function(e){loadProduct(e.target.value);});
+selP.addEventListener("change",function(e){loadProduct(e.target.value);renderProdGrid();});
 selM.addEventListener("change",function(e){applyMethod(e.target.value);});
 document.getElementById("reset").addEventListener("click",function(){loadProduct(selP.value);});
 document.getElementById("tgNeto").addEventListener("click",function(){cmpMode="neto";this.classList.add("on");document.getElementById("tgIva").classList.remove("on");calc();});
 document.getElementById("tgIva").addEventListener("click",function(){cmpMode="iva";this.classList.add("on");document.getElementById("tgNeto").classList.remove("on");calc();});
 ["usd"].concat(PRODF,PAYF).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
+const ICONS={"col2cora":"\uD83D\uDC9E","doble":"\uD83D\uDC9E","puls2cora":"\uD83D\uDC95","cadena":"\u26D3\uFE0F","dobleP":"\uD83D\uDCFF","anillo":"\uD83D\uDC8D","anillo4":"\uD83D\uDC8D","ani2puls2":"\uD83D\uDC8D"};
+function renderProdGrid(){
+  const g=document.getElementById("prodGrid");g.innerHTML="";
+  Object.keys(PRODUCTS).forEach(function(k){
+    const d=PRODUCTS[k];
+    const c=document.createElement("div");c.className="pchip"+(SELECTED===k?" sel":"");c.title="Cargar "+d.n;
+    c.innerHTML='<span class="ic">'+(ICONS[k]||"\uD83D\uDD39")+'</span><div><div class="pn">'+d.n+'</div><div class="pc">'+fmt(d.subtotal)+' <small>'+ud(d.subtotal)+'</small></div></div>';
+    c.addEventListener("click",function(){selP.value=k;loadProduct(k);renderProdGrid();window.scrollTo({top:0,behavior:"smooth"});});
+    g.appendChild(c);
+  });
+}
+document.getElementById("usd").addEventListener("input",renderProdGrid);
 loadProduct("col2cora");
+renderProdGrid();
 </script>
 </body>
 </html>
