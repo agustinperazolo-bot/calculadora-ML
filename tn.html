@@ -94,7 +94,7 @@
     <div class="controls">
       <select id="producto"></select>
       <select id="metodo"></select>
-      <span class="usd">USD/$ <input type="number" id="usd" value="1430" step="10"></span>
+      <span class="usd">USD/$ <input type="number" id="usd" value="1510" step="10"></span>
     </div>
   </header>
   <div class="grid">
@@ -203,7 +203,7 @@
 const PRODUCTS = {
   col2cora:  {n:"Collar 2 Corazones",   subtotal:59990, envio:0, iibbPct:3.70, joyaPlata:7779,  joyaAcero:0,    nacionaliz:5720,  cajita:2417,  papel:215, bolsa:215, costoEnvio:8100, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3500},
   doble:     {n:"Doble Collar",         subtotal:99980, envio:0, iibbPct:3.70, joyaPlata:14700, joyaAcero:0,    nacionaliz:10782, cajita:4833,  papel:429, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:4931},
-  puls2cora: {n:"Pulsera 2 Corazones",  subtotal:29990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:1788, nacionaliz:1430,  cajita:2417,  papel:215, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2415},
+  puls2cora: {n:"Pulsera 2 Corazones",  subtotal:29990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:1788, nacionaliz:1510,  cajita:2417,  papel:215, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2415},
   cadena:    {n:"Cadena",               subtotal:34990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:2288, nacionaliz:2431,  cajita:2417,  papel:215, bolsa:215, costoEnvio:0,    pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:1108},
   dobleP:    {n:"Doble Pulsera",        subtotal:44990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:3575, nacionaliz:2860,  cajita:2417,  papel:215, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2715},
   anillo:    {n:"Anillo",               subtotal:48000, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:2031, nacionaliz:0,     cajita:6778,  papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190},
@@ -220,7 +220,7 @@ const PRODF=["subtotal","envio","iibbPct","joyaPlata","joyaAcero","nacionaliz","
 const PAYF=["desc","comision","cuotas","mpago","estructura"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
 const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
-let USD=1430, cmpMode="neto";
+let USD=1510, cmpMode="neto";
 const ud=n=>"US$ "+(n/(USD||1)).toLocaleString("es-AR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
 const v=id=>parseFloat(document.getElementById(id).value)||0;
@@ -339,6 +339,7 @@ document.getElementById("tgNeto").addEventListener("click",function(){cmpMode="n
 document.getElementById("tgIva").addEventListener("click",function(){cmpMode="iva";this.classList.add("on");document.getElementById("tgNeto").classList.remove("on");calc();});
 ["usd"].concat(PRODF,PAYF).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
 loadProduct("col2cora");
+fetch("tc.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.usd){document.getElementById("usd").value=d.usd;calc();}}).catch(function(){});
 </script>
 </body>
 </html>
