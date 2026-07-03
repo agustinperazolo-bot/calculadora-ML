@@ -225,17 +225,15 @@
 <script>
 const MLFEE=0.163;
 const P = {
-  "2cora_full":   {n:"COLLAR 2CORA",        canal:"FULL",   precio:59990, iibb:2220, nacion:13061, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, cuo:3000, alm:20, pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
-  "nudo_full":    {n:"COLLAR NUDO",         canal:"FULL",   precio:56990, iibb:2109, nacion:12701, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, cuo:2850, alm:20, pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
-  "pulsnudo_full":{n:"2x PULSERA NUDO",     canal:"FULL",   precio:37990, iibb:1406, nacion:4435,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, cuo:1900, alm:20, pub:1600, ivaJoya:931,  ivaCaja:0,   ivaEnv:975},
-  "anillo_full":  {n:"ANILLO",              canal:"FULL",   precio:37990, iibb:1406, nacion:2016,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, cuo:1900, alm:20, pub:1600, ivaJoya:423,  ivaCaja:0,   ivaEnv:975},
-  "pulsera_full": {n:"PULSERA NUDO (acero)",canal:"FULL",   precio:22990, iibb:851,  nacion:2232,    caja:2434, tarj:110, arm:2880, cf:2455, env:0,    cuo:1150, alm:20, pub:1600, ivaJoya:469,  ivaCaja:184, ivaEnv:0},
-  "nudo_nofull":  {n:"COLLAR NUDO",         canal:"NO FULL",precio:39990, iibb:1480, nacion:8800,    caja:0,    tarj:110, arm:2160, cf:0,    env:5383, cuo:1960, alm:0,  pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:934},
-  "2cora_nofull": {n:"COLLAR 2CORA",        canal:"NO FULL",precio:49990, iibb:1850, nacion:13594, caja:2434, tarj:110, arm:2880, cf:0,    env:5383, cuo:2450, alm:0,  pub:1600, ivaJoya:1296, ivaCaja:184, ivaEnv:934},
-  "puls2cora_nf": {n:"PULSERA 2CORA inox",  canal:"NO FULL",precio:29990, iibb:1200, nacion:4251, caja:2434, tarj:110, arm:2880, cf:2230, env:0,    cuo:1470, alm:0,  pub:0,    ivaJoya:0,    ivaCaja:0,   ivaEnv:0},
-  "pulsnudo_nf":  {n:"PULSERA NUDO inox",   canal:"NO FULL",precio:19990, iibb:740,  nacion:2304,    caja:2434, tarj:220, arm:2880, cf:2300, env:0,    cuo:1000, alm:0,  pub:0,    ivaJoya:484,  ivaCaja:184, ivaEnv:0},
-  "cadena_nf":    {n:"CADENA",              canal:"NO FULL",precio:23740, iibb:878,  nacion:4752, caja:2434, tarj:200, arm:2880, cf:2300, env:0,    cuo:1187, alm:0,  pub:0,    ivaJoya:484,  ivaCaja:189, ivaEnv:0},
-  "martillo_full":{n:"MARTILLO",            canal:"FULL",   precio:18990, iibb:703,  nacion:8064,    caja:2434, tarj:200, arm:2160, cf:2455, env:0,    cuo:950,  alm:0,  pub:0,    ivaJoya:1693, ivaCaja:189, ivaEnv:0}
+  "2cora_full":   {n:"COLLAR 2CORA",        canal:"FULL",   precio:59990, iibb:2220, nacion:13061, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, cuo:3000, alm:20, pub:1800, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
+  "nudo_full":    {n:"COLLAR NUDO",         canal:"FULL",   precio:56990, iibb:2109, nacion:12701, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, cuo:2850, alm:20, pub:1800, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
+  "pulsnudo_full":{n:"2x PULSERA NUDO",     canal:"FULL",   precio:42990, iibb:1406, nacion:4435,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, cuo:1900, alm:20, pub:1800, ivaJoya:931,  ivaCaja:0,   ivaEnv:975},
+  "anillo_full":  {n:"ANILLO",              canal:"FULL",   precio:42990, iibb:1406, nacion:2016,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, cuo:1900, alm:20, pub:1800, ivaJoya:423,  ivaCaja:0,   ivaEnv:975},
+  "pulsera_full": {n:"PULSERA NUDO (acero)",canal:"FULL",   precio:24990, iibb:851,  nacion:2232,    caja:2434, tarj:110, arm:2880, cf:2455, env:0,    cuo:1150, alm:20, pub:1800, ivaJoya:469,  ivaCaja:184, ivaEnv:0},
+  "puls2cora_nf": {n:"PULSERA 2CORA inox",  canal:"NO FULL",precio:29990, iibb:1200, nacion:4251, caja:2434, tarj:110, arm:2880, cf:2230, env:0,    cuo:1470, alm:0,  pub:1800, ivaJoya:0,    ivaCaja:0,   ivaEnv:0},
+  "pulsnudo_nf":  {n:"Pulsera Nudo inox FULL",canal:"FULL", precio:19990, iibb:740,  nacion:2304,    caja:2434, tarj:220, arm:2880, cf:2300, env:0,    cuo:1000, alm:0,  pub:1800, ivaJoya:484,  ivaCaja:184, ivaEnv:0},
+  "cadena_nf":    {n:"Cadena FULL",         canal:"FULL",   precio:23740, iibb:878,  nacion:4752, caja:2434, tarj:200, arm:2880, cf:2300, env:0,    cuo:1187, alm:0,  pub:1800, ivaJoya:484,  ivaCaja:189, ivaEnv:0},
+  "martillo_full":{n:"MARTILLO",            canal:"FULL",   precio:18990, iibb:703,  nacion:8064,    caja:2434, tarj:200, arm:2160, cf:2455, env:0,    cuo:950,  alm:0,  pub:1800, ivaJoya:1693, ivaCaja:189, ivaEnv:0}
 };
 const FIELDS=["iibb","nacion","caja","tarj","arm","cf","env","cuo","alm","pub","ivaJoya","ivaCaja","ivaEnv"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
@@ -245,7 +243,8 @@ const ud=n=>"US$ "+(n/(USD||1)).toLocaleString("es-AR",{minimumFractionDigits:1,
 const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
 const v=id=>parseFloat(document.getElementById(id).value)||0;
 const sel=document.getElementById("prod");
-Object.keys(P).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=P[k].n+(P[k].canal==="NO FULL"?" · No Full":" · Full");sel.appendChild(o);});
+function chanSuffix(d){return /full/i.test(d.n)?"":(d.canal==="NO FULL"?" · No Full":" · Full");}
+Object.keys(P).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=P[k].n+chanSuffix(P[k]);sel.appendChild(o);});
 document.querySelectorAll(".row").forEach(row=>{
   const inp=row.querySelector("input[type=number]")||row.querySelector(".ro");
   if(!inp||row.querySelector(".ud"))return;
@@ -335,11 +334,11 @@ function calc(){
 sel.addEventListener("change",function(e){load(e.target.value);renderProdGrid();});
 document.getElementById("reset").addEventListener("click",function(){load(sel.value);});
 ["precio","usd"].concat(FIELDS).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
-const ICONS={"2cora_full":"\uD83D\uDC9E","nudo_full":"\uD83E\uDEA2","pulsnudo_full":"\uD83D\uDCFF","anillo_full":"\uD83D\uDC8D","pulsera_full":"\uD83D\uDCFF","nudo_nofull":"\uD83E\uDEA2","2cora_nofull":"\uD83D\uDC9E","puls2cora_nf":"\uD83D\uDC95","pulsnudo_nf":"\uD83D\uDCFF","cadena_nf":"\u26D3\uFE0F","martillo_full":"\uD83D\uDD28"};
+const ICONS={"2cora_full":"\uD83D\uDC9E","nudo_full":"\uD83E\uDEA2","pulsnudo_full":"\uD83D\uDCFF","anillo_full":"\uD83D\uDC8D","pulsera_full":"\uD83D\uDCFF","puls2cora_nf":"\uD83D\uDC95","pulsnudo_nf":"\uD83D\uDCFF","cadena_nf":"\u26D3\uFE0F","martillo_full":"\uD83D\uDD28"};
 function renderProdGrid(){
   const g=document.getElementById("prodGrid");g.innerHTML="";
   Object.keys(P).forEach(function(k){
-    const d=P[k];const nm=d.n+(d.canal==="NO FULL"?" \u00b7 No Full":" \u00b7 Full");
+    const d=P[k];const nm=d.n+chanSuffix(d);
     const c=document.createElement("div");c.className="pchip"+(SELECTED===k?" sel":"");c.title="Cargar "+nm;
     c.innerHTML='<span class="ic">'+(ICONS[k]||"\uD83D\uDD39")+'</span><div><div class="pn">'+nm+'</div><div class="pc">'+fmt(d.precio)+' <small>'+ud(d.precio)+'</small></div></div>';
     c.addEventListener("click",function(){sel.value=k;load(k);renderProdGrid();window.scrollTo({top:0,behavior:"smooth"});});
