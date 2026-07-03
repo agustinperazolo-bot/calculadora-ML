@@ -147,7 +147,7 @@
         <div class="row"><label>Costo unitario nacionalizado</label><span class="pct" id="p_nacion"></span><div class="money"><span class="cur">$</span><input type="number" id="nacion"></div></div>
         <div class="row"><label>Costo cajita / estuche</label><span class="pct" id="p_caja"></span><div class="money"><span class="cur">$</span><input type="number" id="caja"></div></div>
         <div class="row"><label>Costo tarjeta</label><span class="pct" id="p_tarj"></span><div class="money"><span class="cur">$</span><input type="number" id="tarj"></div></div>
-        <div class="row"><label>Costo armado</label><span class="pct" id="p_arm"></span><div class="money"><span class="cur">$</span><input type="number" id="arm"></div></div>
+        <div class="row calc auto"><label>Costo armado (USD 2 fijo)</label><span class="pct" id="p_arm"></span><div class="ro" id="r_arm"></div></div>
       </div>
       <div class="card">
         <h2>Costos Mercado Libre <span class="sum" id="sumMl"></span></h2>
@@ -225,17 +225,17 @@
 <script>
 const MLFEE=0.163;
 const P = {
-  "2cora_full":   {n:"COLLAR 2CORA",        canal:"FULL",   precio:59990, iibb:2220, nacion:13061, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, cuo:3000, alm:20, pub:1800, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
-  "nudo_full":    {n:"COLLAR NUDO",         canal:"FULL",   precio:56990, iibb:2109, nacion:12701, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, cuo:2850, alm:20, pub:1800, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
-  "pulsnudo_full":{n:"2x PULSERA NUDO",     canal:"FULL",   precio:42990, iibb:1406, nacion:4435,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, cuo:1900, alm:20, pub:1800, ivaJoya:931,  ivaCaja:0,   ivaEnv:975},
-  "anillo_full":  {n:"ANILLO",              canal:"FULL",   precio:42990, iibb:1406, nacion:2016,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, cuo:1900, alm:20, pub:1800, ivaJoya:423,  ivaCaja:0,   ivaEnv:975},
-  "pulsera_full": {n:"PULSERA NUDO (acero)",canal:"FULL",   precio:24990, iibb:851,  nacion:2232,    caja:2434, tarj:110, arm:2880, cf:2455, env:0,    cuo:1150, alm:20, pub:1800, ivaJoya:469,  ivaCaja:184, ivaEnv:0},
-  "puls2cora_nf": {n:"PULSERA 2CORA inox",  canal:"NO FULL",precio:29990, iibb:1200, nacion:4251, caja:2434, tarj:110, arm:2880, cf:2230, env:0,    cuo:1470, alm:0,  pub:1800, ivaJoya:0,    ivaCaja:0,   ivaEnv:0},
-  "pulsnudo_nf":  {n:"Pulsera Nudo inox FULL",canal:"FULL", precio:19990, iibb:740,  nacion:2304,    caja:2434, tarj:220, arm:2880, cf:2300, env:0,    cuo:1000, alm:0,  pub:1800, ivaJoya:484,  ivaCaja:184, ivaEnv:0},
-  "cadena_nf":    {n:"Cadena FULL",         canal:"FULL",   precio:23740, iibb:878,  nacion:4752, caja:2434, tarj:200, arm:2880, cf:2300, env:0,    cuo:1187, alm:0,  pub:1800, ivaJoya:484,  ivaCaja:189, ivaEnv:0},
-  "martillo_full":{n:"MARTILLO",            canal:"FULL",   precio:18990, iibb:703,  nacion:8064,    caja:2434, tarj:200, arm:2160, cf:2455, env:0,    cuo:950,  alm:0,  pub:1800, ivaJoya:1693, ivaCaja:189, ivaEnv:0}
+  "2cora_full":   {n:"COLLAR 2CORA",        canal:"FULL",   precio:59990, iibb:2220, nacion:13061, caja:2434, tarj:110, cf:0,    env:6080, cuo:3000, alm:20, pub:1800, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
+  "nudo_full":    {n:"COLLAR NUDO",         canal:"FULL",   precio:56990, iibb:2109, nacion:12701, caja:2434, tarj:110, cf:0,    env:6080, cuo:2850, alm:20, pub:1800, ivaJoya:1296, ivaCaja:184, ivaEnv:1055},
+  "pulsnudo_full":{n:"2x PULSERA NUDO",     canal:"FULL",   precio:42990, iibb:1406, nacion:4435,    caja:6768, tarj:110, cf:0,    env:5620, cuo:1900, alm:20, pub:1800, ivaJoya:931,  ivaCaja:0,   ivaEnv:975},
+  "anillo_full":  {n:"ANILLO",              canal:"FULL",   precio:42990, iibb:1406, nacion:2016,    caja:6768, tarj:110, cf:0,    env:5620, cuo:1900, alm:20, pub:1800, ivaJoya:423,  ivaCaja:0,   ivaEnv:975},
+  "pulsera_full": {n:"PULSERA NUDO (acero)",canal:"FULL",   precio:24990, iibb:851,  nacion:2232,    caja:2434, tarj:110, cf:2455, env:0,    cuo:1150, alm:20, pub:1800, ivaJoya:469,  ivaCaja:184, ivaEnv:0},
+  "puls2cora_nf": {n:"PULSERA 2CORA inox",  canal:"NO FULL",precio:29990, iibb:1200, nacion:4251, caja:2434, tarj:110, cf:2230, env:0,    cuo:1470, alm:0,  pub:1800, ivaJoya:0,    ivaCaja:0,   ivaEnv:0},
+  "pulsnudo_nf":  {n:"Pulsera Nudo inox FULL",canal:"FULL", precio:19990, iibb:740,  nacion:2304,    caja:2434, tarj:220, cf:2300, env:0,    cuo:1000, alm:0,  pub:1800, ivaJoya:484,  ivaCaja:184, ivaEnv:0},
+  "cadena_nf":    {n:"Cadena FULL",         canal:"FULL",   precio:23740, iibb:878,  nacion:4752, caja:2434, tarj:200, cf:2300, env:0,    cuo:1187, alm:0,  pub:1800, ivaJoya:484,  ivaCaja:189, ivaEnv:0},
+  "martillo_full":{n:"MARTILLO",            canal:"FULL",   precio:18990, iibb:703,  nacion:8064,    caja:2434, tarj:200, cf:2455, env:0,    cuo:950,  alm:0,  pub:1800, ivaJoya:1693, ivaCaja:189, ivaEnv:0}
 };
-const FIELDS=["iibb","nacion","caja","tarj","arm","cf","env","cuo","alm","pub","ivaJoya","ivaCaja","ivaEnv"];
+const FIELDS=["iibb","nacion","caja","tarj","cf","env","cuo","alm","pub","ivaJoya","ivaCaja","ivaEnv"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
 const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
 let USD=1510;
@@ -261,29 +261,32 @@ function load(k){
   calc();
 }
 function calc(){
+  const usd=v("usd")||1; USD=usd;
   const precio=v("precio");
   const ivaVenta=precio*0.21/1.21;
   const tar=precio*MLFEE;
   const ivaMl=tar*0.21/1.21;
   const iibb=v("iibb");
   const dpi=precio-ivaVenta-iibb;
-  const cogs=v("nacion")+v("caja")+v("tarj")+v("arm");
+  const arm=Math.round(2*usd);
+  const cogs=v("nacion")+v("caja")+v("tarj")+arm;
   const ml=tar+v("cf")+v("env")+v("cuo")+v("alm");
   const pub=v("pub");
   const imp=ivaVenta+iibb;
   const rent=dpi-cogs-ml-pub;
   const recup=v("ivaJoya")+v("ivaCaja")+v("ivaEnv")+ivaMl;
   const rentIva=rent+recup;
-  const usd=v("usd")||1; USD=usd;
   document.getElementById("r_iva").textContent=fmt(ivaVenta);
   document.getElementById("r_dpi").textContent=fmt(dpi);
   document.getElementById("r_tar").textContent=fmt(tar);
   document.getElementById("r_ivaMl").textContent=fmt(ivaMl);
+  document.getElementById("r_arm").textContent=fmt(arm);
   document.getElementById("p_iva").textContent=pct(ivaVenta,precio);
   document.getElementById("p_iibb").textContent=pct(iibb,precio);
   document.getElementById("p_dpi").textContent=pct(dpi,precio);
   document.getElementById("p_tar").textContent=pct(tar,precio);
-  [["p_nacion","nacion"],["p_caja","caja"],["p_tarj","tarj"],["p_arm","arm"],
+  document.getElementById("p_arm").textContent=pct(arm,precio);
+  [["p_nacion","nacion"],["p_caja","caja"],["p_tarj","tarj"],
    ["p_cf","cf"],["p_env","env"],["p_cuo","cuo"],["p_alm","alm"],["p_pub","pub"]]
    .forEach(function(a){document.getElementById(a[0]).textContent=pct(v(a[1]),precio);});
   document.getElementById("sumPrice").textContent=fmt(imp)+" · "+pct(imp,precio);
