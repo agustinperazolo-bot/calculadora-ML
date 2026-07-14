@@ -155,7 +155,7 @@
         <div class="row"><label>Costo unitario nacionalizado</label><span class="pct" id="p_nacion"></span><div class="money"><span class="cur">$</span><input type="number" id="nacion"></div></div>
         <div class="row"><label>Costo cajita / estuche</label><span class="pct" id="p_caja"></span><div class="money"><span class="cur">$</span><input type="number" id="caja"></div></div>
         <div class="row"><label>Costo tarjeta</label><span class="pct" id="p_tarj"></span><div class="money"><span class="cur">$</span><input type="number" id="tarj"></div></div>
-        <div class="row"><label>Costo armado</label><span class="pct" id="p_arm"></span><div class="money"><span class="cur">$</span><input type="number" id="arm"></div></div>
+        <div class="row calc auto"><label>Costo armado (US$ 2)</label><span class="pct" id="p_arm"></span><div class="ro" id="r_arm"></div></div>
       </div>
       <div class="card">
         <h2>Costos Mercado Libre <span class="sum" id="sumMl"></span></h2>
@@ -247,7 +247,7 @@ const P = {
   "cadena_nf":    {n:"CADENA",              canal:"NO FULL",precio:23740, iibb:878,  nacion:4752, caja:2434, tarj:200, arm:2880, cf:2300, env:0,    alm:0,  pub:1600, ivaJoya:484,  ivaCaja:189, ivaEnv:0},
   "martillo_full":{n:"MARTILLO",            canal:"FULL",   precio:20890, iibb:773,  nacion:8064,    caja:2434, tarj:200, arm:2160, cf:2455, env:0,    alm:0,  pub:1600, ivaJoya:1693, ivaCaja:189, ivaEnv:0}
 };
-const FIELDS=["iibb","nacion","caja","tarj","arm","cf","env","alm","pub","ivaJoya","ivaCaja","ivaEnv"];
+const FIELDS=["iibb","nacion","caja","tarj","cf","env","alm","pub","ivaJoya","ivaCaja","ivaEnv"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
 const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
 let USD=1510;
@@ -277,29 +277,32 @@ function calc(){
   const tar=precio*MLFEE;
   const ivaMl=tar*0.21/1.21;
   const iibb=v("iibb");
+  const usd=v("usd")||1; USD=usd;
   const cuo=precio*0.05;
+  const arm=2*usd;
   const dpi=precio-ivaVenta-iibb;
-  const cogs=v("nacion")+v("caja")+v("tarj")+v("arm");
+  const cogs=v("nacion")+v("caja")+v("tarj")+arm;
   const ml=tar+v("cf")+v("env")+cuo+v("alm");
   const pub=v("pub");
   const imp=ivaVenta+iibb;
   const rent=dpi-cogs-ml-pub;
   const recup=v("ivaJoya")+v("ivaCaja")+v("ivaEnv")+ivaMl;
   const rentIva=rent+recup;
-  const usd=v("usd")||1; USD=usd;
   document.getElementById("r_iva").textContent=fmt(ivaVenta);
   document.getElementById("r_dpi").textContent=fmt(dpi);
   document.getElementById("r_tar").textContent=fmt(tar);
   document.getElementById("r_cuo").textContent=fmt(cuo);
+  document.getElementById("r_arm").textContent=fmt(arm);
   document.getElementById("r_ivaMl").textContent=fmt(ivaMl);
   document.getElementById("p_iva").textContent=pct(ivaVenta,precio);
   document.getElementById("p_iibb").textContent=pct(iibb,precio);
   document.getElementById("p_dpi").textContent=pct(dpi,precio);
   document.getElementById("p_tar").textContent=pct(tar,precio);
-  [["p_nacion","nacion"],["p_caja","caja"],["p_tarj","tarj"],["p_arm","arm"],
+  [["p_nacion","nacion"],["p_caja","caja"],["p_tarj","tarj"],
    ["p_cf","cf"],["p_env","env"],["p_alm","alm"],["p_pub","pub"]]
    .forEach(function(a){document.getElementById(a[0]).textContent=pct(v(a[1]),precio);});
   document.getElementById("p_cuo").textContent=pct(cuo,precio);
+  document.getElementById("p_arm").textContent=pct(arm,precio);
   document.getElementById("sumPrice").textContent=fmt(imp)+" · "+pct(imp,precio);
   document.getElementById("sumCogs").textContent=fmt(cogs)+" · "+pct(cogs,precio);
   document.getElementById("sumMl").textContent=fmt(ml)+" · "+pct(ml,precio);
