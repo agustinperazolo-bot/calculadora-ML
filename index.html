@@ -227,7 +227,8 @@
   </div>
   <div class="foot">
     Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta (21/121 del precio), la <b>Tarifa ML (16,3% del precio)</b> y el <b>Costo cuotas sin interés (5% del precio)</b> se calculan automáticamente; el IVA de comisión ML sale de esa comisión (21/121). El resto son montos fijos editables.<br>
-    El costo se calcula por unidad vendida; si enviás más de una unidad, los costos de envío se suman.
+    El costo se calcula por unidad vendida; si enviás más de una unidad, los costos de envío se suman.<br>
+    <span id="mlSync"></span>
   </div>
 </div>
 <script>
@@ -362,6 +363,19 @@ document.getElementById("usd").addEventListener("input",renderProdGrid);
 load("2cora_full");
 renderProdGrid();
 fetch("tc.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.usd){document.getElementById("usd").value=d.usd;calc();renderProdGrid();}}).catch(function(){});
+// Precios enlazados a MercadoLibre — se actualizan solos desde precios_ml.json (ver tarea diaria).
+fetch("precios_ml.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
+  if(!d||!d.items)return;
+  Object.keys(d.items).forEach(function(k){
+    var it=d.items[k];if(!P[k]||!it||!it.precio)return;
+    var np=it.precio, op=P[k].precio;
+    if(op&&op!==np) P[k].iibb=Math.round(P[k].iibb*np/op); // IIBB sigue el % del precio
+    P[k].precio=np;
+  });
+  load(SELECTED);renderProdGrid();
+  var b=document.getElementById("mlSync");
+  if(b&&d.actualizado) b.innerHTML='🔗 Precios sincronizados con MercadoLibre · última actualización '+d.actualizado;
+}).catch(function(){});
 </script>
 </body>
 </html>
