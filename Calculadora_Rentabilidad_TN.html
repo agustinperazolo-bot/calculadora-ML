@@ -40,7 +40,6 @@
   .row .money span.cur{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
   .row input[type=number]{width:122px;padding:7px 9px 7px 20px;border:1.5px solid var(--line);border-radius:9px;font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
   .row input[type=number]:focus{outline:none;border-color:var(--tn2);box-shadow:0 0 0 3px rgba(30,111,184,.12)}
-  .row input[type=number][readonly]{background:#f3f4f6;color:var(--muted);cursor:not-allowed}
   .row.pricerow input{font-size:15px;font-weight:800}
   .row input.pctin{width:70px;padding-left:9px}
   .row.calc{color:var(--muted)}
@@ -89,6 +88,9 @@
   .pchip .pc{font-size:11.5px;color:var(--tn);font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
   .pchip .pc small{color:var(--accent);font-weight:700;margin-left:5px}
   .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:18px;line-height:1.6}
+  .nav{display:flex;gap:8px}
+  .navbtn{text-decoration:none;font-size:12.5px;font-weight:700;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);white-space:nowrap}
+  .navbtn:hover{border-color:var(--tn2);color:var(--tn2)}
 </style>
 </head>
 <body>
@@ -102,6 +104,10 @@
       </div>
     </div>
     <div class="controls">
+      <nav class="nav">
+        <a class="navbtn" href="Dashboard_Finanzas_ARG.html">← Dashboard ARG</a>
+        <a class="navbtn" href="Calculadora_Rentabilidad_ML.html">Calculadora ML →</a>
+      </nav>
       <select id="producto"></select>
       <select id="metodo"></select>
       <span class="usd">USD/$ <input type="number" id="usd" value="1430" step="10"></span>
@@ -136,7 +142,9 @@
       </div>
       <div class="card">
         <h2>Costo materiales <span class="sum" id="sumCogs"></span></h2>
-        <div class="row"><label>Costo joya (nacionalizada)</label><span class="pct" id="p_joya"></span><div class="money"><span class="cur">$</span><input type="number" id="joyaCosto"></div></div>
+        <div class="row"><label>Costo joya plata</label><span class="pct" id="p_jp"></span><div class="money"><span class="cur">$</span><input type="number" id="joyaPlata"></div></div>
+        <div class="row"><label>Costo joya acero</label><span class="pct" id="p_ja"></span><div class="money"><span class="cur">$</span><input type="number" id="joyaAcero"></div></div>
+        <div class="row"><label>Costo nacionalización</label><span class="pct" id="p_nac"></span><div class="money"><span class="cur">$</span><input type="number" id="nacionaliz"></div></div>
         <div class="row"><label>Costo cajita</label><span class="pct" id="p_caj"></span><div class="money"><span class="cur">$</span><input type="number" id="cajita"></div></div>
         <div class="row"><label>Costo papel / tarjeta</label><span class="pct" id="p_pap"></span><div class="money"><span class="cur">$</span><input type="number" id="papel"></div></div>
         <div class="row"><label>Costo bolsa / sobre</label><span class="pct" id="p_bol"></span><div class="money"><span class="cur">$</span><input type="number" id="bolsa"></div></div>
@@ -144,7 +152,7 @@
       <div class="card">
         <h2>Logística &amp; operación <span class="sum" id="sumOps"></span></h2>
         <div class="row"><label>Costo envío (Andreani)</label><span class="pct" id="p_env"></span><div class="money"><span class="cur">$</span><input type="number" id="costoEnvio"></div></div>
-        <div class="row"><label>Pick &amp; Pack (armado) <small style="color:var(--tn2);font-weight:600">· 2 USD</small></label><span class="pct" id="p_pp"></span><div class="money"><span class="cur">$</span><input type="number" id="pickpack" readonly></div></div>
+        <div class="row"><label>Pick &amp; Pack (armado)</label><span class="pct" id="p_pp"></span><div class="money"><span class="cur">$</span><input type="number" id="pickpack"></div></div>
         <div class="row"><label>Customer Service</label><span class="pct" id="p_cs"></span><div class="money"><span class="cur">$</span><input type="number" id="cs"></div></div>
         <div class="row"><label>Costo estructura (fijos)</label><span class="pct" id="p_est"></span><div class="money"><span class="cur">$</span><input type="number" id="estructura"></div></div>
         <div class="row"><label>Tienda Nube (cuota)</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="otrosTN"></div></div>
@@ -212,18 +220,15 @@
   </div>
 </div>
 <script>
-// Costo joya (nacionalizada) por producto: uni/nac de la planilla (USD) x TC del dia (1510) al 6/7/26.
-// col2cora=1x "2cora" (USD 7.9) | doble=2x "2cora" | puls2cora=1x "Puls 2c+ext" (USD 3.0) | cadena=1x "Cadena" (USD 3.3)
-// dobleP=2x "Puls 2c+ext" | anillo=1x "Anillo" (USD 0.7) | anillo4=4x "Anillo" | ani2puls2=2x "Anillo"+2x "Puls 2c+ext"
 const PRODUCTS = {
-  col2cora:  {n:"Collar 2 Corazones",   subtotal:59990, envio:0, iibbPct:3.70, joyaCosto:11929, cajita:2417,  papel:215, bolsa:215, costoEnvio:8610, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3500},
-  doble:     {n:"Doble Collar",         subtotal:99980, envio:0, iibbPct:3.70, joyaCosto:23858, cajita:4833,  papel:429, bolsa:215, costoEnvio:8610, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:4931},
-  puls2cora: {n:"Pulsera 2 Corazones",  subtotal:29990, envio:0, iibbPct:3.70, joyaCosto:4530,  cajita:2417,  papel:215, bolsa:215, costoEnvio:8610, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2415},
-  cadena:    {n:"Cadena",               subtotal:34990, envio:0, iibbPct:3.70, joyaCosto:4983,  cajita:2417,  papel:215, bolsa:215, costoEnvio:8610, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:1108},
-  dobleP:    {n:"Doble Pulsera",        subtotal:44990, envio:0, iibbPct:3.70, joyaCosto:9060,  cajita:2417,  papel:215, bolsa:215, costoEnvio:8610, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2715},
-  anillo:    {n:"Anillo",               subtotal:48000, envio:0, iibbPct:3.70, joyaCosto:1057,  cajita:6778,  papel:0,   bolsa:215, costoEnvio:8610, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190},
-  anillo4:   {n:"4 Anillos",            subtotal:71990, envio:0, iibbPct:3.70, joyaCosto:4228,  cajita:13556, papel:0,   bolsa:215, costoEnvio:8610, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:4614},
-  ani2puls2: {n:"2 Anillos + 2 Pulseras",subtotal:59990,envio:0, iibbPct:3.70, joyaCosto:11174, cajita:6778,  papel:0,   bolsa:215, costoEnvio:8610, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190}
+  col2cora:  {n:"Collar 2 Corazones",   subtotal:59990, envio:0, iibbPct:3.70, joyaPlata:7779,  joyaAcero:0,    nacionaliz:5720,  cajita:2417,  papel:215, bolsa:215, costoEnvio:8100, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3500},
+  doble:     {n:"Doble Collar",         subtotal:99980, envio:0, iibbPct:3.70, joyaPlata:14700, joyaAcero:0,    nacionaliz:10782, cajita:4833,  papel:429, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:4931},
+  puls2cora: {n:"Pulsera 2 Corazones",  subtotal:29990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:1788, nacionaliz:1430,  cajita:2417,  papel:215, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2415},
+  cadena:    {n:"Cadena",               subtotal:34990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:2288, nacionaliz:2431,  cajita:2417,  papel:215, bolsa:215, costoEnvio:0,    pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:1108},
+  dobleP:    {n:"Doble Pulsera",        subtotal:44990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:3575, nacionaliz:2860,  cajita:2417,  papel:215, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2715},
+  anillo:    {n:"Anillo",               subtotal:48000, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:2031, nacionaliz:0,     cajita:6778,  papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190},
+  anillo4:   {n:"4 Anillos",            subtotal:71990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:4061, nacionaliz:0,     cajita:13556, papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:4614},
+  ani2puls2: {n:"2 Anillos + 2 Pulseras",subtotal:59990,envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:6321, nacionaliz:0,     cajita:6778,  papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190}
 };
 const METHODS = {
   tarjeta: {n:"Tarjeta",        descPct:0,  comisionPct:5.10, cuotasPct:0,    mpagoPct:0, estructura:1400},
@@ -231,7 +236,7 @@ const METHODS = {
   transfer:{n:"Transferencia",  descPct:10, comisionPct:1.86, cuotasPct:0,    mpagoPct:0, estructura:1619},
   mp:      {n:"Mercado Pago",   descPct:0,  comisionPct:2.0,  cuotasPct:0,    mpagoPct:5, estructura:1619}
 };
-const PRODF=["subtotal","envio","iibbPct","joyaCosto","cajita","papel","bolsa","costoEnvio","pickpack","cs","ppc","otrosTN","telefono","ivaRecup"];
+const PRODF=["subtotal","envio","iibbPct","joyaPlata","joyaAcero","nacionaliz","cajita","papel","bolsa","costoEnvio","pickpack","cs","ppc","otrosTN","telefono","ivaRecup"];
 const PAYF=["desc","comision","cuotas","mpago","estructura"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
 const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
@@ -261,7 +266,7 @@ function scenario(s, pay){
   const iva=clientePago*0.21/1.21;
   const iibb=totalNeto*s.iibbPct/100;
   const dpi=totalNeto-iva-iibb;
-  const cogs=s.joyaCosto+s.cajita+s.papel+s.bolsa;
+  const cogs=s.joyaPlata+s.joyaAcero+s.nacionaliz+s.cajita+s.papel+s.bolsa;
   const ops=s.costoEnvio+s.pickpack+s.cs+pay.estructura+s.otrosTN+s.telefono;
   const publi=s.ppc;
   const rent=dpi-cogs-ops-publi;
@@ -279,7 +284,6 @@ function breakevenPrice(s,mk){
 }
 function calc(){
   USD=v("usd")||1;
-  document.getElementById("pickpack").value=Math.round(2*USD);
   const s=readShared(), pay=readPay();
   const r=scenario(s,pay);
   const sub=s.subtotal;
@@ -294,7 +298,7 @@ function calc(){
   document.getElementById("r_dpi").textContent=fmt(r.dpi);
   document.getElementById("p_dpi").textContent=pct(r.dpi,sub);
   [["p_desc","desc"],["p_comi","comision"],["p_cuo","cuotas"],["p_mp","mpago"],
-   ["p_joya","joyaCosto"],["p_caj","cajita"],["p_pap","papel"],["p_bol","bolsa"],
+   ["p_jp","joyaPlata"],["p_ja","joyaAcero"],["p_nac","nacionaliz"],["p_caj","cajita"],["p_pap","papel"],["p_bol","bolsa"],
    ["p_env","costoEnvio"],["p_pp","pickpack"],["p_cs","cs"],["p_est","estructura"],["p_ppc","ppc"],["p_recup","ivaRecup"]]
    .forEach(function(a){document.getElementById(a[0]).textContent=pct(v(a[1]),sub);});
   const sV=document.getElementById("sumVenta");sV.textContent=fmt(r.clientePago)+" · "+pct(r.clientePago,sub);sV.className="sum pos";
