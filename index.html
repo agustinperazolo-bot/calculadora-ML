@@ -237,9 +237,12 @@ const P = {
   "2cora_full":   {n:"COLLAR 2CORA",        canal:"FULL",   precio:59990, iibb:2220, nacion:11929, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, alm:20, pub:1600, ivaJoya:2505, ivaCaja:184, ivaEnv:1055},
   "nudo_full":    {n:"COLLAR NUDO",         canal:"FULL",   precio:56990, iibb:2109, nacion:11808, caja:2434, tarj:110, arm:2880, cf:0,    env:6080, alm:20, pub:1600, ivaJoya:2480, ivaCaja:184, ivaEnv:1055},
   "pulsnudo_full":{n:"2x PULSERA NUDO",     canal:"FULL",   precio:44990, iibb:1665, nacion:4650,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, alm:20, pub:1600, ivaJoya:977, ivaCaja:0,   ivaEnv:975},
+"pulsnudo3_full":{n:"3x PULSERA NUDO",   canal:"FULL",   precio:59990, iibb:2220, nacion:6975,    caja:6768, tarj:110, arm:2880, cf:0,    env:6080, alm:20, pub:1600, ivaJoya:1465, ivaCaja:0,   ivaEnv:1055},
+"pulsnudo4_full":{n:"4x PULSERA NUDO",   canal:"FULL",   precio:69990, iibb:2590, nacion:9300,    caja:6768, tarj:110, arm:2880, cf:0,    env:6080, alm:20, pub:1600, ivaJoya:1953, ivaCaja:0,   ivaEnv:1055},
   "anillo_full":  {n:"ANILLO",              canal:"FULL",   precio:43990, iibb:1628, nacion:2144,    caja:6768, tarj:110, arm:2880, cf:0,    env:5620, alm:20, pub:1600, ivaJoya:450, ivaCaja:0,   ivaEnv:975},
+"anillo3_full": {n:"ANILLO x3",           canal:"FULL",   precio:59990, iibb:2220, nacion:3216,    caja:6768, tarj:110, arm:2880, cf:0,    env:6080, alm:20, pub:1600, ivaJoya:675, ivaCaja:0,   ivaEnv:1055},
   "forever_full": {n:"COLLAR FOREVER",      canal:"FULL",   precio:34990, iibb:1295, nacion:6900,    caja:2434, tarj:110, arm:2880, cf:0,    env:5620, alm:20, pub:1600, ivaJoya:1449, ivaCaja:184, ivaEnv:975},
-  "pulsera_full": {n:"PULSERA NUDO (acero)",canal:"FULL",   precio:24990, iibb:925,  nacion:2325,    caja:2434, tarj:110, arm:2880, cf:2455, env:0,    alm:20, pub:1600, ivaJoya:488, ivaCaja:184, ivaEnv:0},
+  "pulsera_full": {n:"PULSERA NUDO CAJITA" ,canal:"FULL",   precio:24990, iibb:925,  nacion:2325,    caja:2434, tarj:110, arm:2880, cf:2455, env:0,    alm:20, pub:1600, ivaJoya:488, ivaCaja:184, ivaEnv:0},
   "puls2cora_nf": {n:"PULSERA 2CORA inox",  canal:"NO FULL",precio:29990, iibb:1200, nacion:4458, caja:2434, tarj:110, arm:2880, cf:2230, env:0,    alm:0,  pub:1600, ivaJoya:936, ivaCaja:0,   ivaEnv:0},
   "cadena_nf":    {n:"CADENA",              canal:"NO FULL",precio:23740, iibb:878,  nacion:5002, caja:2434, tarj:200, arm:2880, cf:2300, env:0,    alm:0,  pub:1600, ivaJoya:1050, ivaCaja:189, ivaEnv:0},
   "martillo_full":{n:"MARTILLO",            canal:"FULL",   precio:20890, iibb:773,  nacion:8507,    caja:2434, tarj:200, arm:2160, cf:2455, env:0,    alm:0,  pub:1600, ivaJoya:1786, ivaCaja:189, ivaEnv:0}
@@ -348,7 +351,7 @@ function calc(){
 sel.addEventListener("change",function(e){load(e.target.value);renderProdGrid();});
 document.getElementById("reset").addEventListener("click",function(){load(sel.value);});
 ["precio","usd"].concat(FIELDS).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
-const ICONS={"2cora_full":"\uD83D\uDC9E","nudo_full":"\uD83E\uDEA2","pulsnudo_full":"\uD83D\uDCFF","anillo_full":"\uD83D\uDC8D","forever_full":"\uD83D\uDC9D","pulsera_full":"\uD83D\uDCFF","nudo_nofull":"\uD83E\uDEA2","2cora_nofull":"\uD83D\uDC9E","puls2cora_nf":"\uD83D\uDC95","pulsnudo_nf":"\uD83D\uDCFF","cadena_nf":"\u26D3\uFE0F","martillo_full":"\uD83D\uDD28"};
+const ICONS={"2cora_full":"\uD83D\uDC9E","nudo_full":"\uD83E\uDEA2","pulsnudo_full":"\uD83D\uDCFF","anillo_full":"\uD83D\uDC8D","forever_full":"\uD83D\uDC9D","pulsera_full":"\u2B1B","anillo3_full":"\uD83D\uDC8D","pulsnudo3_full":"\uD83D\uDCFF","pulsnudo4_full":"\uD83D\uDCFF","nudo_nofull":"\uD83E\uDEA2","2cora_nofull":"\uD83D\uDC9E","puls2cora_nf":"\uD83D\uDC95","pulsnudo_nf":"\uD83D\uDCFF","cadena_nf":"\u26D3\uFE0F","martillo_full":"\uD83D\uDD28"};
 function renderProdGrid(){
   const g=document.getElementById("prodGrid");g.innerHTML="";
   Object.keys(P).forEach(function(k){
@@ -379,7 +382,7 @@ fetch("precios_ml.json",{cache:"no-store"}).then(function(r){return r.json();}).
 // Costos de joya enlazados a la planilla (hoja "TN + PANEL") — se actualizan solos desde costos_joya.json.
 var JOYA_MAP={ // producto -> [tipo de joya, unidades]
   "2cora_full":["2cora",1], "nudo_full":["Nudo",1], "pulsnudo_full":["Puls Nudo",2],
-  "anillo_full":["Anillo",2], "forever_full":["Forever Love",1], "pulsera_full":["Puls Nudo",1],
+  "anillo_full":["Anillo",2], "forever_full":["Forever Love",1], "pulsera_full":["Puls Nudo",1], "anillo3_full":["Anillo",3], "pulsnudo3_full":["Puls Nudo",3], "pulsnudo4_full":["Puls Nudo",4],
   "nudo_nofull":["Nudo",1], "2cora_nofull":["2cora",1], "puls2cora_nf":["Puls 2c +ext",1],
   "pulsnudo_nf":["Puls Nudo",1], "cadena_nf":["Cadena",1], "martillo_full":["Martillo",1]
 };
