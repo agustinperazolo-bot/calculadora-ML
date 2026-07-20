@@ -115,6 +115,12 @@
   .pchip .pc{font-size:11.5px;color:var(--gold);font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
   .pchip .pc small{color:var(--tn);font-weight:700;margin-left:5px}
   .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:20px;line-height:1.7}
+  /* ===== Graficos ===== */
+  .chartbox{width:100%;overflow-x:auto;margin-top:10px}
+  .chartbox svg{width:100%;height:auto;display:block}
+  .ctog{display:flex;gap:6px;margin-top:8px}
+  .tbtn{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px}
+  .tbtn.sel{color:var(--gold);border-color:var(--gold)}
 </style>
 </head>
 <body>
@@ -225,7 +231,16 @@
       </div>
     </div>
   </div>
-  <div class="foot">
+  <div class="card">
+  <h2>Cascada del precio <span class="sum" id="wfSum"></span></h2>
+  <div class="chartbox" id="wfChart"></div>
+</div>
+<div class="card">
+  <h2>Comparativa de productos <span class="sum">rentabilidad final (con IVA recuperado)</span></h2>
+  <div class="ctog"><button type="button" class="tbtn sel" id="cmpPct">% margen</button><button type="button" class="tbtn" id="cmpAbs">$ por unidad</button></div>
+  <div class="chartbox" id="cmpChart"></div>
+</div>
+<div class="foot">
     Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta (21/121 del precio), la <b>Tarifa ML (16,3% del precio)</b> y el <b>Costo cuotas sin interés (5% del precio)</b> se calculan automáticamente; el IVA de comisión ML sale de esa comisión (21/121). El resto son montos fijos editables.<br>
     El costo se calcula por unidad vendida; si enviás más de una unidad, los costos de envío se suman.<br>
     <span id="mlSync"></span>
@@ -396,6 +411,92 @@ fetch("costos_joya.json",{cache:"no-store"}).then(function(r){return r.json();})
   var b=document.getElementById("mlSync");
   if(b&&d.actualizado&&b.innerHTML.indexOf("joya")<0) b.innerHTML+=(b.innerHTML?" · ":"")+"costos de joya s/planilla "+d.actualizado;
 }).catch(function(){});
+/* ===== Graficos (aislado: no modifica la logica existente) ===== */
+function chartVals(){
+  const precio=v("precio");
+  const ivaVenta=precio*0.21/1.21, tar=precio*MLFEE, ivaMl=tar*0.21/1.21;
+  const cuo=precio*0.05, arm=2*(v("usd")||1);
+  const imp=ivaVenta+v("iibb");
+  const cogs=v("nacion")+v("caja")+v("tarj")+arm;
+  const ml=tar+v("cf")+v("env")+cuo+v("alm");
+  const pub=v("pub");
+  const rent=precio-imp-cogs-ml-pub;
+  const recup=v("ivaJoya")+v("ivaCaja")+v("ivaEnv")+ivaMl;
+  return {precio:precio,imp:imp,cogs:cogs,ml:ml,pub:pub,recup:recup,rentIva:rent+recup};
+}
+function prodVals(k){
+  const d=P[k]; const usd=v("usd")||1;
+  const ivaVenta=d.precio*0.21/1.21, tar=d.precio*MLFEE, ivaMl=tar*0.21/1.21;
+  const cogs=d.nacion+d.caja+d.tarj+2*usd;
+  const ml=tar+d.cf+d.env+d.precio*0.05+d.alm;
+  const rent=d.precio-(ivaVenta+d.iibb)-cogs-ml-d.pub;
+  const rentIva=rent+d.ivaJoya+d.ivaCaja+d.ivaEnv+ivaMl;
+  return {k:k,n:d.n,canal:d.canal,precio:d.precio,rentIva:rentIva,pct:d.precio?rentIva/d.precio*100:0};
+}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function renderWaterfall(){
+  const el=document.getElementById("wfChart"); if(!el) return;
+  const c=chartVals();
+  const steps=[
+    {l:"Precio",val:c.precio,type:"start"},
+    {l:"Impuestos",val:-c.imp,type:"neg"},
+    {l:"COGS",val:-c.cogs,type:"neg"},
+    {l:"Costos ML",val:-c.ml,type:"neg"},
+    {l:"Publicidad",val:-c.pub,type:"neg"},
+    {l:"Recupero IVA",val:c.recup,type:"pos"},
+    {l:"Ganancia",val:c.rentIva,type:"end"}
+  ];
+  const W=760,H=300,padT=30,padB=40,padL=10;
+  const n=steps.length, bw=Math.floor((W-padL*2)/n*0.62), gap=(W-padL*2)/n;
+  const maxV=Math.max(c.precio,1); const sc=(H-padT-padB)/maxV;
+  let run=0, out="";
+  const colors={start:"var(--gold)",neg:"rgba(248,113,113,.75)",pos:"var(--green2)",end:(c.rentIva>=0?"var(--green)":"var(--red)")};
+  steps.forEach(function(s,i){
+    let y0,y1;
+    if(s.type==="start"||s.type==="end"){y0=0;y1=Math.abs(s.val);}
+    else {y0=Math.min(run,run+s.val);y1=Math.max(run,run+s.val);}
+    if(s.type==="start"){run=s.val;} else if(s.type!=="end"){run+=s.val;}
+    const x=padL+i*gap+(gap-bw)/2;
+    const yTop=H-padB-y1*sc, h=Math.max((y1-y0)*sc,2);
+    out+="<rect x=\""+x.toFixed(1)+"\" y=\""+yTop.toFixed(1)+"\" width=\""+bw+"\" height=\""+h.toFixed(1)+"\" rx=\"4\" fill=\""+colors[s.type]+"\"/>";
+    out+="<text x=\""+(x+bw/2)+"\" y=\""+(yTop-6)+"\" text-anchor=\"middle\" font-size=\"11\" fill=\"var(--ink2)\">"+(s.val<0?"\u2212":"")+"$"+fmt(Math.abs(s.val))+"</text>";
+    out+="<text x=\""+(x+bw/2)+"\" y=\""+(H-padB+16)+"\" text-anchor=\"middle\" font-size=\"11\" fill=\"var(--muted)\">"+s.l+"</text>";
+    if(i>0&&s.type!=="end"){out+="<line x1=\""+(x-((gap-bw)/2)).toFixed(1)+"\" y1=\""+(H-padB-run*sc- (s.val<0?0:0)).toFixed(1)+"\" x2=\""+x.toFixed(1)+"\" y2=\""+(H-padB-run*sc).toFixed(1)+"\" stroke=\"var(--line)\" stroke-dasharray=\"3 3\"/>";}
+  });
+  out+="<line x1=\"0\" y1=\""+(H-padB)+"\" x2=\""+W+"\" y2=\""+(H-padB)+"\" stroke=\"var(--line)\"/>";
+  el.innerHTML="<svg viewBox=\"0 0 "+W+" "+H+"\" xmlns=\"http://www.w3.org/2000/svg\">"+out+"</svg>";
+  const ws=document.getElementById("wfSum");
+  if(ws) ws.textContent="quedan $"+fmt(c.rentIva)+" de $"+fmt(c.precio)+" ("+(c.precio?(c.rentIva/c.precio*100).toFixed(1):0)+"%)";
+}
+let CMP_MODE="pct";
+function renderCompare(){
+  const el=document.getElementById("cmpChart"); if(!el) return;
+  const data=Object.keys(P).map(prodVals).sort(function(a,b){return CMP_MODE==="pct"?b.pct-a.pct:b.rentIva-a.rentIva;});
+  const rowH=26,labW=210,valW=110,W=760,H=data.length*rowH+10;
+  const maxV=Math.max.apply(null,data.map(function(d){return CMP_MODE==="pct"?Math.abs(d.pct):Math.abs(d.rentIva);}).concat([1]));
+  const barMax=W-labW-valW-10; let out="";
+  data.forEach(function(d,i){
+    const y=5+i*rowH, val=CMP_MODE==="pct"?d.pct:d.rentIva;
+    const w=Math.max(Math.abs(val)/maxV*barMax,1.5);
+    const col=d.pct<0?"var(--red)":(d.pct<10?"var(--amber)":"var(--green)");
+    const cur=(typeof SELECTED!=="undefined"&&d.k===SELECTED);
+    out+="<text x=\""+(labW-8)+"\" y=\""+(y+rowH/2+4)+"\" text-anchor=\"end\" font-size=\"11\" fill=\""+(cur?"var(--gold)":"var(--ink2)")+"\""+(cur?" font-weight=\"bold\"":"")+">"+esc((ICONS[d.k]||"")+" "+d.n+(d.canal==="NO FULL"?" \u00b7 NF":""))+"</text>";
+    out+="<rect x=\""+labW+"\" y=\""+(y+5)+"\" width=\""+w.toFixed(1)+"\" height=\""+(rowH-10)+"\" rx=\"4\" fill=\""+col+"\" opacity=\""+(cur?"1":"0.8")+"\"/>";
+    out+="<text x=\""+(labW+w+8)+"\" y=\""+(y+rowH/2+4)+"\" font-size=\"11\" fill=\"var(--ink2)\">"+(CMP_MODE==="pct"?val.toFixed(1)+"%":"$"+fmt(val))+"</text>";
+  });
+  el.innerHTML="<svg viewBox=\"0 0 "+W+" "+H+"\" xmlns=\"http://www.w3.org/2000/svg\">"+out+"</svg>";
+}
+function renderCharts(){try{renderWaterfall();renderCompare();}catch(e){}}
+(function(){
+  const bp=document.getElementById("cmpPct"), ba=document.getElementById("cmpAbs");
+  if(bp&&ba){bp.addEventListener("click",function(){CMP_MODE="pct";bp.classList.add("sel");ba.classList.remove("sel");renderCompare();});
+  ba.addEventListener("click",function(){CMP_MODE="abs";ba.classList.add("sel");bp.classList.remove("sel");renderCompare();});}
+  const _load=load; load=function(k){_load(k); renderCharts();};
+  ["precio","usd"].concat(FIELDS).forEach(function(id){var el=document.getElementById(id); if(el) el.addEventListener("input",renderCharts);});
+  sel.addEventListener("change",renderCharts);
+  var rb=document.getElementById("reset"); if(rb) rb.addEventListener("click",function(){setTimeout(renderCharts,0);});
+  renderCharts();
+})();
 </script>
 </body>
 </html>
