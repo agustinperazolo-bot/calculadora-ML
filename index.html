@@ -200,6 +200,8 @@
           <div class="metric"><div class="ml">Costo total por unidad</div><div class="mv" id="m_costo"></div><div class="mh" id="m_costo_h"></div></div>
           <div class="metric"><div class="ml">Markup s/ costo</div><div class="mv" id="m_markup"></div><div class="mh">precio ÷ costo prod.+ML+ads</div></div>
           <div class="metric"><div class="ml">Precio de equilibrio</div><div class="mv" id="m_be"></div><div class="mh">margen neto = 0</div></div>
+          <div class="metric"><div class="ml">Ventas 30d</div><div class="mv" id="m_v30">&mdash;</div><div class="mh">unidades/mes (ventas_30d.json)</div></div>
+          <div class="metric"><div class="ml">Ganancia mensual est.</div><div class="mv" id="m_mes">&mdash;</div><div class="mh" id="m_mes_h">rent. final x ventas 30d</div></div>
           <div class="metric"><div class="ml">Tope de publicidad</div><div class="mv" id="m_topePub"></div><div class="mh">máx. ads con margen 0</div></div>
         </div>
       </div>
@@ -237,7 +239,7 @@
 </div>
 <div class="card">
   <h2>Comparativa de productos <span class="sum">rentabilidad final (con IVA recuperado)</span></h2>
-  <div class="ctog"><button type="button" class="tbtn sel" id="cmpPct">% margen</button><button type="button" class="tbtn" id="cmpAbs">$ por unidad</button></div>
+  <div class="ctog"><button type="button" class="tbtn sel" id="cmpPct">% margen</button><button type="button" class="tbtn" id="cmpAbs">$ por unidad</button><button type="button" class="tbtn" id="cmpMes">$ ganancia/mes</button></div>
   <div class="chartbox" id="cmpChart"></div>
 </div>
 <div class="foot">
@@ -412,6 +414,8 @@ fetch("costos_joya.json",{cache:"no-store"}).then(function(r){return r.json();})
   if(b&&d.actualizado&&b.innerHTML.indexOf("joya")<0) b.innerHTML+=(b.innerHTML?" · ":"")+"costos de joya s/planilla "+d.actualizado;
 }).catch(function(){});
 /* ===== Graficos (aislado: no modifica la logica existente) ===== */
+let V30={}, V30_ACT="";
+fetch("ventas_30d.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){if(d&&d.ventas){V30=d.ventas;V30_ACT=d.actualizado||"";renderCharts();}}).catch(function(){});
 function chartVals(){
   const precio=v("precio");
   const ivaVenta=precio*0.21/1.21, tar=precio*MLFEE, ivaMl=tar*0.21/1.21;
@@ -471,26 +475,37 @@ function renderWaterfall(){
 let CMP_MODE="pct";
 function renderCompare(){
   const el=document.getElementById("cmpChart"); if(!el) return;
-  const data=Object.keys(P).map(prodVals).sort(function(a,b){return CMP_MODE==="pct"?b.pct-a.pct:b.rentIva-a.rentIva;});
+  const data=Object.keys(P).map(prodVals).sort(function(a,b){var va=CMP_MODE==="pct"?a.pct:CMP_MODE==="mes"?a.rentIva*(V30[a.k]||0):a.rentIva;var vb=CMP_MODE==="pct"?b.pct:CMP_MODE==="mes"?b.rentIva*(V30[b.k]||0):b.rentIva;return vb-va;});
   const rowH=26,labW=210,valW=110,W=760,H=data.length*rowH+10;
-  const maxV=Math.max.apply(null,data.map(function(d){return CMP_MODE==="pct"?Math.abs(d.pct):Math.abs(d.rentIva);}).concat([1]));
+  const maxV=Math.max.apply(null,data.map(function(d){return Math.abs(CMP_MODE==="pct"?d.pct:CMP_MODE==="mes"?d.rentIva*(V30[d.k]||0):d.rentIva);}).concat([1]));
   const barMax=W-labW-valW-10; let out="";
   data.forEach(function(d,i){
-    const y=5+i*rowH, val=CMP_MODE==="pct"?d.pct:d.rentIva;
+    const y=5+i*rowH, val=CMP_MODE==="pct"?d.pct:CMP_MODE==="mes"?d.rentIva*(V30[d.k]||0):d.rentIva;
     const w=Math.max(Math.abs(val)/maxV*barMax,1.5);
     const col=d.pct<0?"var(--red)":(d.pct<10?"var(--amber)":"var(--green)");
     const cur=(typeof SELECTED!=="undefined"&&d.k===SELECTED);
     out+="<text x=\""+(labW-8)+"\" y=\""+(y+rowH/2+4)+"\" text-anchor=\"end\" font-size=\"11\" fill=\""+(cur?"var(--gold)":"var(--ink2)")+"\""+(cur?" font-weight=\"bold\"":"")+">"+esc((ICONS[d.k]||"")+" "+d.n+(d.canal==="NO FULL"?" \u00b7 NF":""))+"</text>";
     out+="<rect x=\""+labW+"\" y=\""+(y+5)+"\" width=\""+w.toFixed(1)+"\" height=\""+(rowH-10)+"\" rx=\"4\" fill=\""+col+"\" opacity=\""+(cur?"1":"0.8")+"\"/>";
-    out+="<text x=\""+(labW+w+8)+"\" y=\""+(y+rowH/2+4)+"\" font-size=\"11\" fill=\"var(--ink2)\">"+(CMP_MODE==="pct"?val.toFixed(1)+"%":fmt(val))+"</text>";
+    out+="<text x=\""+(labW+w+8)+"\" y=\""+(y+rowH/2+4)+"\" font-size=\"11\" fill=\"var(--ink2)\">"+(CMP_MODE==="pct"?val.toFixed(1)+"%":CMP_MODE==="mes"?fmt(val)+" \u00b7 x"+(V30[d.k]||0):fmt(val))+"</text>";
   });
   el.innerHTML="<svg viewBox=\"0 0 "+W+" "+H+"\" xmlns=\"http://www.w3.org/2000/svg\">"+out+"</svg>";
 }
-function renderCharts(){try{renderWaterfall();renderCompare();}catch(e){}}
+function updateMensual(){
+  const c=chartVals(); const n=V30[SELECTED]||0;
+  const ev=document.getElementById("m_v30"); if(ev) ev.textContent=n? n+" u.":"sin dato";
+  const el=document.getElementById("m_mes");
+  if(el){ el.textContent=n? fmt(c.rentIva*n):"\u2014"; el.style.color=n?(c.rentIva>=0?"var(--green)":"var(--red)"):""; }
+  const h=document.getElementById("m_mes_h");
+  if(h) h.textContent=n? "rent. final "+fmt(c.rentIva)+" x "+n+" ventas"+(V30_ACT?" (al "+V30_ACT+")":"") : "sin ventas cargadas para este producto";
+}
+function renderCharts(){try{renderWaterfall();renderCompare();updateMensual();}catch(e){}}
 (function(){
   const bp=document.getElementById("cmpPct"), ba=document.getElementById("cmpAbs");
-  if(bp&&ba){bp.addEventListener("click",function(){CMP_MODE="pct";bp.classList.add("sel");ba.classList.remove("sel");renderCompare();});
-  ba.addEventListener("click",function(){CMP_MODE="abs";ba.classList.add("sel");bp.classList.remove("sel");renderCompare();});}
+  const bm=document.getElementById("cmpMes");
+  function setMode(m,btn){CMP_MODE=m;[bp,ba,bm].forEach(function(b){if(b)b.classList.remove("sel")});btn.classList.add("sel");renderCompare();}
+  if(bp)bp.addEventListener("click",function(){setMode("pct",bp)});
+  if(ba)ba.addEventListener("click",function(){setMode("abs",ba)});
+  if(bm)bm.addEventListener("click",function(){setMode("mes",bm)});
   const _load=load; load=function(k){_load(k); renderCharts();};
   ["precio","usd"].concat(FIELDS).forEach(function(id){var el=document.getElementById(id); if(el) el.addEventListener("input",renderCharts);});
   sel.addEventListener("change",renderCharts);
