@@ -242,6 +242,7 @@ const PAYF=["desc","comision","cuotas","mpago","estructura"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
 const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
 let USD=1430, cmpMode="neto";
+const ENVIO_MIN=45000, ENVIO_STD=8500; // envío gratis si el precio < $45.000
 const ud=n=>"US$ "+(n/(USD||1)).toLocaleString("es-AR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
 const v=id=>parseFloat(document.getElementById(id).value)||0;
@@ -268,7 +269,7 @@ function scenario(s, pay){
   const iibb=totalNeto*s.iibbPct/100;
   const dpi=totalNeto-iva-iibb;
   const cogs=s.joyaPlata+s.joyaAcero+s.nacionaliz+s.cajita+s.papel+s.bolsa;
-  const ops=s.costoEnvio+s.pickpack+s.cs+pay.estructura+s.otrosTN+s.telefono;
+  const ops=(s.subtotal<ENVIO_MIN?0:ENVIO_STD)+s.pickpack+s.cs+pay.estructura+s.otrosTN+s.telefono;
   const publi=s.ppc;
   const rent=dpi-cogs-ops-publi;
   const rentIva=rent+s.ivaRecup;
@@ -285,6 +286,7 @@ function breakevenPrice(s,mk){
 }
 function calc(){
   USD=v("usd")||1;
+  document.getElementById("costoEnvio").value = v("subtotal")<ENVIO_MIN?0:ENVIO_STD;
   const s=readShared(), pay=readPay();
   const r=scenario(s,pay);
   const sub=s.subtotal;
