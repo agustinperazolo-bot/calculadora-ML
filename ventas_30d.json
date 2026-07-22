@@ -1,22 +1,22 @@
 {
-  "actualizado": "2026-07-20",
-  "fuente": "Resumen stock Mercado Full por joya, datos jun-2026 (skill resumen-stock-ml)",
-  "nota": "Ventas de los ultimos 30 dias por publicacion. Valores iniciales estimados desde el resumen por tipo de joya; editar a mano o via tarea diaria. Productos nuevos arrancan en 0.",
+  "actualizado": "2026-07-22",
+  "fuente": "Mix de ventas ML por joya, julio 2026 (1-22 jul, dashboard MIXML), prorrateado a 30 dias",
+  "nota": "Ventas de los ultimos 30 dias por publicacion, estimadas desde el mix real de julio 2026 (x30/22). Productos sin desglose propio por cantidad de unidades del estuche (x3/x4) quedan en 0, todo el volumen va a la variante base. Frasquito y Pelota no tienen producto en la calculadora.",
   "ventas": {
-    "2cora_full": 114,
-    "nudo_full": 84,
-    "pulsnudo_full": 11,
-    "anillo_full": 14,
-    "forever_full": 0,
-    "pulsera_full": 42,
+    "2cora_full": 198,
+    "nudo_full": 75,
+    "pulsnudo_full": 85,
+    "anillo_full": 34,
+    "forever_full": 46,
+    "pulsera_full": 60,
     "anillo3_full": 0,
     "pulsnudo3_full": 0,
     "pulsnudo4_full": 0,
     "nudo_nofull": 0,
     "2cora_nofull": 0,
-    "puls2cora_nf": 18,
+    "puls2cora_nf": 23,
     "pulsnudo_nf": 0,
-    "cadena_nf": 7,
-    "martillo_full": 8
+    "cadena_nf": 0,
+    "martillo_full": 4
   }
 }
