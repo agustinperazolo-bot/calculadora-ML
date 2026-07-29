@@ -172,6 +172,11 @@
   .pxax span{flex:1;text-align:center;font-size:9.5px;font-weight:600;letter-spacing:-.2px;white-space:nowrap;color:var(--muted);line-height:1}
   .pxax span.cur{color:var(--violet);font-weight:800}
   .plbl{display:flex;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:6px}
+  .years{display:flex;align-items:center;gap:7px;margin:0 0 10px}
+  .years .ylbl{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#8b93ab;font-weight:700;margin-right:3px}
+  .ybtn{font:inherit;font-size:13px;font-weight:800;letter-spacing:.3px;color:#c7cde0;background:#151926;border:1px solid #323a50;border-radius:10px;padding:7px 16px;cursor:pointer;transition:all .15s ease}
+  .ybtn:hover{border-color:#e8c46a;color:#e8c46a}
+  .ybtn.on{background:linear-gradient(180deg,#e8c46a,#c9a34a);border-color:#e8c46a;color:#141824;box-shadow:0 3px 10px rgba(232,196,106,.25)}
 </style>
 </head>
 <body>
@@ -181,31 +186,40 @@
       <div class="logo">SF</div>
       <div>
         <h1>Dashboard Financiero · Sofia Ferrer Chile</h1>
-        <div class="sub">Fuente: CHILE - Finance 2026 · datos al <b>29/07/2026</b> · TC USD/CLP <b>931</b> · Último mes en curso (parcial)</div>
+        <div class="sub">Fuente: CHILE - Finance · datos al <b>29/07/2026</b> · TC USD/CLP <b id="tcnote">931</b> · 2026 con último mes en curso (parcial) · 2025 año cerrado</div>
       </div>
+    </div>
+    <div class="years">
+      <span class="ylbl">Año</span>
+      <button id="yb_2026" class="ybtn on" onclick="showYear('2026')">2026</button>
+      <button id="yb_2025" class="ybtn" onclick="showYear('2025')">2025</button>
     </div>
     <div class="tabs">
       <button id="bt_sh" class="on t-tn" onclick="show('sh')">Shopify</button>
       <button id="bt_ml" class="t-ml" onclick="show('ml')">Mercado Libre</button>
       <button id="bt_cl" class="t-sf" onclick="show('cl')">Consolidado CHILE</button>
+      <button id="bt_sh25" class="t-tn" onclick="show('sh25')">Shopify 2025</button>
     </div>
   </header>
   <div id="srcchip"></div>
   <div id="tab_sh" class="tab show"></div>
   <div id="tab_ml" class="tab"></div>
   <div id="tab_cl" class="tab"></div>
-  <div class="foot">Chileteca SpA · montos en CLP (USD al TC 931) · generado el 29/07/2026</div>
+  <div class="foot">Chileteca SpA · montos en CLP (USD al TC 921) · generado el 29/07/2026</div>
 </div>
 <script>
 /* ===== DASHBOARD CHILE · datos ===== */
-const USD=931; // CLP por USD (hoja ML Finz 26 / CHILETECA 26)
+let USD=931; // CLP por USD (2026: hoja ML Finz 26 · 2025: hoja $ chi EERR-25 = 921)
+const TC_YEAR={"2026":931,"2025":921};
 const usd=n=>"US$ "+Math.round(n/USD).toLocaleString("es-CL");
 const DATA={
 "shop":{partial:true,months:["Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26","Jul-26"],envios:[101,169,76,96,76,33,41],pventa:[34156,31461,34833,31016,32090,31850,34353],ventas:[3449756,5316909,2647308,2977536,2438840,1051050,1408473],cv:[1870099,2824577,1559144,1907122,1600419,748142,852668],margenBruto:[1579657,2492332,1088164,1070414,838421,302908,555805],corpo:[87053,87053,87053,87053,87053,87053,87053],resBruto:[1492604,2405279,1001111,983361,751368,215855,468752],resNeto:[1492604,2405279,1001111,983361,751368,215855,468752],struct:[["CMV SF Chile",7310892,"#f59e0b"],["Facebook Ads",2865470,"#ec4899"],["Shopify / Apps",628331,"#38bdf8"],["Comisiones MP",557477,"#a855f7"],["Costos Corporativos",609371,"#0ea5e9"]],fisco:2216436,ivaRecup:812615},
 "ml":{partial:true,months:["Dic-25","Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26","Jul-26"],envios:[78,9,37,18,45,85,35,55],pventa:[30660,30477,27662,30396,28778,29471,25414,27809],ventas:[2391500,274295,1023500,547133,1295016,2505044,889500,1529500],devol:[0,0,0,0,0,58180,29990,45589],margenBruto:[1674050,193697,728510,392817,915523,1698552,601657,1038738],resBruto:[1034186,119866,424985,245156,458492,888232,205178,486527],resNeto:[738946,85721,296616,175970,315100,613235,106218,316665],dividendo:[246315,28574,98872,58657,105033,204412,35406,105555],struct:[["Costos ML (comisión+envío)",3078185,"#38bdf8"],["Costo JOYA",1694160,"#f59e0b"],["Costo Armado",640500,"#10b981"],["Costo Cajita",593021,"#eab308"],["Publicidad",513800,"#ec4899"],["Devoluciones",133759,"#ef4444"],["Costo Insumos",73200,"#84cc16"]],fisco:1214151,ivaRecup:514056},
 "cl":{partial:true,months:["Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26","Jul-26"],enviosSH:[101,169,76,96,76,33,41],enviosML:[9,37,18,45,85,35,55],ventas:[3724051,6340409,3194441,4272552,4885704,1910560,2892384],resBruto:[1626249,2785962,1201965,1397551,1537118,346741,865388],resNeto:[1156518,1986218,799036,858635,920862,105753,500559],dividendo:[385506,662073,266345,286212,306954,35251,166853],struct:[["Producto",9109828,"#f59e0b"],["Costos Publi",3379270,"#ec4899"],["Costos ML",2360735,"#38bdf8"],["Costos Shopify",1185809,"#1e6fb8"],["Corporativos",919485,"#64748b"],["Armado ML",504000,"#10b981"]],fisco:3433392,ivaRecup:912674}
 };
-const SRC={sh:"CHILE Finance · hoja $ chi EERR-26",ml:"CHILE Finance · hoja ML Finz 26",cl:"CHILE Finance · hoja CHILETECA 26"};
+
+DATA.shop25={partial:false,months:["Ene-25","Feb-25","Mar-25","Abr-25","May-25","Jun-25","Jul-25","Ago-25","Sep-25","Oct-25","Nov-25","Dic-25"],envios:[85,177,98,117,82,116,79,107,100,163,326,257],pventa:[36370,32647,32509,35682,33183,32325,32166,32793,31490,33369,33013,38111],ventas:[3091450,5778519,3185882,4174794,2721006,3749700,2541114,3508851,3149000,5439147,10762238,9794527],cv:[1657555,3002220,1819556,2090934,1452187,2043444,1597998,1744475,1731138,2599220,5086784,4366228],margenBruto:[1433895,2776299,1366326,2083860,1268819,1706256,943116,1764376,1417862,2839927,5675454,5428299],corpo:[87053,87053,87053,87053,87053,87053,87053,87053,87053,87053,87053,87053],resBruto:[1346842,2689246,1279273,1996807,1181766,1619203,856063,1677323,1330809,2752874,5588401,5341246],resNeto:[1346842,2689246,1279273,1996807,1181766,1619203,856063,1677323,1330809,2752874,5588401,5341246],struct:[["CMV SF Chile",19935333,"#f59e0b"],["Facebook Ads",6007854,"#ec4899"],["Comisiones MP",1673201,"#a855f7"],["Shopify / Apps",1575352,"#38bdf8"],["Costos Corporativos",1044636,"#0ea5e9"]],fisco:7252839,ivaRecup:2010558};
+const SRC={sh25:"CHILE Finance · hoja $ chi EERR-25",sh:"CHILE Finance · hoja $ chi EERR-26",ml:"CHILE Finance · hoja ML Finz 26",cl:"CHILE Finance · hoja CHILETECA 26"};
 function setSrc(k){const el=document.getElementById("srcchip");if(!el)return;const b=document.querySelector(".sub b");el.innerHTML=`\u{1F4C4} Fuente: <b>${SRC[k]||""}</b> · datos al <b>${b?b.textContent:""}</b>`;}
 
 const sum=a=>a.reduce((x,y)=>x+y,0);
@@ -320,7 +334,7 @@ function costBreakdown(struct, vT, rnT){
   const bal=Math.max(vT-totC-rnT,0);
   const pct=v=>v/vT*100;
   const segs=struct.map(it=>[it[0],it[1],it[2]]);
-  segs.push(["Impuestos y otros",bal,"#64748b"]);
+  if(bal>0)segs.push(["Impuestos y otros",bal,"#64748b"]);
   segs.sort((a,b)=>b[1]-a[1]);
   let bar='<div class="cbar">';
   segs.forEach(it=>{const w=pct(it[1]);bar+=`<div class="cseg" style="width:${w}%;background:${it[2]}"><span>${w>=7?Math.round(w)+'%':''}</span><div class="ctip">${it[0]}: ${f0(it[1])} · ${w.toFixed(1)}% de ventas</div></div>`;});
@@ -408,14 +422,46 @@ function renderCLT(){
   ])+`<div class="note">Fuente: hoja "CHILETECA 26". Ventas consolidadas netas de devoluciones ML. Shopify aporta ${pc(sum(DATA.shop.ventas),vT)} de la facturación del período y ML el resto. Dividendo /3 = reparto por socio (Chileteca SpA).</div></div>`;
   document.getElementById("tab_cl").innerHTML=h;
 }
+function renderSH25(){
+  USD=TC_YEAR["2025"];
+  const d=DATA.shop25, vT=sum(d.ventas), rnT=sum(d.resNeto), enT=sum(d.envios);
+  const best=d.ventas.indexOf(Math.max(...d.ventas));
+  const h1=d.ventas.slice(0,6).reduce((a,b)=>a+b,0), h2=d.ventas.slice(6).reduce((a,b)=>a+b,0);
+  let h=kpiHtml([
+    {l:"Facturación 2025 · año cerrado",v:usd(vT),s:f0(vT),k:"k-gold"},
+    {l:"Resultado Neto 2025",v:usd(rnT),cls:rnT<0?"neg":"pos",s:pc(rnT,vT)+" margen · "+f0(rnT),k:"k-blue"},
+    {l:"Pedidos 2025",v:enT.toLocaleString("es-CL")+" ped.",s:"ticket promedio "+f0(vT/enT)},
+    {l:"Mejor mes",v:d.months[best],s:f0(d.ventas[best])+" · "+d.envios[best]+" ped."},
+    {l:"2do semestre vs 1ro",v:deltaTag(h2,h1),s:f0(h1)+" → "+f0(h2),k:"k-curso"}
+  ]);
+  h+='<div class="grid2">'+chartCard("Facturación · Pedidos · Margen (Shopify 2025)",d,"#38bdf8").replace(/<span><i class="hatch"><\/i>Mes en curso<\/span>/,"")+
+     `<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos 2025 · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
+  h+=`<div class="card"><h2><span class="dot" style="background:#38bdf8"></span>Detalle mensual · Shopify 2025</h2>`+chanTable(d)+
+     `<div class="note">Fuente: hoja "$ chi EERR-25" · año completo y cerrado (sin mes parcial). TC USD/CLP 921 (el de esa planilla). IVA a recuperar ${f0(d.ivaRecup)} · al fisco ${f0(d.fisco)}. En 2025 Mercado Libre Chile todavía no operaba salvo Dic-25, que se muestra en la pestaña ML de 2026.</div></div>`;
+  document.getElementById("tab_sh25").innerHTML=h;
+  USD=TC_YEAR["2026"];
+}
+const YEAR_TABS={"2026":["sh","ml","cl"],"2025":["sh25"]};
+let CURY="2026";
+function showYear(y){
+  CURY=y;
+  ["2026","2025"].forEach(k=>document.getElementById("yb_"+k).classList.toggle("on",k===y));
+  Object.keys(YEAR_TABS).forEach(k=>YEAR_TABS[k].forEach(t=>{
+    const b=document.getElementById("bt_"+t); if(b) b.style.display=(k===y?"":"none");
+  }));
+  const tc=TC_YEAR[y].toLocaleString("es-CL");
+  const el=document.getElementById("tcnote"); if(el) el.textContent=tc;
+  show(YEAR_TABS[y][0]);
+}
 function show(k){
-  ["sh","ml","cl"].forEach(t=>{
-    document.getElementById("tab_"+t).classList.toggle("show",t===k);
-    document.getElementById("bt_"+t).classList.toggle("on",t===k);
+  ["sh","ml","cl","sh25"].forEach(t=>{
+    const tb=document.getElementById("tab_"+t), bb=document.getElementById("bt_"+t);
+    if(tb) tb.classList.toggle("show",t===k);
+    if(bb) bb.classList.toggle("on",t===k);
   });
   setSrc(k);
 }
-renderSH();renderMLC();renderCLT();setSrc("sh");
+renderSH();renderMLC();renderCLT();renderSH25();showYear("2026");
 
 </script>
 </body>
