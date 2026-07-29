@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Financiero · Sofia Ferrer Chile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d14; --bg2:#0e1119; --panel:#151926; --panel2:#1b2030; --line:#262c3d; --line2:#323a50;
+    --ink:#eef1f8; --ink2:#c7cde0; --muted:#8b93ab; --faint:#5b647d;
+    --gold:#e8c46a; --gold2:#c79a3a; --violet:#a78bfa; --violet2:#7c3aed;
+    --tn:#38bdf8; --ml:#fbbf24; --sf:#a78bfa;
+    --green:#34d399; --green2:#10b981; --red:#f87171; --amber:#fbbf24;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg)}
+  body{font-family:'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:var(--ink);line-height:1.45;
+    padding:28px 20px 40px;background:
+      radial-gradient(1200px 500px at 80% -10%, rgba(124,58,237,.16), transparent 60%),
+      radial-gradient(900px 500px at -5% 0%, rgba(56,189,248,.10), transparent 55%),
+      var(--bg);min-height:100vh}
+  .wrap{max-width:1240px;margin:0 auto}
+  /* HEADER */
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-content:space-between;
+    margin-bottom:22px;padding:14px 0 20px;border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:80;background:rgba(11,13,20,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:52px;height:52px;border-radius:14px;
+    background:linear-gradient(135deg,#7c3aed 0%,#38bdf8 100%);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:17px;
+    box-shadow:0 6px 18px rgba(124,58,237,.45);letter-spacing:.5px}
+  h1{font-size:21px;font-weight:700;letter-spacing:-.2px}
+  h1,.kpi .v,.pcard .ptot,.tabs button,.logo{font-family:'Space Grotesk','Inter','Segoe UI',Roboto,sans-serif}
+  body{font-feature-settings:'cv02','cv03','cv04';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .kpi .v{letter-spacing:-.3px}
+  .tabs button{letter-spacing:.2px}
+  .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .sub b{color:var(--gold);font-weight:600}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap}
+  .tabs button{border:1px solid var(--line2);background:var(--panel);border-radius:11px;
+    padding:10px 18px;font-weight:600;font-size:13.5px;cursor:pointer;color:var(--ink2);
+    transition:all .18s ease;display:flex;align-items:center;gap:7px}
+  .tabs button:hover{border-color:var(--violet);color:#fff}
+  .tabs button.on{color:#0b0d14;border-color:transparent;font-weight:700}
+  .tabs button.on.t-tn{background:linear-gradient(135deg,#38bdf8,#0ea5e9)}
+  .tabs button.on.t-ml{background:linear-gradient(135deg,#fbbf24,#e8c46a);color:#231a02}
+  .tabs button.on.t-sf{background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff}
+  .tabs button.on.t-fs{background:linear-gradient(135deg,#34d399,#10b981);color:#06281c}
+  .tabs button.on.t-im{background:linear-gradient(135deg,#fb923c,#ea7317);color:#2a1503}
+  .bdg{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:700;white-space:nowrap}
+  .bok{background:rgba(52,211,153,.15);color:#34d399}
+  .bcam{background:rgba(251,191,36,.16);color:#fbbf24}
+  .tab{display:none;animation:fade .35s ease}
+  .tab.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:13px;margin-bottom:18px}
+  .kpi{position:relative;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--line);border-radius:16px;padding:15px 17px;overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--violet)}
+  .kpi.k-gold::before{background:var(--gold)} .kpi.k-green::before{background:var(--green)}
+  .kpi.k-red::before{background:var(--red)} .kpi.k-blue::before{background:var(--tn)}
+  .kpi .l{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.6px}
+  .kpi .v{font-size:25px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .kpi .s{font-size:11.5px;color:var(--ink2);margin-top:3px;font-variant-numeric:tabular-nums}
+  .kpi .v.pos{color:var(--green)} .kpi .v.neg{color:var(--red)}
+  .kpi.k-curso{background:linear-gradient(180deg,rgba(124,58,237,.24),rgba(124,58,237,.05));border-color:rgba(167,139,250,.45)}
+  .kpi.k-curso::before{background:var(--violet);width:4px}
+  .kpi.k-curso .l{color:var(--violet)}
+  .kpi.k-steel::before{background:#94a3b8}
+  .kpi.k-lead::before{background:#fb923c}
+  .kpi:hover{transform:translateY(-2px);border-color:var(--line2);box-shadow:0 10px 24px rgba(0,0,0,.4)}
+  /* CARDS */
+  .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:18px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow);transition:border-color .2s ease}
+  .card:hover{border-color:var(--line2)}
+  .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--ink2);font-weight:700;
+    margin:-3px -5px 16px;display:flex;align-items:center;gap:8px;padding:9px 13px;
+    background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(255,255,255,.012));
+    border:1px solid var(--line);border-left:3px solid var(--violet);border-radius:9px}
+  .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--violet)}
+  .grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}}
+  /* TABLES */
+  table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+  th,td{padding:7px 9px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700}
+  tbody tr:hover{background:rgba(124,58,237,.07)}
+  tr.tot td{font-weight:800;border-top:2px solid var(--line2);background:rgba(255,255,255,.03);color:#fff}
+  tr.partial td{color:var(--muted);font-style:italic;background:repeating-linear-gradient(45deg,rgba(124,58,237,.05),rgba(124,58,237,.05) 6px,transparent 6px,transparent 12px)}
+  .tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+    padding:2px 6px;border-radius:5px;background:rgba(167,139,250,.18);color:var(--violet);
+    border:1px solid rgba(167,139,250,.35);margin-left:6px;font-style:normal}
+  .neg{color:var(--red)} .pos{color:var(--green)}
+  .tbl-wrap{overflow-x:auto}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:10px}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:middle}
+  .legend .hatch{background:repeating-linear-gradient(45deg,var(--violet),var(--violet) 3px,transparent 3px,transparent 6px)}
+  /* COST STRUCTURE */
+  .struct{display:flex;flex-direction:column;gap:9px}
+  .struct .srow{display:flex;align-items:center;gap:12px}
+  .struct .sname{width:165px;font-size:12px;color:var(--ink2)}
+  .struct .strack{flex:1;background:rgba(255,255,255,.05);border-radius:7px;height:22px;overflow:hidden}
+  .struct .sfill{height:100%;border-radius:7px;transition:width .6s ease}
+  .struct .sval{width:155px;text-align:right;font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums}
+  .struct .sval small{color:var(--muted);font-weight:500}
+  .struct-sm{gap:5px}
+  .struct-sm .srow{gap:10px}
+  .struct-sm .sname{width:120px;font-size:11px}
+  .struct-sm .strack{height:14px;border-radius:5px}
+  .struct-sm .sfill{border-radius:5px}
+  .struct-sm .sval{width:115px;font-size:10.5px}
+  .sub-h{font-size:11.5px;font-weight:800;color:var(--ink);margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+  .sub-h .sq{width:9px;height:9px;border-radius:2px}
+  .cnar{font-size:12.5px;color:var(--ink2);background:rgba(52,211,153,.08);border-left:3px solid #34d399;padding:10px 13px;border-radius:0 9px 9px 0;margin-bottom:15px;line-height:1.55}
+  .cnar b{color:var(--ink)}
+  .cbar{display:flex;width:100%;height:40px;border-radius:9px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+  .cseg{position:relative;height:100%;display:flex;align-items:center;justify-content:center;min-width:2px;cursor:default}
+  .cseg span{font-size:12.5px;font-weight:800;color:#fff;text-shadow:0 0 3px rgba(0,0,0,.85),0 1px 2px rgba(0,0,0,.9);letter-spacing:.2px}
+  .cseg.cmarg span{color:#fff;text-shadow:0 0 3px rgba(0,0,0,.8),0 1px 2px rgba(0,0,0,.9)}
+  .cseg:hover{filter:brightness(1.15)}
+  .cseg .ctip{display:none;position:absolute;bottom:125%;left:50%;transform:translateX(-50%);background:#06070c;border:1px solid var(--line2);color:var(--ink);font-size:10.5px;padding:6px 9px;border-radius:7px;white-space:nowrap;z-index:6;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+  .cseg:hover .ctip{display:block}
+  .cbarcap{font-size:10.5px;color:var(--muted);text-align:center;margin:9px 0 14px}
+  .clist{display:flex;flex-direction:column}
+  .crow{display:grid;grid-template-columns:15px 1fr 56px auto;gap:11px;align-items:center;padding:7px 4px;border-bottom:1px solid var(--line);font-size:12px}
+  .crow:hover{background:rgba(124,58,237,.06)}
+  .cdot{width:12px;height:12px;border-radius:3px}
+  .cname{color:var(--ink2)} .cpct{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right;font-weight:600} .camt{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+  .cmargrow{border-top:2px solid var(--line2);border-bottom:none;margin-top:2px;background:rgba(52,211,153,.07)}
+  .cmargrow .cname{color:#34d399;font-weight:800} .cmargrow .camt,.cmargrow .cpct{color:#34d399}
+  .note{font-size:11px;color:var(--muted);margin-top:8px;padding:8px 11px;background:rgba(167,139,250,.07);
+    border-left:2px solid var(--violet);border-radius:0 8px 8px 0}
+  .foot{font-size:11px;color:var(--faint);text-align:center;margin-top:22px;line-height:1.7;color:var(--muted)}
+  .tabs button.on.t-pt{background:linear-gradient(135deg,#f472b6,#db2777);color:#2a0712}
+  .tabs button.on.t-rf{background:linear-gradient(135deg,#c4b5fd,#8b5cf6);color:#1e1138}
+  .tabs button.on.t-ch{background:linear-gradient(135deg,#f87171,#dc2626);color:#fff}
+  .tabs button.on.t-sq{background:linear-gradient(135deg,#2dd4bf,#0d9488);color:#03332c}
+  .tbl-wrap{position:relative}
+  .csvbtn{position:absolute;top:5px;right:6px;z-index:3;font-size:10px;font-weight:700;color:var(--ink2);background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:3px 8px;cursor:pointer;opacity:.75}
+  .csvbtn:hover{color:var(--gold);border-color:var(--gold);opacity:1}
+  #srcchip{font-size:11px;color:var(--muted);margin:-4px 0 14px;padding:6px 11px;border:1px dashed var(--line2);border-radius:9px;display:inline-block}
+  #srcchip b{color:var(--ink2)}
+  .flowrow{display:flex;gap:10px;align-items:stretch;margin:12px 0 14px;flex-wrap:wrap}
+  .flowbox{flex:1;min-width:150px;background:var(--panel2);border:1px solid var(--line2);border-radius:12px;padding:10px 12px}
+  .flowbox .fl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .flowbox .fv{font-size:20px;font-weight:800;margin-top:4px;font-family:'Space Grotesk','Inter',sans-serif}
+  .flowbox .fs{font-size:11px;color:var(--muted);margin-top:2px}
+  .farr{align-self:center;color:var(--faint);font-size:18px;font-weight:800}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px}
+  .pcard{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:13px 14px;transition:transform .18s ease,border-color .18s ease}
+  .pcard:hover{transform:translateY(-2px);border-color:var(--line2)}
+  .pcard .ph{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .pcard .pic{font-size:16px}
+  .pcard .pnm{font-size:12.5px;font-weight:700;color:var(--ink)}
+  .pcard .ptot{margin-left:auto;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+  .pbars{display:flex;align-items:flex-end;gap:3px;height:44px}
+  .pbars .pb{flex:1;border-radius:3px 3px 0 0;min-height:2px;opacity:.9;transition:filter .15s}
+  .pbars .pb.cur{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.3),rgba(255,255,255,.3) 2px,transparent 2px,transparent 4px)}
+  .pbars .pb:hover{filter:brightness(1.3)}
+  .pcard .ph{align-items:baseline}
+  .pcard .ppct{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:5px;background:rgba(255,255,255,.06);color:var(--muted);margin-left:6px}
+  .pchart{display:flex;gap:6px;align-items:stretch;margin-top:2px}
+  .pyax{display:flex;flex-direction:column;justify-content:space-between;height:44px;min-width:22px;font-size:10px;font-weight:600;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums;line-height:1}
+  .pbarwrap{flex:1;min-width:0}
+  .pxax{display:flex;gap:1px;margin-top:4px}
+  .pxax span{flex:1;text-align:center;font-size:9.5px;font-weight:600;letter-spacing:-.2px;white-space:nowrap;color:var(--muted);line-height:1}
+  .pxax span.cur{color:var(--violet);font-weight:800}
+  .plbl{display:flex;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">SF</div>
+      <div>
+        <h1>Dashboard Financiero · Sofia Ferrer Chile</h1>
+        <div class="sub">Fuente: CHILE - Finance 2026 · datos al <b>29/07/2026</b> · TC USD/CLP <b>931</b> · Último mes en curso (parcial)</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button id="bt_sh" class="on t-tn" onclick="show('sh')">Shopify</button>
+      <button id="bt_ml" class="t-ml" onclick="show('ml')">Mercado Libre</button>
+      <button id="bt_cl" class="t-sf" onclick="show('cl')">Consolidado CHILE</button>
+    </div>
+  </header>
+  <div id="srcchip"></div>
+  <div id="tab_sh" class="tab show"></div>
+  <div id="tab_ml" class="tab"></div>
+  <div id="tab_cl" class="tab"></div>
+  <div class="foot">Chileteca SpA · montos en CLP (USD al TC 931) · generado el 29/07/2026</div>
+</div>
+<script>
+/* ===== DASHBOARD CHILE · datos ===== */
+const USD=931; // CLP por USD (hoja ML Finz 26 / CHILETECA 26)
+const usd=n=>"US$ "+Math.round(n/USD).toLocaleString("es-CL");
+const DATA={
+"shop":{partial:true,months:["Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26","Jul-26"],envios:[101,169,76,96,76,33,41],pventa:[34156,31461,34833,31016,32090,31850,34353],ventas:[3449756,5316909,2647308,2977536,2438840,1051050,1408473],cv:[1870099,2824577,1559144,1907122,1600419,748142,852668],margenBruto:[1579657,2492332,1088164,1070414,838421,302908,555805],corpo:[87053,87053,87053,87053,87053,87053,87053],resBruto:[1492604,2405279,1001111,983361,751368,215855,468752],resNeto:[1492604,2405279,1001111,983361,751368,215855,468752],struct:[["CMV SF Chile",7310892,"#f59e0b"],["Facebook Ads",2865470,"#ec4899"],["Shopify / Apps",628331,"#38bdf8"],["Comisiones MP",557477,"#a855f7"],["Costos Corporativos",609371,"#0ea5e9"]],fisco:2216436,ivaRecup:812615},
+"ml":{partial:true,months:["Dic-25","Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26","Jul-26"],envios:[78,9,37,18,45,85,35,55],pventa:[30660,30477,27662,30396,28778,29471,25414,27809],ventas:[2391500,274295,1023500,547133,1295016,2505044,889500,1529500],devol:[0,0,0,0,0,58180,29990,45589],margenBruto:[1674050,193697,728510,392817,915523,1698552,601657,1038738],resBruto:[1034186,119866,424985,245156,458492,888232,205178,486527],resNeto:[738946,85721,296616,175970,315100,613235,106218,316665],dividendo:[246315,28574,98872,58657,105033,204412,35406,105555],struct:[["Costos ML (comisión+envío)",3078185,"#38bdf8"],["Costo JOYA",1694160,"#f59e0b"],["Costo Armado",640500,"#10b981"],["Costo Cajita",593021,"#eab308"],["Publicidad",513800,"#ec4899"],["Devoluciones",133759,"#ef4444"],["Costo Insumos",73200,"#84cc16"]],fisco:1214151,ivaRecup:514056},
+"cl":{partial:true,months:["Ene-26","Feb-26","Mar-26","Abr-26","May-26","Jun-26","Jul-26"],enviosSH:[101,169,76,96,76,33,41],enviosML:[9,37,18,45,85,35,55],ventas:[3724051,6340409,3194441,4272552,4885704,1910560,2892384],resBruto:[1626249,2785962,1201965,1397551,1537118,346741,865388],resNeto:[1156518,1986218,799036,858635,920862,105753,500559],dividendo:[385506,662073,266345,286212,306954,35251,166853],struct:[["Producto",9109828,"#f59e0b"],["Costos Publi",3379270,"#ec4899"],["Costos ML",2360735,"#38bdf8"],["Costos Shopify",1185809,"#1e6fb8"],["Corporativos",919485,"#64748b"],["Armado ML",504000,"#10b981"]],fisco:3433392,ivaRecup:912674}
+};
+const SRC={sh:"CHILE Finance · hoja $ chi EERR-26",ml:"CHILE Finance · hoja ML Finz 26",cl:"CHILE Finance · hoja CHILETECA 26"};
+function setSrc(k){const el=document.getElementById("srcchip");if(!el)return;const b=document.querySelector(".sub b");el.innerHTML=`\u{1F4C4} Fuente: <b>${SRC[k]||""}</b> · datos al <b>${b?b.textContent:""}</b>`;}
+
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const f0=n=>"$"+Math.round(n).toLocaleString("es-CL");
+const fK=n=>{const a=Math.abs(n);if(a>=1e6)return "$"+(n/1e6).toFixed(1)+"M";if(a>=1e3)return "$"+(n/1e3).toFixed(0)+"K";return "$"+Math.round(n);};
+const pc=(n,b)=>b?(n/b*100).toFixed(1)+"%":"—";
+const f0u=n=>`${f0(n)}<span style="display:block;font-size:9.5px;color:var(--muted);font-weight:500">${usd(n)}</span>`;
+function svgBars(months, series, opts){
+  opts=opts||{};
+  const W=780,H=opts.height||320,padL=50,padR=((opts.lines||(opts.line?[opts.line]:[])).some(l=>l.axis))?52:14,padT=18,padB=46;
+  const n=months.length, gw=(W-padL-padR)/n;
+  const pIdx=opts.partialIndex!=null?opts.partialIndex:-1;
+  const U=(svgBars._n=(svgBars._n||0)+1);
+  let max=0,min=0;
+  series.forEach(s=>s.data.forEach(v=>{if(v==null)return;if(v>max)max=v;if(v<min)min=v;}));
+  max=max*1.12||1; min=min*1.12;
+  const span=max-min||1;
+  const y=v=>padT+(max-v)/span*(H-padT-padB);
+  const y0=y(0);
+  let defs="";
+  series.forEach((s,si)=>{
+    defs+=`<linearGradient id="g${U}_${si}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${s.color}" stop-opacity="1"/>
+      <stop offset="100%" stop-color="${s.color}" stop-opacity="${s.flat?1:.55}"/></linearGradient>
+      <pattern id="h${U}_${si}" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="${s.color}" opacity=".15"/><line x1="0" y1="0" x2="0" y2="7" stroke="${s.color}" stroke-width="3" opacity=".85"/></pattern>`;
+  });
+  let g=`<defs>${defs}</defs>`;
+  const unit=!!opts.unit, isUsd=!!opts.usd;
+  const fmtY=isUsd?(v=>"US$"+(v/1000).toFixed(0)+"K"):(unit?(v=>Math.round(v).toLocaleString("es-CL")):fK);
+  const fmtT=isUsd?(v=>"US$ "+Math.round(v).toLocaleString("es-CL")):(unit?(v=>Math.round(v).toLocaleString("es-CL")+" u"):f0);
+  for(let i=0;i<=4;i++){const val=max-(span*i/4);const yy=padT+(H-padT-padB)*i/4;
+    g+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#262c3d" stroke-dasharray="2 4"/>
+        <text x="${padL-8}" y="${yy+4}" font-size="11.5" font-weight="600" fill="#aab2c8" text-anchor="end">${fmtY(val)}</text>`;}
+  const bw=gw*0.66/series.length;
+  months.forEach((m,i)=>{
+    const gx=padL+gw*i+gw*0.17;
+    const isP=i===pIdx;
+    series.forEach((s,si)=>{
+      const v=s.data[i]; if(v==null) return; const yy=y(Math.max(v,0)), h=Math.abs(y(v)-y0);
+      const fill=isP?`url(#h${U}_${si})`:`url(#g${U}_${si})`;
+      g+=`<rect x="${(gx+bw*si).toFixed(1)}" y="${(v>=0?yy:y0).toFixed(1)}" width="${(bw*0.9).toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="3" fill="${fill}" ${isP?'opacity=".92"':''}><title>${m} · ${s.name}: ${fmtT(v)}${isP?' (en curso)':''}</title></rect>`;
+    });
+    g+=`<text x="${(padL+gw*i+gw/2).toFixed(1)}" y="${H-padB+17}" font-size="11.5" fill="${isP?'#a78bfa':'#aab2c8'}" text-anchor="middle" font-weight="${isP?'700':'400'}">${m}</text>`;
+    if(isP)g+=`<text x="${(padL+gw*i+gw/2).toFixed(1)}" y="${H-padB+30}" font-size="9" fill="#a78bfa" text-anchor="middle" font-weight="700">EN CURSO</text>`;
+  });
+  g+=`<line x1="${padL}" y1="${y0}" x2="${W-padR}" y2="${y0}" stroke="#475069"/>`;
+  // line series (margen %, unidades, etc.)
+  const _lines=opts.lines||(opts.line?[opts.line]:[]);
+  _lines.forEach(L=>{
+    const ld=L.data, lmax=Math.max(...ld.filter(v=>v!=null))*1.25||1;
+    const ly=v=>padT+(lmax-v)/lmax*(H-padT-padB);
+    const sfx=L.suffix||"";
+    const fmtV=v=>L.dec!=null?v.toFixed(L.dec):Math.round(v).toLocaleString("es-CL");
+    if(L.points){
+      // solo puntos (marcadores), sin línea
+      ld.forEach((v,i)=>{const isP=pIdx===i;const cx=(padL+gw*i+gw/2).toFixed(1),cy=ly(v).toFixed(1);
+        g+=`<circle cx="${cx}" cy="${cy}" r="5" fill="${L.color}" stroke="#0b0d14" stroke-width="1.6" ${isP?'opacity=".75"':''}><title>${months[i]} · ${L.name}: ${fmtV(v)}${sfx}${isP?' (en curso)':''}</title></circle>`;
+        g+=`<text x="${cx}" y="${(+cy-11).toFixed(1)}" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="800" paint-order="stroke" stroke="#0b0d14" stroke-width="4" stroke-linejoin="round">${fmtV(v)}</text>`;});
+    } else {
+      const pts=ld.map((v,i)=>v==null?null:`${(padL+gw*i+gw/2).toFixed(1)},${ly(v).toFixed(1)}`).filter(Boolean);
+      const solid=pIdx>=0?pts.slice(0,pIdx+1):pts;
+      g+=`<polyline points="${solid.join(' ')}" fill="none" stroke="${L.color}" stroke-width="2.4"/>`;
+      if(pIdx>=0&&pIdx<ld.length)g+=`<polyline points="${pts.slice(pIdx).join(' ')}" fill="none" stroke="${L.color}" stroke-width="2.4" stroke-dasharray="3 4" opacity=".7"/>`;
+      ld.forEach((v,i)=>{if(v==null)return;g+=`<circle cx="${(padL+gw*i+gw/2).toFixed(1)}" cy="${ly(v).toFixed(1)}" r="3" fill="#0b0d14" stroke="${L.color}" stroke-width="2"><title>${months[i]} · ${L.name}: ${fmtV(v)}${sfx}</title></circle>`;});
+    }
+    if(L.axis){for(let i=0;i<=4;i++){const val=lmax-(lmax*i/4);const yy=padT+(H-padT-padB)*i/4;
+      g+=`<text x="${W-padR+8}" y="${yy+3}" font-size="11" font-weight="600" fill="${L.color}" text-anchor="start">${val.toFixed(0)}${sfx}</text>`;}}
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${g}</svg>`;
+}
+function dashDate(){const b=document.querySelector(".sub b");if(!b)return null;const p=b.textContent.trim().split("/");return p.length===3?{d:+p[0],m:+p[1],y:+p[2]}:null;}
+function runRate(v){const t=dashDate();if(!t||!t.d)return null;const dim=new Date(t.y,t.m,0).getDate();return v/t.d*dim;}
+function deltaTag(cur,prev){if(cur==null||!prev)return"";const dl=(cur-prev)/Math.abs(prev)*100;const up=dl>=0;return `<b style="color:${up?"#34d399":"#f87171"}">${up?"\u25B2":"\u25BC"} ${Math.abs(dl).toFixed(0)}%</b>`;}
+function expCSV(btn){const card=btn.closest(".card");const tbl=btn.parentElement.querySelector("table");if(!tbl)return;const rows=[];tbl.querySelectorAll("tr").forEach(tr=>{rows.push([...tr.children].map(c=>'"'+c.textContent.trim().replace(/"/g,'""')+'"').join(","));});const name=(card&&card.querySelector("h2")?card.querySelector("h2").textContent.trim():"tabla").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w ]/g,"").trim().replace(/ +/g,"_");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+rows.join("\n")],{type:"text/csv;charset=utf-8"}));a.download=(name||"tabla")+".csv";a.click();}
+function kpiHtml(arr){return '<div class="kpis">'+arr.map(k=>`<div class="kpi ${k.k||''}"><div class="l">${k.l}</div><div class="v ${k.cls||''}">${k.v}</div><div class="s">${k.s||''}</div></div>`).join("")+'</div>';}
+function structHtml(items){
+  const tot=sum(items.map(i=>i[1]));
+  return '<div class="struct">'+items.map(it=>{
+    const w=it[1]/tot*100;
+    return `<div class="srow"><div class="sname">${it[0]}</div><div class="strack"><div class="sfill" style="width:${w}%;background:linear-gradient(90deg,${it[2]},${it[2]}bb)"></div></div><div class="sval">${f0(it[1])} <small>· ${w.toFixed(1)}%</small></div></div>`;
+  }).join("")+`<div style="font-size:11px;color:var(--muted);margin-top:8px">Total costos del período: <b style="color:var(--ink)">${f0(tot)}</b></div>`;
+}
+function monthTable(d, cols){
+  const pIdx=d.partial?d.months.length-1:-1;
+  let h="<thead><tr><th>Mes</th>"+cols.map(c=>`<th>${c.h}</th>`).join("")+"</tr></thead><tbody>";
+  d.months.forEach((m,i)=>{
+    const isP=i===pIdx;
+    h+=`<tr class="${isP?'partial':''}"><td>${m}${isP?'<span class="tag">en curso</span>':''}</td>`+cols.map(c=>{const v=c.get(i);return `<td class="${c.cls?c.cls(v):''}">${c.fmt(v,i)}</td>`;}).join("")+"</tr>";
+  });
+  h+=`<tr class="tot"><td>TOTAL</td>`+cols.map(c=>`<td>${c.tot?c.tot():''}</td>`).join("")+"</tr></tbody>";
+  return `<div class="tbl-wrap"><button class="csvbtn" onclick="expCSV(this)">⬇ CSV</button><table>${h}</table></div>`;
+}
+function chartCard(title,d,accent){
+  const marg=d.ventas.map((v,i)=>v?d.resNeto[i]/v*100:0);
+  const svg=svgBars(d.months,[
+    {name:"Facturación",color:accent,data:d.ventas,flat:true}
+  ],{partialIndex:d.partial?d.months.length-1:-1,lines:[
+    {name:"Margen Neto",data:marg,color:"#34d399",axis:true,suffix:"%",dec:1},
+    {name:"Unidades",data:d.envios,color:"#c7cde0",points:true}
+  ]});
+  return `<div class="card"><h2><span class="dot" style="background:${accent}"></span>${title}</h2>${svg}
+    <div class="legend">
+      <span><i style="background:${accent}"></i>Facturación</span>
+      <span><i style="background:#c7cde0;border-radius:50%"></i>Pedidos</span>
+      <span><i style="background:#34d399"></i>Margen Neto %</span>
+      <span><i class="hatch"></i>Mes en curso</span>
+    </div></div>`;
+}
+function costBreakdown(struct, vT, rnT){
+  const totC=sum(struct.map(i=>i[1]));
+  const bal=Math.max(vT-totC-rnT,0);
+  const pct=v=>v/vT*100;
+  const segs=struct.map(it=>[it[0],it[1],it[2]]);
+  segs.push(["Impuestos y otros",bal,"#64748b"]);
+  segs.sort((a,b)=>b[1]-a[1]);
+  let bar='<div class="cbar">';
+  segs.forEach(it=>{const w=pct(it[1]);bar+=`<div class="cseg" style="width:${w}%;background:${it[2]}"><span>${w>=7?Math.round(w)+'%':''}</span><div class="ctip">${it[0]}: ${f0(it[1])} · ${w.toFixed(1)}% de ventas</div></div>`;});
+  const rnPct=pct(rnT);
+  bar+=`<div class="cseg cmarg" style="width:${Math.max(rnPct,0)}%;background:#34d399"><span>${rnPct>=7?Math.round(rnPct)+'%':''}</span><div class="ctip">Resultado Neto: ${f0(rnT)} · ${rnPct.toFixed(1)}%</div></div></div>`;
+  let list='<div class="clist">';
+  segs.forEach(it=>{const w=pct(it[1]);list+=`<div class="crow"><span class="cdot" style="background:${it[2]}"></span><span class="cname">${it[0]}</span><span class="cpct">${w.toFixed(1)}%</span><span class="camt">${f0(it[1])}</span></div>`;});
+  list+=`<div class="crow cmargrow"><span class="cdot" style="background:#34d399"></span><span class="cname">Resultado Neto (lo que queda)</span><span class="cpct">${rnPct.toFixed(1)}%</span><span class="camt">${f0(rnT)}</span></div></div>`;
+  const top=[...struct].sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const nar=`De cada <b>$100</b> facturados se van `+top.map(t=>`<b>$${Math.round(pct(t[1]))}</b> en ${t[0].toLowerCase()}`).join(", ")+`; quedan <b style="color:#34d399">$${Math.round(rnPct)} de resultado neto</b>.`;
+  return `<div class="cnar">${nar}</div>${bar}<div class="cbarcap">Cada barra representa $100 de facturación · base ventas ${fK(vT)}</div>${list}`;
+}
+/* ===== renderers Chile ===== */
+function chanTable(d,extra){
+  return monthTable(d,[
+    {h:"Envíos",get:i=>d.envios[i],fmt:v=>v,tot:()=>sum(d.envios)},
+    {h:"P. Venta MIX",get:i=>d.pventa[i],fmt:f0,tot:()=>{const e=sum(d.envios);return e?f0(sum(d.ventas)/e):"—";}},
+    {h:"Ventas",get:i=>d.ventas[i],fmt:f0u,tot:()=>f0u(sum(d.ventas))},
+    {h:"Margen Bruto",get:i=>d.margenBruto[i],fmt:f0,cls:v=>v<0?'neg':'',tot:()=>f0(sum(d.margenBruto))},
+    {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0u,cls:v=>v<0?'neg':'pos',tot:()=>f0u(sum(d.resNeto))},
+    {h:"Margen %",get:i=>d.ventas[i]?d.resNeto[i]/d.ventas[i]*100:0,fmt:v=>v.toFixed(0)+"%",cls:v=>v<0?'neg':'pos',tot:()=>pc(sum(d.resNeto),sum(d.ventas))}
+  ].concat(extra||[]));
+}
+function kpiBlock(d,label,accent){
+  const li=d.months.length-1, vT=sum(d.ventas), rnT=sum(d.resNeto), enT=sum(d.envios);
+  const vC=d.ventas[li], rnC=d.resNeto[li], enC=d.envios[li];
+  const pj=runRate(vC), pv=d.ventas[li-1];
+  return kpiHtml([
+    {l:"Facturación · "+d.months[li]+" (en curso)",v:usd(vC),s:f0(vC),k:"k-curso"},
+    {l:"Proyección "+d.months[li]+" · run-rate",v:pj!=null?usd(pj):"—",s:(pj!=null&&pv?deltaTag(pj,pv)+" vs "+d.months[li-1]+" · "+f0(pj):"ritmo diario × días del mes"),k:"k-blue"},
+    {l:"Rentabilidad · "+d.months[li],v:usd(rnC),cls:rnC<0?"neg":"pos",s:pc(rnC,vC)+" margen · "+f0(rnC),k:"k-curso"},
+    {l:"Pedidos · "+d.months[li],v:enC.toLocaleString("es-CL")+" ped.",s:label+" (en curso)",k:"k-curso"},
+    {l:"Vendido TOTAL (período)",v:usd(vT),s:enT.toLocaleString("es-CL")+" ped. · "+f0(vT),k:"k-gold"}
+  ]);
+}
+function renderSH(){
+  const d=DATA.shop, vT=sum(d.ventas), rnT=sum(d.resNeto);
+  let h=kpiBlock(d,"Shopify","#1e6fb8");
+  h+='<div class="grid2">'+chartCard("Facturación · Pedidos · Margen (Shopify)",d,"#38bdf8")+
+     `<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
+  h+=`<div class="card"><h2><span class="dot" style="background:#38bdf8"></span>Detalle mensual · Shopify</h2>`+chanTable(d)+
+     `<div class="note">Fuente: hoja "$ chi EERR-26". Último mes en curso: barras rayadas y fila atenuada. IVA a recuperar del período ${f0(d.ivaRecup)} · al fisco ${f0(d.fisco)}.</div></div>`;
+  document.getElementById("tab_sh").innerHTML=h;
+}
+function renderMLC(){
+  const d=DATA.ml, vT=sum(d.ventas), rnT=sum(d.resNeto), dvT=sum(d.devol);
+  let h=kpiBlock(d,"Mercado Libre","#e8c46a");
+  h+='<div class="grid2">'+chartCard("Facturación · Pedidos · Margen (Mercado Libre)",d,"#e8c46a")+
+     `<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
+  h+=`<div class="card"><h2><span class="dot" style="background:#e8c46a"></span>Detalle mensual · Mercado Libre</h2>`+chanTable(d,[
+    {h:"Devoluciones",get:i=>d.devol[i],fmt:v=>v?f0(v):"—",cls:v=>v?'neg':'',tot:()=>f0(dvT)},
+    {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0u,tot:()=>f0u(sum(d.dividendo))}
+  ])+`<div class="note">Fuente: hoja "ML Finz 26". Devoluciones del período ${f0(dvT)} (${pc(dvT,vT)} de ventas). IVA a recuperar ${f0(d.ivaRecup)} · al fisco ${f0(d.fisco)}.</div></div>`;
+  document.getElementById("tab_ml").innerHTML=h;
+}
+function renderCLT(){
+  const d=DATA.cl, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), divT=sum(d.dividendo);
+  const enSH=sum(d.enviosSH), enML=sum(d.enviosML), enT=enSH+enML;
+  const li=d.months.length-1, vC=d.ventas[li], rnC=d.resNeto[li];
+  const pj=runRate(vC), pv=d.ventas[li-1];
+  let h=kpiHtml([
+    {l:"Facturación · "+d.months[li]+" (en curso)",v:usd(vC),s:f0(vC),k:"k-curso"},
+    {l:"Proyección "+d.months[li]+" · run-rate",v:pj!=null?usd(pj):"—",s:(pj!=null&&pv?deltaTag(pj,pv)+" vs "+d.months[li-1]+" · "+f0(pj):"ritmo diario × días del mes"),k:"k-blue"},
+    {l:"Rentabilidad · "+d.months[li],v:usd(rnC),cls:rnC<0?"neg":"pos",s:pc(rnC,vC)+" margen · "+f0(rnC),k:"k-curso"},
+    {l:"Pedidos · "+d.months[li],v:(d.enviosSH[li]+d.enviosML[li]).toLocaleString("es-CL")+" ped.",s:d.enviosSH[li]+" Shopify · "+d.enviosML[li]+" ML (en curso)",k:"k-curso"},
+    {l:"Vendido TOTAL (período)",v:usd(vT),s:enT.toLocaleString("es-CL")+" ped. · "+f0(vT),k:"k-gold"}
+  ]);
+  const marg=d.ventas.map((v,i)=>v?d.resNeto[i]/v*100:0);
+  const units=d.ventas.map((_,i)=>d.enviosSH[i]+d.enviosML[i]);
+  const svg=svgBars(d.months,[{name:"Facturación",color:"#a78bfa",data:d.ventas,flat:true}],
+    {partialIndex:li,lines:[{name:"Margen Neto",data:marg,color:"#34d399",axis:true,suffix:"%",dec:1},
+                            {name:"Unidades",data:units,color:"#c7cde0",points:true}]});
+  h+='<div class="grid2"><div class="card"><h2><span class="dot" style="background:#a78bfa"></span>Facturación · Pedidos · Margen (Shopify+ML)</h2>'+svg+
+     '<div class="legend"><span><i style="background:#a78bfa"></i>Facturación</span><span><i style="background:#c7cde0;border-radius:50%"></i>Pedidos</span><span><i style="background:#34d399"></i>Margen %</span><span><i class="hatch"></i>Mes en curso</span></div></div>'+
+     `<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
+  h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual consolidado</h2>`+monthTable(d,[
+    {h:"Env. Shopify",get:i=>d.enviosSH[i],fmt:v=>v,tot:()=>enSH},
+    {h:"Env. ML",get:i=>d.enviosML[i],fmt:v=>v,tot:()=>enML},
+    {h:"Ventas",get:i=>d.ventas[i],fmt:f0u,tot:()=>f0u(vT)},
+    {h:"Res. Bruto",get:i=>d.resBruto[i],fmt:f0,cls:v=>v<0?'neg':'',tot:()=>f0(rbT)},
+    {h:"MB %",get:i=>d.resBruto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",cls:v=>v<0?'neg':'pos',tot:()=>pc(rbT,vT)},
+    {h:"Res. Neto",get:i=>d.resNeto[i],fmt:f0u,cls:v=>v<0?'neg':'pos',tot:()=>f0u(rnT)},
+    {h:"Margen %",get:i=>d.resNeto[i]/d.ventas[i]*100,fmt:v=>v.toFixed(0)+"%",tot:()=>pc(rnT,vT)},
+    {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0u,tot:()=>f0u(divT)}
+  ])+`<div class="note">Fuente: hoja "CHILETECA 26". Ventas consolidadas netas de devoluciones ML. Shopify aporta ${pc(sum(DATA.shop.ventas),vT)} de la facturación del período y ML el resto. Dividendo /3 = reparto por socio (Chileteca SpA).</div></div>`;
+  document.getElementById("tab_cl").innerHTML=h;
+}
+function show(k){
+  ["sh","ml","cl"].forEach(t=>{
+    document.getElementById("tab_"+t).classList.toggle("show",t===k);
+    document.getElementById("bt_"+t).classList.toggle("on",t===k);
+  });
+  setSrc(k);
+}
+renderSH();renderMLC();renderCLT();setSrc("sh");
+
+</script>
+</body>
+</html>
