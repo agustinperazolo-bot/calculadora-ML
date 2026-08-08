@@ -242,7 +242,7 @@ const PAYF=["desc","comision","cuotas","mpago","estructura"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
 const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
 let USD=1430, cmpMode="neto";
-const ENVIO_MIN=45000, ENVIO_STD=8500; // envío gratis si el precio < $45.000
+const ENVIO_MIN=45000, ENVIO_STD=9200; // envío gratis si el precio < $45.000
 const ud=n=>"US$ "+(n/(USD||1)).toLocaleString("es-AR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
 const v=id=>parseFloat(document.getElementById(id).value)||0;
