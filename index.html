@@ -260,6 +260,7 @@ const P = {
 "anillo3_full": {n:"ANILLO x3",           canal:"FULL",   precio:59990, iibb:2220, nacion:3216,    caja:6768, tarj:110, arm:2880, cf:0,    env:6080, alm:20, pub:1600, ivaJoya:675, ivaCaja:1421,   ivaEnv:1055},
   "forever_full": {n:"COLLAR FOREVER",      canal:"FULL",   precio:34990, iibb:1295, nacion:6900,    caja:2434, tarj:110, arm:2880, cf:0,    env:5620, alm:20, pub:1600, ivaJoya:1449, ivaCaja:511, ivaEnv:975},
   "pulsera_full": {n:"PULSERA NUDO CAJITA" ,canal:"FULL",   precio:24990, iibb:925,  nacion:2325,    caja:2434, tarj:110, arm:2880, cf:2455, env:0,    alm:20, pub:1600, ivaJoya:488, ivaCaja:511, ivaEnv:0},
+  "pulsnino_prueba":{n:"PULSERA NIÑO prueba", canal:"FULL", precio:44990, iibb:1665, nacion:4530, caja:2434, tarj:110, arm:2880, cf:0, env:5620, alm:20, pub:1600, ivaJoya:951, ivaCaja:511, ivaEnv:975},
   "puls2cora_nf": {n:"PULSERA 2CORA inox",  canal:"NO FULL",precio:29990, iibb:1200, nacion:4458, caja:2434, tarj:110, arm:2880, cf:2230, env:0,    alm:0,  pub:1600, ivaJoya:936, ivaCaja:511,   ivaEnv:0},
   "cadena_nf":    {n:"CADENA",              canal:"NO FULL",precio:23740, iibb:878,  nacion:5002, caja:2434, tarj:200, arm:2880, cf:2300, env:0,    alm:0,  pub:1600, ivaJoya:1050, ivaCaja:511, ivaEnv:0},
   "martillo_full":{n:"MARTILLO",            canal:"FULL",   precio:20890, iibb:773,  nacion:8507,    caja:2434, tarj:200, arm:2160, cf:2455, env:0,    alm:0,  pub:1600, ivaJoya:1786, ivaCaja:511, ivaEnv:0}
@@ -401,7 +402,7 @@ var JOYA_MAP={ // producto -> [tipo de joya, unidades]
   "2cora_full":["2cora",1], "nudo_full":["Nudo",1], "pulsnudo_full":["Puls Nudo",2],
   "anillo_full":["Anillo",2], "forever_full":["Forever Love",1], "pulsera_full":["Puls Nudo",1], "anillo3_full":["Anillo",3], "pulsnudo3_full":["Puls Nudo",3], "pulsnudo4_full":["Puls Nudo",4],
   "nudo_nofull":["Nudo",1], "2cora_nofull":["2cora",1], "puls2cora_nf":["Puls 2c +ext",1],
-  "pulsnudo_nf":["Puls Nudo",1], "cadena_nf":["Cadena",1], "martillo_full":["Martillo",1]
+  "pulsnudo_nf":["Puls Nudo",1], "cadena_nf":["Cadena",1], "martillo_full":["Martillo",1], "pulsnino_prueba":["PULSERA NIÑO prueba",1]
 };
 fetch("costos_joya.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
   if(!d||!d.joya)return;
