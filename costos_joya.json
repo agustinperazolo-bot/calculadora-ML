@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-07-14",
+  "actualizado": "2026-08-25",
   "fuente": "Google Sheet 1SCZ75ndpibl2lWTk2egUH7-lX-IvjTIuIjeTsGZ7sLo, hoja 'TN + PANEL', columna '$ un. nac' (STK CASA PICHI)",
   "nota": "Costo nacionalizado por unidad de joya. Editar SOLO via la tarea diaria; no tocar a mano.",
   "joya": {
@@ -16,6 +16,7 @@
     "Forever Love": 6900,
     "Frasquito": 9453,
     "Unicornio": 10464,
-    "Moñito": 2943
+    "Moñito": 2943,
+    "PULSERA NIÑO prueba": 4530
   }
 }
