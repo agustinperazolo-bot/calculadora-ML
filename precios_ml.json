@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-07-20",
+  "actualizado": "2026-08-25",
   "fuente": "https://listado.mercadolibre.com.ar/_CustId_2708733964",
   "nota": "Precio = precio final con descuento vigente en la publicacion. Editar SOLO via la tarea diaria; no tocar a mano.",
   "items": {
@@ -15,17 +15,17 @@
     },
     "pulsnudo_full": {
       "mla": "MLA1825561641",
-      "precio": 44990,
+      "precio": 49990,
       "titulo": "2x Pulsera Nudo + Frasco"
     },
     "anillo_full": {
       "mla": "MLA1818605097",
-      "precio": 43990,
+      "precio": 44990,
       "titulo": "Anillos Juntas + Frasco"
     },
     "forever_full": {
       "mla": "MLA3572694044",
-      "precio": 42990,
+      "precio": 47990,
       "titulo": "Collar Corazon (Forever)"
     },
     "pulsera_full": {
@@ -57,6 +57,11 @@
       "mla": "MLA3630984844",
       "precio": 69990,
       "titulo": "4x Pulsera Nudo + Frasco"
+    },
+    "PULSERA_prueba": {
+      "mla": "MLA",
+      "precio": 44900,
+      "titulo": ""
     }
   }
 }
