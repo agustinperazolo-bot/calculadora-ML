@@ -161,6 +161,7 @@
       <div class="card">
         <h2>Publicidad <span class="sum" id="sumPub"></span></h2>
         <div class="row"><label>Publicidad PPC / FB / Google</label><span class="pct" id="p_ppc"></span><div class="money"><span class="cur">$</span><input type="number" id="ppc"></div></div>
+        <div class="row"><label>Marketing</label><span class="pct" id="p_mkt"></span><div class="money"><span class="cur">$</span><input type="number" id="marketing"></div></div>
       </div>
       <div class="card">
         <h2>Recupero de IVA <span class="sum pos" id="sumRecup"></span></h2>
@@ -233,17 +234,17 @@ const PRODUCTS = {
   unicornio: {n:"Unicornio", subtotal:49000, envio:0, iibbPct:3.7, joyaPlata:10600, joyaAcero:0, nacionaliz:0, cajita:2700, papel:200, bolsa:200, costoEnvio:7100, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2300}
 };
 const METHODS = {
-  tarjeta: {n:"Tarjeta",        descPct:0,  comisionPct:5.10, cuotasPct:0,    mpagoPct:0, estructura:1400},
-  cuotas:  {n:"Cuotas",         descPct:0,  comisionPct:5.10, cuotasPct:10.0, mpagoPct:0, estructura:1619},
-  transfer:{n:"Transferencia",  descPct:10, comisionPct:1.86, cuotasPct:0,    mpagoPct:0, estructura:1619},
-  mp:      {n:"Mercado Pago",   descPct:0,  comisionPct:2.0,  cuotasPct:0,    mpagoPct:5, estructura:1619}
+  tarjeta: {n:"Tarjeta",        descPct:0,  comisionPct:5.10, cuotasPct:0,    mpagoPct:0, estructura:800},
+  cuotas:  {n:"Cuotas",         descPct:0,  comisionPct:5.10, cuotasPct:10.0, mpagoPct:0, estructura:800},
+  transfer:{n:"Transferencia",  descPct:10, comisionPct:1.86, cuotasPct:0,    mpagoPct:0, estructura:800},
+  mp:      {n:"Mercado Pago",   descPct:0,  comisionPct:2.0,  cuotasPct:0,    mpagoPct:5, estructura:800}
 };
 const PRODF=["subtotal","envio","iibbPct","joyaPlata","joyaAcero","nacionaliz","cajita","papel","bolsa","costoEnvio","pickpack","cs","ppc","otrosTN","telefono","ivaRecup"];
 const PAYF=["desc","comision","cuotas","mpago","estructura"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
 const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
 let USD=1430, cmpMode="neto";
-const ENVIO_MIN=45000, ENVIO_STD=7100, PICKPACK_USD=2; // envío gratis si el precio < $45.000
+const ENVIO_MIN=45000, ENVIO_STD=7100, PICKPACK_USD=2, MARKETING=600; // envío gratis si el precio < $45.000
 const ud=n=>"US$ "+(n/(USD||1)).toLocaleString("es-AR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
 const v=id=>parseFloat(document.getElementById(id).value)||0;
@@ -271,7 +272,7 @@ function scenario(s, pay){
   const dpi=totalNeto-iva-iibb;
   const cogs=s.joyaPlata+s.joyaAcero+s.nacionaliz+s.cajita+s.papel+s.bolsa;
   const ops=(s.subtotal<ENVIO_MIN?0:ENVIO_STD)+PICKPACK_USD*USD+s.cs+pay.estructura+s.otrosTN+s.telefono;
-  const publi=s.ppc;
+  const publi=s.ppc+MARKETING;
   const rent=dpi-cogs-ops-publi;
   const rentIva=rent+s.ivaRecup;
   return {clientePago,totalNeto,iva,iibb,dpi,cogs,ops,publi,rent,rentIva,
@@ -289,6 +290,7 @@ function calc(){
   USD=v("usd")||1;
   document.getElementById("costoEnvio").value = v("subtotal")<ENVIO_MIN?0:ENVIO_STD;
   document.getElementById("pickpack").value = Math.round(PICKPACK_USD*USD);
+  document.getElementById("marketing").value = MARKETING;
   const s=readShared(), pay=readPay();
   const r=scenario(s,pay);
   const sub=s.subtotal;
@@ -304,7 +306,7 @@ function calc(){
   document.getElementById("p_dpi").textContent=pct(r.dpi,sub);
   [["p_desc","desc"],["p_comi","comision"],["p_cuo","cuotas"],["p_mp","mpago"],
    ["p_jp","joyaPlata"],["p_ja","joyaAcero"],["p_nac","nacionaliz"],["p_caj","cajita"],["p_pap","papel"],["p_bol","bolsa"],
-   ["p_env","costoEnvio"],["p_pp","pickpack"],["p_cs","cs"],["p_est","estructura"],["p_ppc","ppc"],["p_recup","ivaRecup"]]
+   ["p_env","costoEnvio"],["p_pp","pickpack"],["p_cs","cs"],["p_est","estructura"],["p_ppc","ppc"],["p_mkt","marketing"],["p_recup","ivaRecup"]]
    .forEach(function(a){document.getElementById(a[0]).textContent=pct(v(a[1]),sub);});
   const sV=document.getElementById("sumVenta");sV.textContent=fmt(r.clientePago)+" · "+pct(r.clientePago,sub);sV.className="sum pos";
   document.getElementById("sumComi").textContent="−"+fmt(comi)+" · "+pct(comi,sub);
