@@ -229,7 +229,8 @@ const PRODUCTS = {
   dobleP:    {n:"Doble Pulsera",        subtotal:44990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:3575, nacionaliz:2860,  cajita:2417,  papel:215, bolsa:215, costoEnvio:7222, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2715},
   anillo:    {n:"Anillo",               subtotal:48000, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:2144, nacionaliz:0,     cajita:6778,  papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190},
   anillo4:   {n:"4 Anillos",            subtotal:71990, envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:4061, nacionaliz:0,     cajita:13556, papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:4614},
-  ani2puls2: {n:"2 Anillos + 2 Pulseras",subtotal:59990,envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:6321, nacionaliz:0,     cajita:6778,  papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190}
+  ani2puls2: {n:"2 Anillos + 2 Pulseras",subtotal:59990,envio:0, iibbPct:3.70, joyaPlata:0,     joyaAcero:6321, nacionaliz:0,     cajita:6778,  papel:0,   bolsa:215, costoEnvio:8200, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:3190},
+  unicornio: {n:"Unicornio", subtotal:49000, envio:0, iibbPct:3.7, joyaPlata:10600, joyaAcero:0, nacionaliz:0, cajita:2700, papel:200, bolsa:200, costoEnvio:7100, pickpack:2860, cs:0, ppc:5720, otrosTN:167, telefono:50, ivaRecup:2300}
 };
 const METHODS = {
   tarjeta: {n:"Tarjeta",        descPct:0,  comisionPct:5.10, cuotasPct:0,    mpagoPct:0, estructura:1400},
@@ -242,7 +243,7 @@ const PAYF=["desc","comision","cuotas","mpago","estructura"];
 const fmt=n=>"$"+Math.round(n).toLocaleString("es-AR");
 const pct=(n,base)=>base?(n/base*100).toFixed(1)+"%":"—";
 let USD=1430, cmpMode="neto";
-const ENVIO_MIN=45000, ENVIO_STD=9200; // envío gratis si el precio < $45.000
+const ENVIO_MIN=45000, ENVIO_STD=7100; // envío gratis si el precio < $45.000
 const ud=n=>"US$ "+(n/(USD||1)).toLocaleString("es-AR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
 const v=id=>parseFloat(document.getElementById(id).value)||0;
@@ -363,7 +364,7 @@ document.getElementById("reset").addEventListener("click",function(){loadProduct
 document.getElementById("tgNeto").addEventListener("click",function(){cmpMode="neto";this.classList.add("on");document.getElementById("tgIva").classList.remove("on");calc();});
 document.getElementById("tgIva").addEventListener("click",function(){cmpMode="iva";this.classList.add("on");document.getElementById("tgNeto").classList.remove("on");calc();});
 ["usd"].concat(PRODF,PAYF).forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
-const ICONS={"col2cora":"\uD83D\uDC9E","forever":"\uD83D\uDC9D","doble":"\uD83D\uDC9E","puls2cora":"\uD83D\uDC95","cadena":"\u26D3\uFE0F","dobleP":"\uD83D\uDCFF","anillo":"\uD83D\uDC8D","anillo4":"\uD83D\uDC8D","ani2puls2":"\uD83D\uDC8D"};
+const ICONS={"col2cora":"\uD83D\uDC9E","forever":"\uD83D\uDC9D","doble":"\uD83D\uDC9E","puls2cora":"\uD83D\uDC95","cadena":"\u26D3\uFE0F","dobleP":"\uD83D\uDCFF","anillo":"\uD83D\uDC8D","anillo4":"\uD83D\uDC8D","ani2puls2":"\uD83D\uDC8D","unicornio":"\uD83E\uDD84"};
 function renderProdGrid(){
   const g=document.getElementById("prodGrid");g.innerHTML="";
   Object.keys(PRODUCTS).forEach(function(k){
