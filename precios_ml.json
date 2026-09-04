@@ -1,8 +1,18 @@
 {
-  "actualizado": "2026-08-25",
+  "actualizado": "2026-09-04",
   "fuente": "https://listado.mercadolibre.com.ar/_CustId_2708733964",
   "nota": "Precio = precio final con descuento vigente en la publicacion. Editar SOLO via la tarea diaria; no tocar a mano.",
   "items": {
+    "monito_full": {
+      "mla": "MLA3911714270",
+      "precio": 33990,
+      "titulo": "Moñito"
+    },
+    "unicornio_full": {
+      "mla": "MLA1978014161",
+      "precio": 39990,
+      "titulo": "Unicornio"
+    },
     "2cora_full": {
       "mla": "MLA1685036299",
       "precio": 59990,
