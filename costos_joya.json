@@ -1,22 +1,22 @@
 {
-  "actualizado": "2026-08-25",
+  "actualizado": "2026-09-15",
   "fuente": "Google Sheet 1SCZ75ndpibl2lWTk2egUH7-lX-IvjTIuIjeTsGZ7sLo, hoja 'TN + PANEL', columna '$ un. nac' (STK CASA PICHI)",
   "nota": "Costo nacionalizado por unidad de joya. Editar SOLO via la tarea diaria; no tocar a mano.",
   "joya": {
     "2cora": 11929,
     "Nudo": 11808,
-    "Cadena": 5002,
-    "Puls 2c +ext": 4458,
-    "Cajitas": 2552,
-    "Puls Nudo": 2325,
-    "Martillo": 8507,
-    "Pelota": 4907,
-    "Estuche Blanco": 6916,
-    "Anillo": 1072,
-    "Forever Love": 6900,
-    "Frasquito": 9453,
     "Unicornio": 10464,
+    "Frasquito": 9453,
+    "Martillo": 8507,
+    "Forever Love": 6900,
+    "Estuche Blanco": 5386,
+    "Cadena": 5002,
+    "Pelota": 4907,
+    "PULSERA NIÑO prueba": 4530,
+    "Puls 2c +ext": 4458,
     "Moñito": 2943,
-    "PULSERA NIÑO prueba": 4530
+    "Cajitas": 2601,
+    "Puls Nudo": 2325,
+    "Anillo": 1072
   }
 }
