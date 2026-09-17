@@ -251,6 +251,7 @@ const v=id=>parseFloat(document.getElementById(id).value)||0;
 const selP=document.getElementById("producto"), selM=document.getElementById("metodo");
 Object.keys(PRODUCTS).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=PRODUCTS[k].n;selP.appendChild(o);});
 Object.keys(METHODS).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=METHODS[k].n;selM.appendChild(o);});
+(function(){var o=document.createElement("option");o.value="__mix";o.textContent="Mix Actual";selM.appendChild(o);})();
 document.querySelectorAll(".row").forEach(row=>{
   const inp=row.querySelector("input[type=number]")||row.querySelector(".ro");
   if(!inp||row.querySelector(".ud")||row.querySelector(".pctin"))return;
@@ -263,7 +264,9 @@ function payAmounts(m, subtotal, envio){
 }
 var SELECTED="col2cora";
 function loadProduct(pk){SELECTED=pk;PRODF.forEach(f=>document.getElementById(f).value=PRODUCTS[pk][f]);applyMethod(selM.value);}
-function applyMethod(mk){const pa=payAmounts(METHODS[mk],v("subtotal"),v("envio"));PAYF.forEach(f=>document.getElementById(f).value=Math.round(pa[f]));calc();}
+function mixPay(subtotal,envio){var W={cuotas:0.5,tarjeta:1/6,transfer:1/6,mp:1/6},acc={desc:0,comision:0,cuotas:0,mpago:0,estructura:0};Object.keys(METHODS).forEach(function(mk){var pa=payAmounts(METHODS[mk],subtotal,envio),w=W[mk]||0;acc.desc+=pa.desc*w;acc.comision+=pa.comision*w;acc.cuotas+=pa.cuotas*w;acc.mpago+=pa.mpago*w;acc.estructura+=pa.estructura*w;});return acc;}
+function payFor(mk,subtotal,envio){return mk==="__mix"?mixPay(subtotal,envio):payAmounts(METHODS[mk],subtotal,envio);}
+function applyMethod(mk){const pa=payFor(mk,v("subtotal"),v("envio"));PAYF.forEach(f=>document.getElementById(f).value=Math.round(pa[f]));calc();}
 function scenario(s, pay){
   const clientePago=s.subtotal+s.envio-pay.desc;
   const totalNeto=clientePago-pay.comision-pay.cuotas-pay.mpago;
@@ -283,7 +286,7 @@ function readPay(){const p={};PAYF.forEach(f=>p[f]=v(f));return p;}
 const cls=m=>m<0?"bad":m<10?"amber":"good";
 function breakevenPrice(s,mk){
   let lo=0, hi=3000000;
-  for(let i=0;i<60;i++){const mid=(lo+hi)/2;const pa=payAmounts(METHODS[mk],mid,s.envio);const r=scenario(Object.assign({},s,{subtotal:mid}),pa);if(r.rent>0)hi=mid;else lo=mid;}
+  for(let i=0;i<60;i++){const mid=(lo+hi)/2;const pa=payFor(mk,mid,s.envio);const r=scenario(Object.assign({},s,{subtotal:mid}),pa);if(r.rent>0)hi=mid;else lo=mid;}
   return (lo+hi)/2;
 }
 function calc(){
