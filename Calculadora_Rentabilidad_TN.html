@@ -348,18 +348,22 @@ function calc(){
   });
   const useIva=cmpMode==="iva";
   const res=Object.keys(METHODS).map(function(mk){const pa=payAmounts(METHODS[mk],s.subtotal,s.envio);const sc=scenario(s,pa);return {mk:mk,n:METHODS[mk].n,rent:useIva?sc.rentIva:sc.rent,m:useIva?sc.margenIva:sc.margen};});
-  const maxAbs=Math.max.apply(null,res.map(function(x){return Math.abs(x.m);}).concat([1]));
+  const MIXW={cuotas:0.5,tarjeta:1/6,transfer:1/6,mp:1/6};
+  var mixRent=0,mixM=0;res.forEach(function(x){var w=MIXW[x.mk]||0;mixRent+=x.rent*w;mixM+=x.m*w;});
+  const mix={mk:"__mix",n:"MIX ACTUAL",rent:mixRent,m:mixM,isMix:true};
+  const all=[mix].concat(res);
+  const maxAbs=Math.max.apply(null,all.map(function(x){return Math.abs(x.m);}).concat([1]));
   const best=res.reduce(function(a,b){return b.m>a.m?b:a;});
   const cur=selM.value;
-  document.getElementById("cmpList").innerHTML=res.map(function(x){
+  document.getElementById("cmpList").innerHTML=all.map(function(x){
     const w=Math.abs(x.m)/maxAbs*100;
     const col=x.m<0?"var(--red)":x.m<10?"var(--amber)":"var(--green)";
-    return '<div class="crow '+(x.mk===cur?'sel':'')+'" data-k="'+x.mk+'">'+
-      '<div class="cname">'+x.n+(x.mk===best.mk?' <span class="best">★</span>':'')+'</div>'+
+    return (x.isMix?'<div class="crow" style="background:#eef6ff;border-radius:8px;padding:4px 8px">':'<div class="crow '+(x.mk===cur?'sel':'')+'" data-k="'+x.mk+'">')+
+      '<div class="cname">'+(x.isMix?'<b>'+x.n+'</b>':x.n+(x.mk===best.mk?' <span class="best">★</span>':''))+'</div>'+
       '<div class="ctrack"><div class="cfill" style="width:'+w+'%;background:'+col+'"></div></div>'+
       '<div class="cval">'+fmt(x.rent)+'<br><span style="font-weight:600;color:'+col+'">'+x.m.toFixed(1)+'%</span></div></div>';
   }).join("");
-  document.querySelectorAll(".cmp .crow").forEach(function(row){row.addEventListener("click",function(){selM.value=row.dataset.k;applyMethod(row.dataset.k);});});
+  document.querySelectorAll(".cmp .crow[data-k]").forEach(function(row){row.addEventListener("click",function(){selM.value=row.dataset.k;applyMethod(row.dataset.k);});});
 }
 selP.addEventListener("change",function(e){loadProduct(e.target.value);renderProdGrid();});
 selM.addEventListener("change",function(e){applyMethod(e.target.value);});
