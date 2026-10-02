@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-10-01",
+  "actualizado": "2026-10-02",
   "fuente": "https://listado.mercadolibre.com.ar/_CustId_2708733964",
   "nota": "Precio = precio final con descuento vigente en la publicacion. Editar SOLO via la tarea diaria; no tocar a mano.",
   "items": {
@@ -37,6 +37,11 @@
       "mla": "MLA3630984844",
       "precio": 69990,
       "titulo": "4x Pulsera Nudo + Frasco"
+    },
+    "dblpulsnudo_full": {
+      "mla": "MLA",
+      "precio": 34000,
+      "titulo": "Doble Pulsera Nudo"
     },
     "anillo_full": {
       "mla": "MLA1818605097",
