@@ -168,7 +168,7 @@
         <div class="row calc auto"><label>Tarifa ML (comisión 16,3%)</label><span class="pct" id="p_tar"></span><div class="ro" id="r_tar"></div></div>
         <div class="row"><label>Cargo fijo ML</label><span class="pct" id="p_cf"></span><div class="money"><span class="cur">$</span><input type="number" id="cf"></div></div>
         <div class="row"><label>Costo envío ML</label><span class="pct" id="p_env"></span><div class="money"><span class="cur">$</span><input type="number" id="env"></div></div>
-        <div class="row calc auto"><label>Costo cuotas sin interés (5%)</label><span class="pct" id="p_cuo"></span><div class="ro" id="r_cuo"></div></div>
+        <div class="row calc auto"><label>Costo cuotas sin interés (sin costo)</label><span class="pct" id="p_cuo"></span><div class="ro" id="r_cuo"></div></div>
         <div class="row"><label>Costo almacenamiento</label><span class="pct" id="p_alm"></span><div class="money"><span class="cur">$</span><input type="number" id="alm"></div></div>
       </div>
       <div class="card">
@@ -243,7 +243,7 @@
   <div class="chartbox" id="cmpChart"></div>
 </div>
 <div class="foot">
-    Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta (21/121 del precio), la <b>Tarifa ML (16,3% del precio)</b> y el <b>Costo cuotas sin interés (5% del precio)</b> se calculan automáticamente; el IVA de comisión ML sale de esa comisión (21/121). El resto son montos fijos editables.<br>
+    Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta (21/121 del precio), la <b>Tarifa ML (16,3% del precio)</b> se calculan (las cuotas sin interés ya no tienen costo) automáticamente; el IVA de comisión ML sale de esa comisión (21/121). El resto son montos fijos editables.<br>
     El costo se calcula por unidad vendida; si enviás más de una unidad, los costos de envío se suman.<br>
     <span id="mlSync"></span>
   </div>
@@ -252,20 +252,20 @@
 const MLFEE=0.163;
 const P = {
   "monito_full": {n:"MOÑITO", canal:"FULL", precio:19990, iibb:740, nacion:2943, caja:2009, tarj:110, arm:2880, cf:2740, env:0, alm:20, pub:2050, ivaJoya:618, ivaCaja:422, ivaEnv:0, noCuo:true},
-  "unicornio_full": {n:"UNICORNIO", canal:"FULL", precio:39990, iibb:1480, nacion:10464, caja:2009, tarj:110, arm:2880, cf:0, env:6190, alm:20, pub:2050, ivaJoya:2197, ivaCaja:422, ivaEnv:1074},
+  "unicornio_full": {n:"UNICORNIO", canal:"FULL", precio:38790, iibb:1436, nacion:10464, caja:2009, tarj:110, arm:2880, cf:0, env:6190, alm:20, pub:2050, ivaJoya:2197, ivaCaja:422, ivaEnv:1074},
   "2cora_full": {n:"COLLAR 2CORA", canal:"FULL", precio:59990, iibb:2220, nacion:11929, caja:2009, tarj:110, arm:2880, cf:0, env:6790, alm:20, pub:2050, ivaJoya:2505, ivaCaja:422, ivaEnv:1178},
   "nudo_full": {n:"COLLAR NUDO", canal:"FULL", precio:56990, iibb:2109, nacion:11808, caja:2009, tarj:110, arm:2880, cf:0, env:6790, alm:20, pub:2050, ivaJoya:2480, ivaCaja:422, ivaEnv:1178},
-  "pulsnudo_full": {n:"2x PULSERA NUDO", canal:"FULL", precio:49990, iibb:1850, nacion:4650, caja:5408, tarj:110, arm:2880, cf:0, env:6190, alm:20, pub:2050, ivaJoya:977, ivaCaja:1136, ivaEnv:1074},
-  "pulsnudo3_full": {n:"3x PULSERA NUDO", canal:"FULL", precio:59990, iibb:2220, nacion:6975, caja:5408, tarj:110, arm:2880, cf:0, env:6790, alm:20, pub:2050, ivaJoya:1465, ivaCaja:1136, ivaEnv:1178},
+  "pulsnudo_full": {n:"2x PULSERA NUDO", canal:"FULL", precio:48490, iibb:1794, nacion:4650, caja:5408, tarj:110, arm:2880, cf:0, env:6190, alm:20, pub:2050, ivaJoya:977, ivaCaja:1136, ivaEnv:1074},
+  "pulsnudo3_full": {n:"3x PULSERA NUDO", canal:"FULL", precio:59840, iibb:2214, nacion:6975, caja:5408, tarj:110, arm:2880, cf:0, env:6790, alm:20, pub:2050, ivaJoya:1465, ivaCaja:1136, ivaEnv:1178},
   "pulsnudo4_full": {n:"4x PULSERA NUDO", canal:"FULL", precio:69990, iibb:2590, nacion:9300, caja:5408, tarj:110, arm:2880, cf:0, env:6790, alm:20, pub:2050, ivaJoya:1953, ivaCaja:1136, ivaEnv:1178},
   "dblpulsnudo_full": {n:"DOBLE PULS NUDO", canal:"FULL", precio:29500, iibb:1092, nacion:4650, caja:2009, tarj:110, arm:2880, cf:3320, env:0, alm:20, pub:2050, ivaJoya:977, ivaCaja:422, ivaEnv:0},
-  "anillo_full": {n:"ANILLO", canal:"FULL", precio:44990, iibb:1665, nacion:2144, caja:5408, tarj:110, arm:2880, cf:0, env:6190, alm:20, pub:2050, ivaJoya:450, ivaCaja:1136, ivaEnv:1074},
-  "anillo3_full": {n:"ANILLO x3", canal:"FULL", precio:59990, iibb:2220, nacion:3216, caja:5408, tarj:110, arm:2880, cf:0, env:6790, alm:20, pub:2050, ivaJoya:675, ivaCaja:1136, ivaEnv:1178},
+  "anillo_full": {n:"ANILLO", canal:"FULL", precio:45990, iibb:1702, nacion:2144, caja:5408, tarj:110, arm:2880, cf:0, env:6190, alm:20, pub:2050, ivaJoya:450, ivaCaja:1136, ivaEnv:1074},
+  "anillo3_full": {n:"ANILLO x3", canal:"FULL", precio:55990, iibb:2072, nacion:3216, caja:5408, tarj:110, arm:2880, cf:0, env:6790, alm:20, pub:2050, ivaJoya:675, ivaCaja:1136, ivaEnv:1178},
   "forever_full": {n:"COLLAR FOREVER", canal:"FULL", precio:47990, iibb:1776, nacion:6900, caja:2009, tarj:110, arm:2880, cf:0, env:6190, alm:20, pub:2050, ivaJoya:1449, ivaCaja:422, ivaEnv:1074},
-  "pulsera_full": {n:"PULSERA NUDO CAJITA", canal:"FULL", precio:27990, iibb:1036, nacion:2325, caja:2009, tarj:110, arm:2880, cf:2455, env:0, alm:20, pub:2050, ivaJoya:488, ivaCaja:422, ivaEnv:0},
+  "pulsera_full": {n:"PULSERA NUDO CAJITA", canal:"FULL", precio:24990, iibb:925, nacion:2325, caja:2009, tarj:110, arm:2880, cf:2455, env:0, alm:20, pub:2050, ivaJoya:488, ivaCaja:422, ivaEnv:0},
   "pulsnino_prueba": {n:"PULSERA NIÑO prueba", canal:"FULL", precio:44990, iibb:1665, nacion:4530, caja:2009, tarj:110, arm:2880, cf:0, env:6190, alm:20, pub:2050, ivaJoya:951, ivaCaja:422, ivaEnv:1074},
   "puls2cora_nf": {n:"PULSERA 2CORA inox", canal:"NO FULL", precio:29990, iibb:1200, nacion:4458, caja:2009, tarj:110, arm:2880, cf:2230, env:0, alm:0, pub:2050, ivaJoya:936, ivaCaja:422, ivaEnv:0},
-  "cadena_nf": {n:"CADENA", canal:"NO FULL", precio:23740, iibb:878, nacion:5002, caja:2009, tarj:200, arm:2880, cf:2300, env:0, alm:0, pub:2050, ivaJoya:1050, ivaCaja:422, ivaEnv:0},
+  "cadena_nf": {n:"CADENA", canal:"NO FULL", precio:21816, iibb:807, nacion:5002, caja:2009, tarj:200, arm:2880, cf:2300, env:0, alm:0, pub:2050, ivaJoya:1050, ivaCaja:422, ivaEnv:0},
   "martillo_full": {n:"MARTILLO", canal:"FULL", precio:20890, iibb:773, nacion:8507, caja:2009, tarj:200, arm:2160, cf:2455, env:0, alm:0, pub:2050, ivaJoya:1786, ivaCaja:422, ivaEnv:0}
 };
 const FIELDS=["iibb","nacion","caja","tarj","cf","env","alm","pub","ivaJoya","ivaCaja","ivaEnv"];
@@ -299,7 +299,7 @@ function calc(){
   const ivaMl=tar*0.21/1.21;
   const iibb=v("iibb");
   const usd=v("usd")||1; USD=usd;
-  const cuo=(P[SELECTED]&&P[SELECTED].noCuo)?0:precio*0.05;
+  const cuo=0;
   const arm=2*usd;
   const dpi=precio-ivaVenta-iibb;
   const cogs=v("nacion")+v("caja")+v("tarj")+arm;
@@ -334,7 +334,7 @@ function calc(){
   document.getElementById("m_costo").textContent=fmt(costoTotal);
   document.getElementById("m_costo_h").textContent=pct(costoTotal,precio)+" del precio";
   document.getElementById("m_markup").textContent=(costoProdOp?precio/costoProdOp:0).toFixed(2)+"x";
-  const factor=1-0.21/1.21-MLFEE-((P[SELECTED]&&P[SELECTED].noCuo)?0:0.05);
+  const factor=1-0.21/1.21-MLFEE;
   const be=factor?(iibb+cogs+v("cf")+v("env")+v("alm")+pub)/factor:0;
   document.getElementById("m_be").textContent=fmt(be);
   const topePub=pub+rent;
@@ -424,7 +424,7 @@ fetch("ventas_30d.json",{cache:"no-store"}).then(function(r){return r.json()}).t
 function chartVals(){
   const precio=v("precio");
   const ivaVenta=precio*0.21/1.21, tar=precio*MLFEE, ivaMl=tar*0.21/1.21;
-  const cuo=precio*0.05, arm=2*(v("usd")||1);
+  const cuo=0, arm=2*(v("usd")||1);
   const imp=ivaVenta+v("iibb");
   const cogs=v("nacion")+v("caja")+v("tarj")+arm;
   const ml=tar+v("cf")+v("env")+cuo+v("alm");
@@ -437,7 +437,7 @@ function prodVals(k){
   const d=P[k]; const usd=v("usd")||1;
   const ivaVenta=d.precio*0.21/1.21, tar=d.precio*MLFEE, ivaMl=tar*0.21/1.21;
   const cogs=d.nacion+d.caja+d.tarj+2*usd;
-  const ml=tar+d.cf+d.env+d.precio*0.05+d.alm;
+  const ml=tar+d.cf+d.env+d.alm;
   const rent=d.precio-(ivaVenta+d.iibb)-cogs-ml-d.pub;
   const rentIva=rent+d.ivaJoya+d.ivaCaja+d.ivaEnv+ivaMl;
   return {k:k,n:d.n,canal:d.canal,precio:d.precio,rentIva:rentIva,pct:d.precio?rentIva/d.precio*100:0};
