@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-10-02",
+  "actualizado": "2026-10-14",
   "fuente": "https://listado.mercadolibre.com.ar/_CustId_2708733964",
   "nota": "Precio = precio final con descuento vigente en la publicacion. Editar SOLO via la tarea diaria; no tocar a mano.",
   "items": {
@@ -10,7 +10,7 @@
     },
     "unicornio_full": {
       "mla": "MLA1978014161",
-      "precio": 39990,
+      "precio": 38790,
       "titulo": "Unicornio"
     },
     "2cora_full": {
@@ -25,12 +25,12 @@
     },
     "pulsnudo_full": {
       "mla": "MLA1825561641",
-      "precio": 49990,
+      "precio": 48490,
       "titulo": "2x Pulsera Nudo + Frasco"
     },
     "pulsnudo3_full": {
       "mla": "MLA3631103954",
-      "precio": 59990,
+      "precio": 59840,
       "titulo": "3x Pulsera Nudo + Frasco"
     },
     "pulsnudo4_full": {
@@ -45,12 +45,12 @@
     },
     "anillo_full": {
       "mla": "MLA1818605097",
-      "precio": 44990,
+      "precio": 45990,
       "titulo": "Anillos Juntas + Frasco"
     },
     "anillo3_full": {
       "mla": "MLA3601012898",
-      "precio": 59990,
+      "precio": 55990,
       "titulo": "3x Anillos + Frasco"
     },
     "forever_full": {
@@ -60,7 +60,7 @@
     },
     "pulsera_full": {
       "mla": "MLA2452982310",
-      "precio": 27990,
+      "precio": 24990,
       "titulo": "Pulsera Acero Ajustable"
     },
     "pulsnino_prueba": {
@@ -75,7 +75,7 @@
     },
     "cadena_nf": {
       "mla": "MLA1565581541",
-      "precio": 23740,
+      "precio": 21816,
       "titulo": "Collar Acero (Cadena)"
     },
     "martillo_full": {
