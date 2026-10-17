@@ -121,6 +121,75 @@
   .ctog{display:flex;gap:6px;margin-top:8px}
   .tbtn{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px}
   .tbtn.sel{color:var(--gold);border-color:var(--gold)}
+  /* ===== v2 · Ranking COGS · Precio objetivo · Simulador ===== */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:-8px 0 18px}
+  .jump a{font-size:12.5px;font-weight:700;text-decoration:none;color:var(--ink2);background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:7px 14px;transition:all .15s ease}
+  .jump a:hover{border-color:var(--gold);color:var(--gold)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr}}
+  .ctl{display:flex;align-items:center;gap:12px;padding:8px 0}
+  .ctl label{font-size:13px;color:var(--ink2);min-width:128px}
+  .ctl input[type=range]{flex:1;accent-color:var(--gold);height:28px;cursor:pointer}
+  .ctl .val{min-width:118px;text-align:right;font-size:15px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+  .ctl input[type=number]{width:96px;padding:7px 9px;border:1px solid var(--line2);border-radius:9px;background:var(--panel);color:var(--ink);font-weight:700;text-align:right;font-size:13.5px}
+  .chk{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);margin:8px 0 4px;cursor:pointer}
+  .chk input{accent-color:var(--gold);width:16px;height:16px}
+  .hero{background:rgba(232,196,106,.08);border:1px solid rgba(232,196,106,.35);border-radius:14px;padding:14px 16px;margin:12px 0}
+  .hero .lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+  .hero .big{font-size:32px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:-.5px;line-height:1.15;margin-top:3px}
+  .hero .big small{font-size:15px;color:var(--tn);margin-left:8px;font-weight:800}
+  .hero .meta{font-size:12.5px;color:var(--ink2);margin-top:5px;line-height:1.6;font-variant-numeric:tabular-nums}
+  .hero.bad{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.4)}
+  .hero.bad .big{color:var(--red);font-size:22px}
+  .btnGold{width:100%;flex:none;border-color:var(--gold2);color:var(--gold);background:rgba(232,196,106,.08)}
+  .btnGold:hover{border-color:var(--gold);color:#fff;background:rgba(232,196,106,.18)}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+  .tbl th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;text-align:right;padding:8px 6px;border-bottom:1.5px solid var(--line2);white-space:nowrap}
+  .tbl th:first-child,.tbl td:first-child{text-align:center}
+  .tbl th.l,.tbl td.l{text-align:left}
+  .tbl td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;color:var(--ink2);white-space:nowrap}
+  .tbl tr.click{cursor:pointer;transition:background .12s ease}
+  .tbl tr.click:hover td{background:rgba(167,139,250,.08)}
+  .tbl tr.cur td{background:rgba(232,196,106,.13)}
+  .tbl tr.cur td.l{color:var(--gold);font-weight:700}
+  .tbl td b{color:var(--ink);font-weight:800}
+  .tbl td .u{color:var(--tn);font-weight:800}
+  .tbl tfoot td{font-weight:800;color:#fff;border-top:1.5px solid var(--line2);border-bottom:none}
+  .tblwrap{overflow-x:auto;margin-top:10px;-webkit-overflow-scrolling:touch}
+  .rk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;font-weight:800;font-size:12px;background:var(--panel);border:1px solid var(--line2);color:var(--ink2)}
+  .rk.r1{background:rgba(232,196,106,.25);border-color:var(--gold);color:var(--gold)}
+  .rk.r2{background:rgba(199,205,224,.18);border-color:#c7cde0;color:#fff}
+  .rk.r3{background:rgba(199,154,58,.2);border-color:var(--gold2);color:#f0c27a}
+  .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-weight:800;font-size:12px}
+  .pill.g{background:rgba(52,211,153,.16);color:var(--green)} .pill.a{background:rgba(251,191,36,.16);color:var(--amber)} .pill.r{background:rgba(248,113,113,.16);color:var(--red)}
+  .mbar{display:flex;height:14px;width:120px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,.04)}
+  .mbar i{display:block;height:100%}
+  .c-joya{background:#f59e0b}.c-caja{background:#a78bfa}.c-tarj{background:#38bdf8}.c-arm{background:#ec4899}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+  .chipk{flex:1 1 180px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 13px}
+  .chipk .ml{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+  .chipk .mv{font-size:18px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
+  .chipk .mh{font-size:11.5px;color:var(--ink2);margin-top:2px}
+  .note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.6}
+  .grid>*,.grid2>*{min-width:0}
+  @media(max-width:600px){
+    body{padding:16px 12px 32px}
+    .grid,.grid2{grid-template-columns:minmax(0,1fr)}
+    select{min-width:0;width:100%}
+    .controls{width:100%}
+    .card{padding:14px 12px}
+    .card h2{flex-wrap:wrap}
+    .row{gap:6px}
+    .row input[type=number],.row.calc .ro{width:92px}
+    .row .ud{min-width:0;margin-left:2px}
+    .row .pct{min-width:36px}
+    .ctl{flex-wrap:wrap;gap:6px}
+    .ctl label{min-width:0;width:100%}
+    .hero .big{font-size:26px}
+    .metrics{grid-template-columns:1fr 1fr}
+    .metric .mv{font-size:16px}
+  }
+  .up{color:var(--green)!important;font-weight:800} .dn{color:var(--red)!important;font-weight:800}
 </style>
 </head>
 <body>
@@ -143,6 +212,7 @@
       <span class="usd">USD/$ <input type="number" id="usd" value="1510" step="5"></span>
     </div>
   </header>
+  <nav class="jump"><a href="#secPrecio">🎯 Precio sugerido</a><a href="#secSim">📉 Simulador descuento / dólar</a><a href="#secCat">📊 Impacto catálogo</a><a href="#secRank">🏆 Ranking COGS</a><a href="#wfChart">💧 Cascada</a><a href="#cmpChart">📈 Comparativa</a></nav>
   <div class="card">
     <h2>Productos · elegí con un toque <span class="sum pos">precio de venta</span></h2>
     <div class="pgrid" id="prodGrid"></div>
@@ -199,7 +269,7 @@
         <div class="metrics">
           <div class="metric"><div class="ml">Costo total por unidad</div><div class="mv" id="m_costo"></div><div class="mh" id="m_costo_h"></div></div>
           <div class="metric"><div class="ml">Markup s/ costo</div><div class="mv" id="m_markup"></div><div class="mh">precio ÷ costo prod.+ML+ads</div></div>
-          <div class="metric"><div class="ml">Precio de equilibrio</div><div class="mv" id="m_be"></div><div class="mh">margen neto = 0</div></div>
+          <div class="metric"><div class="ml">Precio de equilibrio</div><div class="mv" id="m_be"></div><div class="mh">margen neto = 0 · por tramo de envío</div></div>
           <div class="metric"><div class="ml">Ventas 30d</div><div class="mv" id="m_v30">&mdash;</div><div class="mh">unidades/mes (ventas_30d.json)</div></div>
           <div class="metric"><div class="ml">Ganancia mensual est.</div><div class="mv" id="m_mes">&mdash;</div><div class="mh" id="m_mes_h">rent. final x ventas 30d</div></div>
           <div class="metric"><div class="ml">Tope de publicidad</div><div class="mv" id="m_topePub"></div><div class="mh">máx. ads con margen 0</div></div>
@@ -233,6 +303,59 @@
       </div>
     </div>
   </div>
+  <div class="grid2">
+    <div class="card" id="secPrecio">
+      <h2>🎯 Precio sugerido · margen objetivo <span class="sum pos" id="psSum"></span></h2>
+      <div class="ctl"><label>Margen objetivo</label><input type="range" id="psM" min="0" max="50" step="1" value="20"><span class="val" id="psMv">20%</span></div>
+      <div class="ctog"><button type="button" class="tbtn sel" id="psBaseN">Sobre rentabilidad neta</button><button type="button" class="tbtn" id="psBaseI">Con recupero de IVA</button></div>
+      <label class="chk"><input type="checkbox" id="psR" checked> Redondear a precio terminado en 990</label>
+      <div class="hero" id="psHero">
+        <div class="lbl">Precio de venta sugerido</div>
+        <div class="big" id="psBig">—</div>
+        <div class="meta" id="psMeta"></div>
+      </div>
+      <button type="button" class="btnGold" id="psApply">Aplicar este precio a la calculadora ↑</button>
+      <div class="tblwrap">
+        <table class="tbl" id="psTbl"><thead><tr><th class="l">Margen</th><th>Precio exacto</th><th>Precio 990</th><th>USD</th><th>vs. actual</th></tr></thead><tbody></tbody></table>
+      </div>
+      <div class="note">Tiene en cuenta IVA, IIBB (mismo % que hoy), comisión 16,3%, cargo fijo, envío por tramo (&lt;$33.001 sin envío · hasta $49.999 $6.190 · más $6.790), almacenamiento, publicidad y COGS. Si el precio cambia de tramo se marca con ⚠.</div>
+    </div>
+    <div class="card" id="secSim">
+      <h2>📉 Simulador · descuento y dólar <span class="sum" id="simSum"></span></h2>
+      <div class="ctl"><label>Descuento al precio</label><input type="range" id="simD" min="0" max="50" step="1" value="0"><span class="val" id="simDv">0%</span></div>
+      <div class="ctl"><label>Suba / baja del dólar</label><input type="range" id="simT" min="-30" max="60" step="1" value="0"><span class="val" id="simTv">0%</span></div>
+      <div class="metrics" style="margin-top:8px">
+        <div class="metric"><div class="ml">Precio simulado</div><div class="mv" id="simP">—</div><div class="mh" id="simPh"></div></div>
+        <div class="metric"><div class="ml">Rentabilidad neta</div><div class="mv" id="simR">—</div><div class="mh" id="simRh"></div></div>
+        <div class="metric"><div class="ml">Rent. con recupero IVA</div><div class="mv" id="simRi">—</div><div class="mh" id="simRih"></div></div>
+        <div class="metric"><div class="ml">Ventas para ganar lo mismo</div><div class="mv" id="simV">—</div><div class="mh" id="simVh"></div></div>
+      </div>
+      <div class="hero" id="simHero" style="margin-bottom:6px">
+        <div class="lbl">Precio para sostener el margen neto actual</div>
+        <div class="big" id="simKeep">—</div>
+        <div class="meta" id="simKeepH"></div>
+      </div>
+      <div class="actions"><button type="button" id="simReset">↺ Volver a 0% / dólar actual</button></div>
+      <div class="note">El dólar mueve los costos atados a USD: joya nacionalizada, cajita/estuche, armado (US$ 2) y su IVA crédito. Comisión, cargo fijo, envío, almacenamiento y publicidad quedan en pesos. Descuento sobre el precio actual de la calculadora.</div>
+    </div>
+  </div>
+  <div class="card" id="secCat">
+    <h2>📊 Impacto del escenario en todo el catálogo <span class="sum" id="catSum"></span></h2>
+    <div class="tblwrap">
+      <table class="tbl" id="catTbl"><thead><tr><th class="l">Producto</th><th>Precio</th><th>Precio sim.</th><th>Margen neto hoy</th><th>Margen neto sim.</th><th>Δ pts</th><th>Rent. IVA / u sim.</th><th>Ganancia/mes hoy</th><th>Ganancia/mes sim.</th></tr></thead><tbody></tbody><tfoot></tfoot></table>
+    </div>
+    <div class="note">Usa el descuento y la variación del dólar del simulador. Ganancia/mes = rentabilidad con recupero de IVA × ventas 30d (ventas_30d.json), con el mismo volumen.</div>
+  </div>
+  <div class="card" id="secRank">
+    <h2>🏆 Ranking de costos · COGS por unidad vendida <span class="sum" id="rkSum"></span></h2>
+    <div class="ctog"><button type="button" class="tbtn sel" id="rkAbs">$ por unidad</button><button type="button" class="tbtn" id="rkPct">% del precio</button><button type="button" class="tbtn" id="rkMes">$ COGS al mes</button><button type="button" class="tbtn" id="rkPza">$ por pieza</button></div>
+    <div class="chips" id="rkChips" style="margin-top:12px"></div>
+    <div class="tblwrap">
+      <table class="tbl" id="rkTbl"><thead><tr><th>#</th><th class="l">Producto</th><th class="l">Composición</th><th>Joya nac.</th><th>Caja</th><th>Tarj.</th><th>Armado</th><th>COGS $</th><th>COGS USD</th><th>% precio</th><th>$ / pieza</th><th>Vtas 30d</th><th>COGS / mes</th></tr></thead><tbody></tbody><tfoot></tfoot></table>
+    </div>
+    <div class="legend"><span><i class="c-joya"></i>Joya nacionalizada</span><span><i class="c-caja"></i>Cajita / estuche</span><span><i class="c-tarj"></i>Tarjeta</span><span><i class="c-arm"></i>Armado (US$ 2)</span></div>
+    <div class="note">COGS = joya nacionalizada (costos_joya.json × piezas) + cajita/estuche + tarjeta + armado. Valores de cada preset; el armado sigue el dólar de arriba. % precio: <span class="pill g">&lt;25%</span> <span class="pill a">25–40%</span> <span class="pill r">&gt;40%</span>. Tocá una fila para cargar el producto.</div>
+  </div>
   <div class="card">
   <h2>Cascada del precio <span class="sum" id="wfSum"></span></h2>
   <div class="chartbox" id="wfChart"></div>
@@ -245,7 +368,7 @@
 <div class="foot">
     Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta (21/121 del precio), la <b>Tarifa ML (16,3% del precio)</b> se calculan (las cuotas sin interés ya no tienen costo) automáticamente; el IVA de comisión ML sale de esa comisión (21/121). El resto son montos fijos editables.<br>
     El costo se calcula por unidad vendida; si enviás más de una unidad, los costos de envío se suman.<br>
-    <span id="mlSync"></span>
+    <span id="mlSync"></span><br>v2 · 16-oct-2026 · ranking de COGS, precio sugerido por margen objetivo (por tramo de envío), simulador de descuento y dólar e impacto en el catálogo.
   </div>
 </div>
 <script>
@@ -516,6 +639,166 @@ function renderCharts(){try{renderWaterfall();renderCompare();updateMensual();}c
   sel.addEventListener("change",renderCharts);
   var rb=document.getElementById("reset"); if(rb) rb.addEventListener("click",function(){setTimeout(renderCharts,0);});
   renderCharts();
+})();
+/* ===== v2 · Precio objetivo · Simulador descuento/TC · Ranking COGS (aislado) ===== */
+(function(){
+  const ENV_T=[0,6190,6790], CF_EST=2455;
+  const tier=p=>p<33001?0:(p<=49999?1:2);
+  const TIER_TXT=["sin envío (<$33.001)","envío $6.190","envío $6.790"];
+  const $=id=>document.getElementById(id);
+  const sgn=n=>(n<0?"−":"")+fmt(Math.abs(n));
+  const usdS=n=>(n<0?"−":"")+ud(Math.abs(n));
+  const r990=p=>Math.ceil((p+10)/1000)*1000-10;
+  const pctS=x=>(x*100).toFixed(1).replace(".",",")+"%";
+  // valores del formulario (producto seleccionado, con lo que el usuario haya editado)
+  function formD(){return {precio:v("precio"),iibb:v("iibb"),nacion:v("nacion"),caja:v("caja"),tarj:v("tarj"),cf:v("cf"),env:v("env"),alm:v("alm"),pub:v("pub"),ivaJoya:v("ivaJoya"),ivaCaja:v("ivaCaja"),ivaEnv:v("ivaEnv")};}
+  // evalua un producto a un precio dado; f = factor de dolar (1 = dolar actual)
+  function ev(d,precio,f){
+    f=f||1; const usd=(v("usd")||1)*f;
+    const t0=tier(d.precio), t=tier(precio); let cf=d.cf, env=d.env, ivaEnv=d.ivaEnv, est=false, cambio=false;
+    if(t!==t0){cambio=true; env=ENV_T[t]; ivaEnv=Math.round(env*21/121); if(t===0){cf=d.cf>0?d.cf:CF_EST; est=!(d.cf>0);} else cf=0;}
+    const iibb=d.precio?d.iibb*precio/d.precio:0;
+    const ivaV=precio*0.21/1.21, tar=precio*MLFEE, ivaMl=tar*0.21/1.21;
+    const nacion=d.nacion*f, caja=d.caja*f, arm=2*usd;
+    const cogs=nacion+caja+d.tarj+arm, ml=tar+cf+env+d.alm;
+    const rent=precio-ivaV-iibb-cogs-ml-d.pub;
+    const recup=d.ivaJoya*f+d.ivaCaja*f+ivaEnv+ivaMl;
+    return {precio:precio,cogs:cogs,ml:ml,rent:rent,rentIva:rent+recup,mN:precio?rent/precio:0,mI:precio?(rent+recup)/precio:0,tier:t,cambio:cambio,est:est,cf:cf,env:env};
+  }
+  // precio minimo que logra el margen objetivo m (fraccion); base "neto" o "iva". Exacto: lineal dentro de cada tramo.
+  function solve(d,m,base,f){
+    const g=p=>{const r=ev(d,p,f);return (base==="iva"?r.rentIva:r.rent)-m*p;};
+    const I=[[1,33000],[33001,49999],[50000,5000000]];
+    for(let i=0;i<I.length;i++){const lo=I[i][0],hi=I[i][1],glo=g(lo),ghi=g(hi);
+      if(glo>=0) return lo; if(ghi>=0){return lo+(0-glo)*(hi-lo)/(ghi-glo);} }
+    return null;
+  }
+  function maxM(d,base){const r=ev(d,5000000);return base==="iva"?r.mI:r.mN;}
+  const ICO=k=>(typeof ICONS!=="undefined"&&ICONS[k])||"🔹";
+  const NM=k=>ICO(k)+" "+P[k].n+(P[k].canal==="NO FULL"?" · NF":"");
+
+  /* ---------- Precio sugerido ---------- */
+  let PS_BASE="neto"; let PS_LAST=null;
+  function renderPS(){
+    const d=formD(); const m=(parseFloat($("psM").value)||0)/100; const round=$("psR").checked;
+    $("psMv").textContent=Math.round(m*100)+"%";
+    const hero=$("psHero"), mx=maxM(d,PS_BASE);
+    const p=solve(d,m,PS_BASE);
+    if(p==null||!d.precio&&!d.nacion){hero.className="hero bad";$("psBig").textContent="Margen inalcanzable";
+      $("psMeta").innerHTML="Con esta estructura de costos el margen máximo posible es "+pctS(mx)+" (por IVA, IIBB y comisión ML). Bajá el objetivo.";$("psSum").textContent="—";PS_LAST=null;}
+    else{hero.className="hero";
+      const pf=round?r990(p):Math.ceil(p); const r=ev(d,pf); PS_LAST=pf;
+      const dv=d.precio?(pf/d.precio-1):0;
+      $("psBig").innerHTML=fmt(pf)+"<small>"+ud(pf)+"</small>";
+      $("psMeta").innerHTML="Exacto "+fmt(p)+" · con "+fmt(pf)+" quedan <b>"+sgn(r.rent)+"</b> neto ("+pctS(r.mN)+") y <b>"+sgn(r.rentIva)+"</b> con IVA ("+pctS(r.mI)+")<br>"
+        +"vs. precio actual "+fmt(d.precio)+": <span class=\""+(dv>=0?"up":"dn")+"\">"+(dv>=0?"+":"−")+Math.abs(dv*100).toFixed(1).replace(".",",")+"%</span> · "+TIER_TXT[r.tier]+(r.cambio?" ⚠ cambia de tramo"+(r.est?" (cargo fijo estimado $2.455)":""):"");
+      $("psSum").textContent=fmt(pf)+" · "+Math.round(m*100)+"%";
+    }
+    const tb=$("psTbl").querySelector("tbody"); let h="";
+    [0,10,15,20,25,30,35,40].forEach(function(t){const q=solve(d,t/100,PS_BASE);
+      if(q==null){h+="<tr><td class=\"l\"><b>"+(t?t+"%":"Equilibrio")+"</b></td><td colspan=\"4\" style=\"text-align:left;color:var(--red)\">inalcanzable</td></tr>";return;}
+      const q9=r990(q), dv=d.precio?(q9/d.precio-1):0, rr=ev(d,q9);
+      h+="<tr class=\"click\" data-p=\""+q9+"\""+(Math.round(m*100)===t?" style=\"outline:1px solid var(--gold2)\"":"")+"><td class=\"l\"><b>"+(t?t+"%":"Equilibrio (0%)")+"</b></td><td>"+fmt(q)+"</td><td><b>"+fmt(q9)+"</b>"+(rr.cambio?" ⚠":"")+"</td><td class=\"u\">"+ud(q9)+"</td><td class=\""+(dv>=0?"up":"dn")+"\">"+(dv>=0?"+":"−")+Math.abs(dv*100).toFixed(1).replace(".",",")+"%</td></tr>";});
+    tb.innerHTML=h;
+    tb.querySelectorAll("tr.click").forEach(function(tr){tr.addEventListener("click",function(){applyPrice(parseFloat(tr.dataset.p));});});
+  }
+  function applyPrice(p){if(!p)return;const el=$("precio");el.value=Math.round(p);el.dispatchEvent(new Event("input"));window.scrollTo({top:0,behavior:"smooth"});}
+
+  /* ---------- Simulador ---------- */
+  function simF(){return 1+(parseFloat($("simT").value)||0)/100;}
+  function simDsc(){return (parseFloat($("simD").value)||0)/100;}
+  function renderSim(){
+    const d=formD(), ds=simDsc(), f=simF(), usd=v("usd")||1;
+    $("simDv").textContent=Math.round(ds*100)+"%";
+    const tp=Math.round((f-1)*100); $("simTv").innerHTML=(tp>0?"+":"")+tp+"% <small style=\"color:var(--tn);font-size:11.5px\">"+Math.round(usd*f).toLocaleString("es-AR")+"</small>";
+    const now=ev(d,d.precio,1), ps=d.precio*(1-ds), s=ev(d,ps,f);
+    $("simP").textContent=fmt(ps); $("simPh").innerHTML=ud(ps)+(ds?" · antes "+fmt(d.precio):"")+(s.cambio?" · ⚠ "+TIER_TXT[s.tier]:"");
+    const R=$("simR"); R.textContent=sgn(s.rent)+" · "+pctS(s.mN); R.style.color=s.rent<0?"var(--red)":(s.mN<0.1?"var(--amber)":"var(--green)");
+    $("simRh").innerHTML="hoy "+sgn(now.rent)+" ("+pctS(now.mN)+") · <span class=\""+(s.rent>=now.rent?"up":"dn")+"\">"+(s.rent>=now.rent?"+":"−")+fmt(Math.abs(s.rent-now.rent))+"</span>";
+    const Ri=$("simRi"); Ri.textContent=sgn(s.rentIva)+" · "+pctS(s.mI); Ri.style.color=s.rentIva<0?"var(--red)":"var(--tn)";
+    $("simRih").innerHTML="hoy "+sgn(now.rentIva)+" · "+usdS(s.rentIva)+" por unidad";
+    const V=$("simV"), n30=(typeof V30!=="undefined"&&V30[SELECTED])||0;
+    if(s.rentIva<=0){V.textContent="No compensa";V.style.color="var(--red)";$("simVh").textContent="cada venta pierde plata con este escenario";}
+    else if(now.rentIva<=0){V.textContent="—";V.style.color="";$("simVh").textContent="hoy el producto no gana";}
+    else{const fx=now.rentIva/s.rentIva; V.textContent=(fx>=1?"+":"−")+Math.abs((fx-1)*100).toFixed(0)+"%";V.style.color=fx>1.0001?"var(--amber)":"var(--green)";
+      $("simVh").textContent=n30?("de "+n30+" a "+Math.ceil(n30*fx)+" u./mes para igualar la ganancia"):"más (o menos) unidades para igualar la ganancia por mes";}
+    // precio que sostiene el margen neto actual con el nuevo dolar
+    const keep=solve(d,now.mN,"neto",f), kh=$("simHero");
+    if(keep==null||now.mN<=0){kh.className="hero bad";$("simKeep").textContent=now.mN<=0?"Hoy el margen neto es ≤ 0":"Inalcanzable";$("simKeepH").textContent="";}
+    else{kh.className="hero";const k9=r990(keep);$("simKeep").innerHTML=fmt(k9)+"<small>"+ud(k9)+"</small>";
+      const dv=d.precio?(k9/d.precio-1):0;
+      $("simKeepH").innerHTML="para seguir en "+pctS(now.mN)+" neto con dólar a "+Math.round(usd*f).toLocaleString("es-AR")+" · exacto "+fmt(keep)+" · <span class=\""+(dv>=0?"up":"dn")+"\">"+(dv>=0?"+":"−")+Math.abs(dv*100).toFixed(1).replace(".",",")+"%</span> vs. hoy";}
+    const ss=$("simSum"); ss.textContent=(ds||f!==1)?("Δ "+(s.rent>=now.rent?"+":"−")+fmt(Math.abs(s.rent-now.rent))+" / u"):"escenario base"; ss.className="sum"+(s.rent>=now.rent?" pos":"");
+    renderCat(ds,f);
+  }
+  function renderCat(ds,f){
+    const rows=Object.keys(P).map(function(k){const d=P[k];const a=ev(d,d.precio,1), b=ev(d,d.precio*(1-ds),f), n=(typeof V30!=="undefined"&&V30[k])||0;
+      return {k:k,d:d,a:a,b:b,n:n};}).sort(function(x,y){return y.b.mN-x.b.mN;});
+    let h="", tA=0, tB=0, neg=0;
+    rows.forEach(function(r){const dp=(r.b.mN-r.a.mN)*100; tA+=r.a.rentIva*r.n; tB+=r.b.rentIva*r.n; if(r.b.rent<0)neg++;
+      const cl=r.b.mN<0?"r":(r.b.mN<0.1?"a":"g");
+      h+="<tr class=\"click"+(r.k===SELECTED?" cur":"")+"\" data-k=\""+r.k+"\"><td class=\"l\">"+esc(NM(r.k))+"</td><td>"+fmt(r.d.precio)+"</td><td><b>"+fmt(r.b.precio)+"</b>"+(r.b.cambio?" ⚠":"")+"</td><td>"+pctS(r.a.mN)+"</td><td><span class=\"pill "+cl+"\">"+pctS(r.b.mN)+"</span></td><td class=\""+(dp>=0?"up":"dn")+"\">"+(dp>=0?"+":"−")+Math.abs(dp).toFixed(1).replace(".",",")+"</td><td>"+sgn(r.b.rentIva)+" <span class=\"u\">"+usdS(r.b.rentIva)+"</span></td><td>"+(r.n?sgn(r.a.rentIva*r.n):"—")+"</td><td>"+(r.n?"<b class=\""+(r.b.rentIva<0?"dn":"")+"\">"+sgn(r.b.rentIva*r.n)+"</b>":"—")+"</td></tr>";});
+    $("catTbl").querySelector("tbody").innerHTML=h;
+    const dT=tB-tA;
+    $("catTbl").querySelector("tfoot").innerHTML="<tr><td class=\"l\">Total con ventas 30d</td><td></td><td></td><td></td><td></td><td></td><td></td><td>"+sgn(tA)+"</td><td>"+sgn(tB)+" <span class=\""+(dT>=0?"up":"dn")+"\">("+(dT>=0?"+":"−")+fmt(Math.abs(dT))+")</span></td></tr>";
+    const cs=$("catSum"); cs.textContent=neg?neg+" producto"+(neg>1?"s":"")+" a pérdida":"ninguno a pérdida"; cs.className="sum"+(neg?"":" pos");
+    $("catTbl").querySelectorAll("tbody tr.click").forEach(function(tr){tr.addEventListener("click",function(){selectK(tr.dataset.k);});});
+  }
+
+  /* ---------- Ranking COGS ---------- */
+  let RK_MODE="abs";
+  function rkRows(){const usd=v("usd")||1;
+    return Object.keys(P).map(function(k){const d=P[k], jm=(typeof JOYA_MAP!=="undefined"&&JOYA_MAP[k])||["",1];
+      const arm=2*usd, cogs=d.nacion+d.caja+d.tarj+arm, n=(typeof V30!=="undefined"&&V30[k])||0, pz=jm[1]||1;
+      return {k:k,d:d,joya:jm[0],pz:pz,arm:arm,cogs:cogs,usd:cogs/usd,pct:d.precio?cogs/d.precio:0,porPza:cogs/pz,n:n,mes:cogs*n};});}
+  function renderRank(){
+    const rows=rkRows(), key={abs:"cogs",pct:"pct",mes:"mes",pza:"porPza"}[RK_MODE];
+    rows.sort(function(a,b){return b[key]-a[key]||b.cogs-a.cogs;});
+    const maxC=Math.max.apply(null,rows.map(function(r){return r.cogs;}).concat([1]));
+    let h="", tN=0, tM=0, tV=0;
+    rows.forEach(function(r,i){tN+=r.n; tM+=r.mes; tV+=r.d.precio*r.n;
+      const w=120*r.cogs/maxC, seg=function(val,c){return "<i class=\""+c+"\" style=\"width:"+(w*val/r.cogs).toFixed(1)+"px\" title=\""+fmt(val)+"\"></i>";};
+      const cl=r.pct>0.4?"r":(r.pct>=0.25?"a":"g");
+      h+="<tr class=\"click"+(r.k===SELECTED?" cur":"")+"\" data-k=\""+r.k+"\"><td><span class=\"rk"+(i<3?" r"+(i+1):"")+"\">"+(i+1)+"</span></td><td class=\"l\">"+esc(NM(r.k))+"<div style=\"font-size:11px;color:var(--muted)\">"+esc(r.joya)+(r.pz>1?" × "+r.pz:"")+"</div></td>"
+        +"<td class=\"l\"><div class=\"mbar\">"+seg(r.d.nacion,"c-joya")+seg(r.d.caja,"c-caja")+seg(r.d.tarj,"c-tarj")+seg(r.arm,"c-arm")+"</div></td>"
+        +"<td>"+fmt(r.d.nacion)+"</td><td>"+fmt(r.d.caja)+"</td><td>"+fmt(r.d.tarj)+"</td><td>"+fmt(r.arm)+"</td>"
+        +"<td><b style=\"font-size:14px\">"+fmt(r.cogs)+"</b></td><td class=\"u\" style=\"font-size:14px\">US$ "+r.usd.toLocaleString("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2})+"</td>"
+        +"<td><span class=\"pill "+cl+"\">"+pctS(r.pct)+"</span></td><td>"+fmt(r.porPza)+" <span class=\"u\">"+ud(r.porPza)+"</span></td><td>"+(r.n||"—")+"</td><td>"+(r.n?fmt(r.mes)+" <span class=\"u\">"+ud(r.mes)+"</span>":"—")+"</td></tr>";});
+    $("rkTbl").querySelector("tbody").innerHTML=h;
+    const avg=tN?tM/tN:0;
+    $("rkTbl").querySelector("tfoot").innerHTML="<tr><td></td><td class=\"l\">Total mensual (ventas 30d)</td><td></td><td></td><td></td><td></td><td></td><td>"+(tN?fmt(avg):"—")+"</td><td class=\"u\">"+(tN?ud(avg):"")+"</td><td>"+(tV?pctS(tM/tV):"—")+"</td><td></td><td>"+tN+"</td><td>"+fmt(tM)+" <span class=\"u\">"+ud(tM)+"</span></td></tr>";
+    const byC=rows.slice().sort(function(a,b){return b.cogs-a.cogs;}), byP=rows.slice().sort(function(a,b){return b.pct-a.pct;}), byM=rows.slice().sort(function(a,b){return b.mes-a.mes;}), lowP=rows.slice().sort(function(a,b){return a.pct-b.pct;});
+    const chip=function(l,vv,hh,col){return "<div class=\"chipk\"><div class=\"ml\">"+l+"</div><div class=\"mv\""+(col?" style=\"color:"+col+"\"":"")+">"+vv+"</div><div class=\"mh\">"+hh+"</div></div>";};
+    $("rkChips").innerHTML=chip("COGS más alto",fmt(byC[0].cogs)+" <span style=\"color:var(--tn);font-size:14px\">"+ud(byC[0].cogs)+"</span>",esc(NM(byC[0].k)),"var(--gold)")
+      +chip("COGS promedio ponderado",tN?fmt(avg)+" <span style=\"color:var(--tn);font-size:14px\">"+ud(avg)+"</span>":"—",tN?"por venta, según mix 30d · "+pctS(tM/tV)+" del precio":"sin ventas cargadas")
+      +chip("Mayor peso sobre el precio",pctS(byP[0].pct),esc(NM(byP[0].k)),"var(--red)")
+      +chip("Más liviano sobre el precio",pctS(lowP[0].pct),esc(NM(lowP[0].k)),"var(--green)")
+      +(byM[0].mes?chip("Más plata en mercadería / mes",fmt(byM[0].mes)+" <span style=\"color:var(--tn);font-size:14px\">"+ud(byM[0].mes)+"</span>",esc(NM(byM[0].k))+" · "+byM[0].n+" u."):"");
+    $("rkSum").textContent=(tN?"COGS mes "+fmt(tM)+" · "+ud(tM):rows.length+" productos");
+    $("rkTbl").querySelectorAll("tbody tr.click").forEach(function(tr){tr.addEventListener("click",function(){selectK(tr.dataset.k);});});
+  }
+  function selectK(k){if(!P[k])return;sel.value=k;load(k);renderProdGrid();window.scrollTo({top:0,behavior:"smooth"});}
+
+  // precio de equilibrio por tramo de envio (reemplaza la formula simple de calc)
+  function updBE(){const be=solve(formD(),0,"neto"); const el=$("m_be"); if(el&&be!=null){el.textContent=fmt(be);}}
+  function renderV2(){try{updBE();}catch(e){} try{renderPS();}catch(e){console.error(e);} try{renderSim();}catch(e){console.error(e);} try{renderRank();}catch(e){console.error(e);}}
+  window.renderV2=renderV2;
+  // enganches
+  const _ld=load; load=function(k){_ld(k); renderV2();};
+  ["precio","usd"].concat(FIELDS).forEach(function(id){const el=$(id); if(el) el.addEventListener("input",renderV2);});
+  ["psM","psR"].forEach(function(id){$(id).addEventListener("input",renderPS);});
+  $("psR").addEventListener("change",renderPS);
+  ["simD","simT"].forEach(function(id){$(id).addEventListener("input",renderSim);});
+  $("simReset").addEventListener("click",function(){$("simD").value=0;$("simT").value=0;renderSim();});
+  $("psApply").addEventListener("click",function(){applyPrice(PS_LAST);});
+  const bN=$("psBaseN"), bI=$("psBaseI");
+  bN.addEventListener("click",function(){PS_BASE="neto";bN.classList.add("sel");bI.classList.remove("sel");renderPS();});
+  bI.addEventListener("click",function(){PS_BASE="iva";bI.classList.add("sel");bN.classList.remove("sel");renderPS();});
+  const rb={abs:$("rkAbs"),pct:$("rkPct"),mes:$("rkMes"),pza:$("rkPza")};
+  Object.keys(rb).forEach(function(m){rb[m].addEventListener("click",function(){RK_MODE=m;Object.keys(rb).forEach(function(x){rb[x].classList.toggle("sel",x===m);});renderRank();});});
+  // reengancha cuando llegan ventas_30d.json (lo carga el bloque de graficos)
+  fetch("ventas_30d.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.ventas){V30=d.ventas;V30_ACT=d.actualizado||V30_ACT;renderV2();try{renderCharts();}catch(e){}}}).catch(function(){});
+  renderV2();
 })();
 </script>
 </body>
