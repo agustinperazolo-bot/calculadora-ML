@@ -212,7 +212,7 @@
       <span class="usd">USD/$ <input type="number" id="usd" value="1510" step="5"></span>
     </div>
   </header>
-  <nav class="jump"><a href="#secPrecio">🎯 Precio sugerido</a><a href="#secSim">📉 Simulador descuento / dólar</a><a href="#secCat">📊 Impacto catálogo</a><a href="#secRank">🏆 Ranking COGS</a><a href="#wfChart">💧 Cascada</a><a href="#cmpChart">📈 Comparativa</a></nav>
+  <nav class="jump"><a href="#secVentas">🛒 Ventas y stock</a><a href="#secPrecio">🎯 Precio sugerido</a><a href="#secSim">📉 Simulador descuento / dólar</a><a href="#secCat">📊 Impacto catálogo</a><a href="#secRank">🏆 Ranking COGS</a><a href="#wfChart">💧 Cascada</a><a href="#cmpChart">📈 Comparativa</a></nav>
   <div class="card">
     <h2>Productos · elegí con un toque <span class="sum pos">precio de venta</span></h2>
     <div class="pgrid" id="prodGrid"></div>
@@ -303,6 +303,19 @@
       </div>
     </div>
   </div>
+  <div class="card" id="secVentas">
+    <h2>🛒 Ventas y stock por producto · COLECTA ML FULL <span class="sum pos" id="vtSum"></span></h2>
+    <div class="ctog" style="flex-wrap:wrap"><span style="font-size:12px;color:var(--muted);align-self:center;margin-right:4px">Proyección mensual con:</span><button type="button" class="tbtn sel" id="vbR30">Ventas 30 días (real)</button><button type="button" class="tbtn" id="vbR7">Ritmo últimos 7 días</button><button type="button" class="tbtn" id="vbMix">Promedio 30d / 7d</button></div>
+    <div class="chips" id="vtChips" style="margin-top:12px"></div>
+    <div class="tblwrap">
+      <table class="tbl" id="vtTbl" style="font-size:12.5px"><thead><tr><th class="l">Producto</th><th>Vtas 30d</th><th>Vtas 7d</th><th>Ritmo / mes</th><th>Tendencia</th><th>Aptas Full</th><th>En camino</th><th>Cobertura</th><th>Facturación / mes</th><th>Ganancia / mes</th><th>% ganancia</th></tr></thead><tbody></tbody><tfoot></tfoot></table>
+    </div>
+    <h2 style="margin-top:18px"><span>Detalle por SKU · <span id="vtSkuT" style="color:var(--gold);text-transform:none;letter-spacing:0"></span></span> <span class="sum" id="vtSkuS"></span></h2>
+    <div class="tblwrap">
+      <table class="tbl" id="vtSku"><thead><tr><th class="l">SKU</th><th class="l">Nicho</th><th>Vtas 30d</th><th>Vtas 7d</th><th>Ritmo / mes</th><th>Aptas</th><th>En camino</th><th>Cobertura</th><th class="l">Estado</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="note" id="vtNote"></div>
+  </div>
   <div class="grid2">
     <div class="card" id="secPrecio">
       <h2>🎯 Precio sugerido · margen objetivo <span class="sum pos" id="psSum"></span></h2>
@@ -368,7 +381,7 @@
 <div class="foot">
     Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta (21/121 del precio), la <b>Tarifa ML (16,3% del precio)</b> se calculan (las cuotas sin interés ya no tienen costo) automáticamente; el IVA de comisión ML sale de esa comisión (21/121). El resto son montos fijos editables.<br>
     El costo se calcula por unidad vendida; si enviás más de una unidad, los costos de envío se suman.<br>
-    <span id="mlSync"></span><br>v2 · 16-oct-2026 · ranking de COGS, precio sugerido por margen objetivo (por tramo de envío), simulador de descuento y dólar e impacto en el catálogo.
+    <span id="mlSync"></span><br>v3 · 16-oct-2026 · ventas y stock por producto/SKU desde COLECTA ML FULL con proyección 30d / ritmo 7d · v2: ranking de COGS, precio sugerido por margen objetivo (por tramo de envío), simulador de descuento y dólar e impacto en el catálogo.
   </div>
 </div>
 <script>
@@ -797,8 +810,86 @@ function renderCharts(){try{renderWaterfall();renderCompare();updateMensual();}c
   const rb={abs:$("rkAbs"),pct:$("rkPct"),mes:$("rkMes"),pza:$("rkPza")};
   Object.keys(rb).forEach(function(m){rb[m].addEventListener("click",function(){RK_MODE=m;Object.keys(rb).forEach(function(x){rb[x].classList.toggle("sel",x===m);});renderRank();});});
   // reengancha cuando llegan ventas_30d.json (lo carga el bloque de graficos)
-  fetch("ventas_30d.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.ventas){V30=d.ventas;V30_ACT=d.actualizado||V30_ACT;renderV2();try{renderCharts();}catch(e){}}}).catch(function(){});
+  // ventas_30d.json lo maneja el bloque v3 (base de proyección)
   renderV2();
+})();
+/* ===== v3 · Ventas y stock desde COLECTA ML FULL (ventas_30d.json) ===== */
+(function(){
+  const $=id=>document.getElementById(id);
+  let VD=null, VBASE="r30";
+  const BASE_TXT={r30:"ventas 30 días reales",r7:"ritmo de los últimos 7 días",mix:"promedio 30d / ritmo 7d"};
+  const NM=k=>((typeof ICONS!=="undefined"&&ICONS[k])||"🔹")+" "+P[k].n+(P[k].canal==="NO FULL"?" · NF":"");
+  const sgn=n=>(n<0?"−":"")+fmt(Math.abs(n));
+  const d7=()=>(VD&&VD.dias_7d)||7;
+  const v30=k=>(VD&&VD.ventas&&VD.ventas[k])||0;
+  const v7=k=>(VD&&VD.ventas_7d&&VD.ventas_7d[k])||0;
+  const r7m=x=>x*30/d7();
+  function baseOf(a30,a7){return VBASE==="r30"?a30:(VBASE==="r7"?r7m(a7):(a30+r7m(a7))/2);}
+  function applyBase(){
+    if(!VD||!VD.ventas)return;
+    const m={}; Object.keys(P).forEach(function(k){m[k]=Math.round(baseOf(v30(k),v7(k)));});
+    V30=m; V30_ACT=VD.actualizado||V30_ACT;
+  }
+  function cobTxt(st,vm){ // st = unidades, vm = ventas por mes
+    if(!vm) return st?"<span style=\"color:var(--muted)\">sin ventas</span>":"—";
+    const d=st/(vm/30); if(!st) return "<span class=\"pill r\">sin stock</span>";
+    const cl=d<14?"r":(d<30?"a":"g"); return "<span class=\"pill "+cl+"\">"+(d>=365?"+1 año":(Math.round(d)<=1?"≤1 día":Math.round(d)+" días"))+"</span>";
+  }
+  function trend(a30,a7){
+    if(!a30&&!a7) return "—"; if(!a30) return "<span class=\"up\">nuevo ▲</span>";
+    const t=r7m(a7)/a30-1; const s=Math.abs(t*100).toFixed(0)+"%";
+    return Math.abs(t)<0.1?"<span style=\"color:var(--ink2)\">= estable</span>":(t>0?"<span class=\"up\">▲ +"+s+"</span>":"<span class=\"dn\">▼ −"+s+"</span>");
+  }
+  function renderVentas(){
+    if(!$("vtTbl"))return;
+    if(!VD||!VD.ventas){$("vtNote").textContent="No se pudo leer ventas_30d.json.";return;}
+    const rows=Object.keys(P).map(function(k){const pv=prodVals(k), st=(VD.stock&&VD.stock[k])||{aptas:0,camino:0}, vm=baseOf(v30(k),v7(k));
+      return {k:k,pv:pv,a30:v30(k),a7:v7(k),vm:vm,ap:st.aptas||0,ca:st.camino||0,fact:pv.precio*vm,gan:pv.rentIva*vm};})
+      .sort(function(a,b){return b.gan-a.gan;});
+    const tot=rows.reduce(function(s,r){s.a30+=r.a30;s.a7+=r.a7;s.vm+=r.vm;s.ap+=r.ap;s.ca+=r.ca;s.fact+=r.fact;s.gan+=r.gan;return s;},{a30:0,a7:0,vm:0,ap:0,ca:0,fact:0,gan:0});
+    const ganPos=rows.reduce(function(s,r){return s+Math.max(r.gan,0);},0)||1;
+    let h="";
+    rows.forEach(function(r){
+      const share=r.gan>0?r.gan/ganPos:0;
+      h+="<tr class=\"click"+(r.k===SELECTED?" cur":"")+"\" data-k=\""+r.k+"\"><td class=\"l\">"+esc(NM(r.k))+"</td><td><b>"+(r.a30||"—")+"</b></td><td>"+(r.a7||"—")+"</td><td>"+(r.a7?Math.round(r7m(r.a7)):"—")+"</td><td>"+trend(r.a30,r.a7)+"</td>"
+        +"<td><b>"+(r.ap||"—")+"</b></td><td>"+(r.ca||"—")+"</td><td>"+cobTxt(r.ap,r.vm)+"</td>"
+        +"<td>"+(r.vm?fmt(r.fact):"—")+"</td><td>"+(r.vm?"<b class=\""+(r.gan<0?"dn":"")+"\">"+sgn(r.gan)+"</b> <span class=\"u\">"+(r.gan<0?"−":"")+ud(Math.abs(r.gan))+"</span>":"—")+"</td>"
+        +"<td>"+(share?"<div style=\"display:flex;align-items:center;gap:6px;justify-content:flex-end\"><div style=\"width:40px;height:8px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden\"><i style=\"display:block;height:100%;width:"+(share*100).toFixed(1)+"%;background:var(--green)\"></i></div>"+(share*100).toFixed(1).replace(".",",")+"%</div>":"—")+"</td></tr>";});
+    $("vtTbl").querySelector("tbody").innerHTML=h;
+    const fz=(VD.fuera||[]).filter(function(f){return f.v30||f.v7;});
+    $("vtTbl").querySelector("tfoot").innerHTML="<tr><td class=\"l\">Total calculadora</td><td>"+tot.a30+"</td><td>"+tot.a7+"</td><td>"+Math.round(r7m(tot.a7))+"</td><td>"+trend(tot.a30,tot.a7)+"</td><td>"+tot.ap+"</td><td>"+tot.ca+"</td><td>"+cobTxt(tot.ap,tot.vm)+"</td><td>"+fmt(tot.fact)+"</td><td>"+sgn(tot.gan)+" <span class=\"u\">"+ud(tot.gan)+"</span></td><td>100%</td></tr>"
+      +(fz.length?"<tr><td class=\"l\" style=\"color:var(--muted);font-weight:600\">Fuera de la calculadora</td><td style=\"color:var(--muted)\">"+fz.map(function(f){return f.joya+" "+f.v30;}).join(" · ")+"</td><td style=\"color:var(--muted)\">"+fz.reduce(function(s,f){return s+f.v7;},0)+"</td><td colspan=\"8\"></td></tr>":"");
+    $("vtTbl").querySelectorAll("tbody tr.click").forEach(function(tr){tr.addEventListener("click",function(){pick(tr.dataset.k);});});
+    // chips
+    const star=rows[0], sinStk=rows.filter(function(r){return r.vm>0&&r.ap===0;}), crit=rows.filter(function(r){return r.vm>0&&r.ap>0&&r.ap/(r.vm/30)<14;});
+    const up=rows.filter(function(r){return r.a30>=5;}).map(function(r){return {r:r,t:r7m(r.a7)/r.a30-1};}).sort(function(a,b){return b.t-a.t;});
+    const chip=function(l,vv,hh,col){return "<div class=\"chipk\"><div class=\"ml\">"+l+"</div><div class=\"mv\""+(col?" style=\"color:"+col+"\"":"")+">"+vv+"</div><div class=\"mh\">"+hh+"</div></div>";};
+    $("vtChips").innerHTML=chip("Unidades / mes",Math.round(tot.vm).toLocaleString("es-AR")+" u.","30d: "+tot.a30+" · 7d: "+tot.a7+" ("+Math.round(r7m(tot.a7))+"/mes)")
+      +chip("Facturación / mes",fmt(tot.fact)+" <span style=\"color:var(--tn);font-size:14px\">"+ud(tot.fact)+"</span>","precio actual × "+BASE_TXT[VBASE])
+      +chip("Ganancia / mes (c/ IVA)",sgn(tot.gan)+" <span style=\"color:var(--tn);font-size:14px\">"+ud(tot.gan)+"</span>","margen "+(tot.fact?(tot.gan/tot.fact*100).toFixed(1).replace(".",","):"0")+"% sobre facturación",tot.gan>=0?"var(--green)":"var(--red)")
+      +chip("Producto estrella",esc(NM(star.k)),sgn(star.gan)+" / mes · "+(star.gan/ganPos*100).toFixed(0)+"% de la ganancia","var(--gold)")
+      +(up.length?chip("Más acelera (7d vs 30d)",esc(NM(up[0].r.k)),(up[0].t>=0?"+":"−")+Math.abs(up[0].t*100).toFixed(0)+"% de ritmo"+(up.length>1?" · más frena: "+esc(P[up[up.length-1].r.k].n)+" "+(up[up.length-1].t*100).toFixed(0)+"%":""),"var(--green)"):"")
+      +chip("Alertas de stock Full",sinStk.length+crit.length?(sinStk.length+" sin stock · "+crit.length+" &lt;14 días"):"OK",(sinStk.concat(crit).map(function(r){return esc(P[r.k].n);}).join(", ")||"todo con más de 2 semanas"),(sinStk.length+crit.length)?"var(--red)":"var(--green)");
+    $("vtSum").textContent=sgn(tot.gan)+" / mes";
+    // detalle SKU del producto seleccionado
+    const k=SELECTED, list=(VD.skus&&VD.skus[k])||[];
+    $("vtSkuT").textContent=P[k]?NM(k):"";
+    let s=""; list.forEach(function(x){const vm=baseOf(x.v30,x.v7);
+      const est=!x.full?"<span style=\"color:var(--muted)\">no Full</span>":(x.aptas===0&&x.camino>0?"<span class=\"pill a\">en camino</span>":(x.aptas===0&&vm>0?"<span class=\"pill r\">reponer</span>":"<span class=\"pill g\">ok</span>"));
+      s+="<tr><td class=\"l\">"+esc(x.sku)+"</td><td class=\"l\">"+esc(x.nicho||"—")+"</td><td><b>"+(x.v30||"—")+"</b></td><td>"+(x.v7||"—")+"</td><td>"+(x.v7?Math.round(r7m(x.v7)):"—")+"</td><td><b>"+(x.aptas||"—")+"</b></td><td>"+(x.camino||"—")+"</td><td>"+cobTxt(x.aptas,vm)+"</td><td class=\"l\">"+est+"</td></tr>";});
+    $("vtSku").querySelector("tbody").innerHTML=s||"<tr><td class=\"l\" colspan=\"9\" style=\"color:var(--muted)\">Este producto no tiene SKUs en COLECTA - ML FULL.</td></tr>";
+    $("vtSkuS").textContent=list.length?list.length+" SKU"+(list.length>1?"s":""):"";
+    $("vtNote").innerHTML="Fuente: hoja COLECTA - ML FULL · 30d = "+esc(VD.periodo_30d||"")+" · 7d = "+esc(VD.periodo_7d||"")+". Ritmo/mes = ventas 7d × 30/"+d7()+". Cobertura = aptas para vender ÷ venta diaria (<span class=\"pill r\">&lt;14 d</span> <span class=\"pill a\">14–30 d</span> <span class=\"pill g\">&gt;30 d</span>). La proyección elegida arriba se usa en toda la calculadora (ganancia mensual, comparativa $/mes, impacto del catálogo y ranking COGS). Las publicaciones no Full no traen ventas 30d: solo suman en 7d. Ojo: el ritmo 7d se infla en fechas especiales (Día de la Madre, Navidad); para proyectar el mes conviene el promedio o los 30d. Tocá un producto para ver sus SKUs.";
+    // tarjeta "Ventas 30d" del producto
+    const mv=$("m_v30"); if(mv&&P[k]){const n=V30[k]||0; mv.textContent=n?n+" u./mes":"sin dato"; const mh=mv.nextElementSibling; if(mh) mh.textContent="30d: "+v30(k)+" · 7d: "+v7(k)+" · aptas "+(((VD.stock||{})[k]||{}).aptas||0);}
+  }
+  function pick(k){if(!P[k])return;sel.value=k;load(k);renderProdGrid();}
+  function rerenderAll(){applyBase(); try{renderCharts();}catch(e){} try{if(window.renderV2)window.renderV2();}catch(e){} renderVentas();}
+  const bb={r30:$("vbR30"),r7:$("vbR7"),mix:$("vbMix")};
+  Object.keys(bb).forEach(function(m){bb[m].addEventListener("click",function(){VBASE=m;Object.keys(bb).forEach(function(x){bb[x].classList.toggle("sel",x===m);});rerenderAll();});});
+  const _ld=load; load=function(k){_ld(k); renderVentas();};
+  ["precio","usd"].concat(FIELDS).forEach(function(id){const el=$(id); if(el) el.addEventListener("input",renderVentas);});
+  fetch("ventas_30d.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.ventas){VD=d;rerenderAll();}}).catch(function(){renderVentas();});
 })();
 </script>
 </body>
