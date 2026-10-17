@@ -121,6 +121,41 @@
   .ctog{display:flex;gap:6px;margin-top:8px}
   .tbtn{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px}
   .tbtn.sel{color:var(--gold);border-color:var(--gold)}
+  /* ===== v4 · selector de productos rankeado ===== */
+  .psort{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 12px;align-items:center}
+  .psort .lbl{font-size:11.5px;color:var(--muted);margin-right:4px;font-weight:600}
+  .psort .tbtn{flex:none;padding:6px 12px;font-size:12px;font-weight:700;border-radius:20px}
+  .psort .flt{margin-left:auto;display:flex;gap:6px}
+  .pgrid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px}
+  .pcard{position:relative;display:flex;flex-direction:column;gap:8px;padding:12px 13px 11px;border-radius:14px;cursor:pointer;
+    background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);
+    transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;overflow:hidden}
+  .pcard:hover{transform:translateY(-2px);border-color:var(--violet);box-shadow:0 8px 20px rgba(0,0,0,.35)}
+  .pcard.sel{border-color:var(--gold);box-shadow:inset 0 0 0 2px var(--gold),0 8px 22px rgba(232,196,106,.18);background:linear-gradient(180deg,rgba(232,196,106,.16),rgba(232,196,106,.05))}
+  .pcard.top1{border-color:rgba(232,196,106,.6)} .pcard.top2{border-color:rgba(199,205,224,.5)} .pcard.top3{border-color:rgba(199,154,58,.5)}
+  .pcard.dim{opacity:.55} .pcard.dim:hover{opacity:1}
+  .pcard .ph{display:flex;align-items:center;gap:9px}
+  .pcard .rkb{flex:0 0 auto;min-width:30px;height:30px;padding:0 6px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:var(--panel);border:1px solid var(--line2);color:var(--ink2)}
+  .pcard.top1 .rkb{background:linear-gradient(135deg,#f6d77a,#c79a3a);color:#1a1405;border:none}
+  .pcard.top2 .rkb{background:linear-gradient(135deg,#eef1f8,#9aa3bd);color:#151926;border:none}
+  .pcard.top3 .rkb{background:linear-gradient(135deg,#e8a866,#a8662b);color:#1a0f05;border:none}
+  .pcard .ic{font-size:24px;line-height:1}
+  .pcard .pn{font-size:13px;font-weight:800;color:var(--ink);line-height:1.2}
+  .pcard .pm{font-size:10.5px;color:var(--muted);margin-top:2px;font-weight:600;letter-spacing:.3px}
+  .pcard .pm .f{color:var(--ml)}
+  .pcard .pr{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+  .pcard .price{font-size:17px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+  .pcard .price small{font-size:11px;color:var(--tn);margin-left:5px;font-weight:800}
+  .pcard .kp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .pcard .kp div{background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:8px;padding:5px 6px;text-align:center}
+  .pcard .kp b{display:block;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+  .pcard .kp span{display:block;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-top:1px}
+  .pcard .gb{height:5px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden}
+  .pcard .gb i{display:block;height:100%;border-radius:3px}
+  .pcard .alert{white-space:nowrap;font-size:10px;font-weight:800;padding:2px 7px;border-radius:12px}
+  .pcard .alert.r{background:rgba(248,113,113,.18);color:var(--red);border:1px solid rgba(248,113,113,.4)}
+  .pcard .alert.a{background:rgba(251,191,36,.16);color:var(--amber);border:1px solid rgba(251,191,36,.35)}
+  @media(max-width:600px){.pgrid2{grid-template-columns:1fr;gap:8px}.pcard{padding:10px}.pcard .kp b{font-size:12px}.pcard .price{font-size:15px}.psort .flt{margin-left:0}}
   /* ===== v2 · Ranking COGS · Precio objetivo · Simulador ===== */
   .jump{display:flex;flex-wrap:wrap;gap:8px;margin:-8px 0 18px}
   .jump a{font-size:12.5px;font-weight:700;text-decoration:none;color:var(--ink2);background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:7px 14px;transition:all .15s ease}
@@ -214,8 +249,10 @@
   </header>
   <nav class="jump"><a href="#secVentas">🛒 Ventas y stock</a><a href="#secPrecio">🎯 Precio sugerido</a><a href="#secSim">📉 Simulador descuento / dólar</a><a href="#secCat">📊 Impacto catálogo</a><a href="#secRank">🏆 Ranking COGS</a><a href="#wfChart">💧 Cascada</a><a href="#cmpChart">📈 Comparativa</a></nav>
   <div class="card">
-    <h2>Productos · elegí con un toque <span class="sum pos">precio de venta</span></h2>
-    <div class="pgrid" id="prodGrid"></div>
+    <h2>🏆 Productos · elegí con un toque <span class="sum pos" id="pgSum">ranking</span></h2>
+    <div class="psort"><span class="lbl">Ordenar por</span><button type="button" class="tbtn sel" data-s="gan">💰 Ganancia / mes</button><button type="button" class="tbtn" data-s="pct">% Margen</button><button type="button" class="tbtn" data-s="ven">🛒 Ventas</button><button type="button" class="tbtn" data-s="uni">$ por unidad</button><button type="button" class="tbtn" data-s="pre">Precio</button>
+      <span class="flt"><button type="button" class="tbtn sel" data-f="all">Todos</button><button type="button" class="tbtn" data-f="full">Full</button><button type="button" class="tbtn" data-f="nf">No Full</button></span></div>
+    <div class="pgrid2" id="prodGrid"></div>
   </div>
   <div class="grid">
     <div>
@@ -381,7 +418,7 @@
 <div class="foot">
     Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta (21/121 del precio), la <b>Tarifa ML (16,3% del precio)</b> se calculan (las cuotas sin interés ya no tienen costo) automáticamente; el IVA de comisión ML sale de esa comisión (21/121). El resto son montos fijos editables.<br>
     El costo se calcula por unidad vendida; si enviás más de una unidad, los costos de envío se suman.<br>
-    <span id="mlSync"></span><br>v3 · 16-oct-2026 · ventas y stock por producto/SKU desde COLECTA ML FULL con proyección 30d / ritmo 7d · v2: ranking de COGS, precio sugerido por margen objetivo (por tramo de envío), simulador de descuento y dólar e impacto en el catálogo.
+    <span id="mlSync"></span><br>v4 · selector de productos rankeado (ganancia/mes, margen, ventas, $/u, precio) · v3 · 16-oct-2026 · ventas y stock por producto/SKU desde COLECTA ML FULL con proyección 30d / ritmo 7d · v2: ranking de COGS, precio sugerido por margen objetivo (por tramo de envío), simulador de descuento y dólar e impacto en el catálogo.
   </div>
 </div>
 <script>
@@ -884,12 +921,58 @@ function renderCharts(){try{renderWaterfall();renderCompare();updateMensual();}c
     const mv=$("m_v30"); if(mv&&P[k]){const n=V30[k]||0; mv.textContent=n?n+" u./mes":"sin dato"; const mh=mv.nextElementSibling; if(mh) mh.textContent="30d: "+v30(k)+" · 7d: "+v7(k)+" · aptas "+(((VD.stock||{})[k]||{}).aptas||0);}
   }
   function pick(k){if(!P[k])return;sel.value=k;load(k);renderProdGrid();}
-  function rerenderAll(){applyBase(); try{renderCharts();}catch(e){} try{if(window.renderV2)window.renderV2();}catch(e){} renderVentas();}
+  function rerenderAll(){applyBase(); try{renderCharts();}catch(e){} try{renderProdGrid();}catch(e){} try{if(window.renderV2)window.renderV2();}catch(e){} renderVentas();}
   const bb={r30:$("vbR30"),r7:$("vbR7"),mix:$("vbMix")};
   Object.keys(bb).forEach(function(m){bb[m].addEventListener("click",function(){VBASE=m;Object.keys(bb).forEach(function(x){bb[x].classList.toggle("sel",x===m);});rerenderAll();});});
   const _ld=load; load=function(k){_ld(k); renderVentas();};
   ["precio","usd"].concat(FIELDS).forEach(function(id){const el=$(id); if(el) el.addEventListener("input",renderVentas);});
-  fetch("ventas_30d.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.ventas){VD=d;rerenderAll();}}).catch(function(){renderVentas();});
+  fetch("ventas_30d.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.ventas){VD=d;window.__VD=d;rerenderAll();}}).catch(function(){renderVentas();});
+})();
+/* ===== v4 · Selector de productos rankeado ===== */
+(function(){
+  let PG_S="gan", PG_F="all";
+  const LBL={gan:"ganancia / mes",pct:"% margen final",ven:"ventas / mes",uni:"$ por unidad",pre:"precio"};
+  function data(){
+    const vd=window.__VD||{}, st=vd.stock||{};
+    return Object.keys(P).map(function(k){const pv=prodVals(k), n=(typeof V30!=="undefined"&&V30[k])||0, s=st[k]||null;
+      const cov=(s&&n)?s.aptas/(n/30):null;
+      return {k:k,d:P[k],pv:pv,n:n,gan:pv.rentIva*n,pct:pv.pct,uni:pv.rentIva,pre:P[k].precio,ven:n,cov:cov,apt:s?s.aptas:null,cam:s?s.camino:0};});
+  }
+  renderProdGrid=function(){
+    const g=document.getElementById("prodGrid"); if(!g) return;
+    let rows=data();
+    rows.sort(function(a,b){return (b[PG_S]-a[PG_S])||(b.gan-a.gan)||(b.pct-a.pct);});
+    const rank={}; rows.forEach(function(r,i){rank[r.k]=i+1;});
+    const vis=rows.filter(function(r){return PG_F==="all"||(PG_F==="full"?r.d.canal==="FULL":r.d.canal!=="FULL");});
+    const maxG=Math.max.apply(null,rows.map(function(r){return Math.max(r.gan,0);}).concat([1]));
+    const fmtK=function(n){const a=Math.abs(n);return (n<0?"−":"")+(a>=1e6?"$"+(a/1e6).toFixed(1).replace(".",",")+"M":a>=1e3?"$"+Math.round(a/1e3)+"k":"$"+Math.round(a));};
+    g.innerHTML="";
+    vis.forEach(function(r){
+      const i=rank[r.k], c=document.createElement("div");
+      const dim=PG_S!=="pre"&&PG_S!=="uni"&&PG_S!=="pct"&&r[PG_S]<=0;
+      c.className="pcard"+(i<=3&&!dim?" top"+i:"")+(SELECTED===r.k?" sel":"")+(dim?" dim":"");
+      const mc=r.pct<0?"var(--red)":(r.pct<10?"var(--amber)":"var(--green)");
+      const gc=r.gan<0?"var(--red)":"var(--green)";
+      let al="";
+      if(r.n>0&&r.apt!==null){ if(r.apt===0) al="<span class=\"alert r\">"+(r.cam?"sin stock · "+r.cam+" en camino":"sin stock")+"</span>"; else if(r.cov<14) al="<span class=\"alert a\">"+Math.max(1,Math.round(r.cov))+" d de stock</span>"; }
+      c.title="Cargar "+r.d.n;
+      c.innerHTML="<div class=\"ph\"><span class=\"rkb\">"+"#"+i+"</span><span class=\"ic\">"+(ICONS[r.k]||"\uD83D\uDD39")+"</span><div><div class=\"pn\">"+esc(r.d.n)+"</div><div class=\"pm\">"+(r.d.canal==="FULL"?"<span class=\"f\">⚡ FULL</span>":"NO FULL")+"</div></div></div>"
+        +"<div class=\"pr\"><span class=\"price\">"+fmt(r.d.precio)+"<small>"+ud(r.d.precio)+"</small></span>"+al+"</div>"
+        +"<div class=\"kp\"><div><b style=\"color:"+mc+"\">"+r.pct.toFixed(1).replace(".",",")+"%</b><span>margen</span></div><div><b>"+(r.n||"—")+"</b><span>u / mes</span></div><div><b style=\"color:"+gc+"\">"+(r.n?fmtK(r.gan):"—")+"</b><span>gan / mes</span></div></div>"
+        +"<div class=\"gb\" title=\"ganancia mensual relativa\"><i style=\"width:"+(Math.max(r.gan,0)/maxG*100).toFixed(1)+"%;background:"+(i<=3?"linear-gradient(90deg,#c79a3a,#f6d77a)":"var(--green)")+"\"></i></div>";
+      c.addEventListener("click",function(){sel.value=r.k;load(r.k);renderProdGrid();window.scrollTo({top:0,behavior:"smooth"});});
+      g.appendChild(c);
+    });
+    // el desplegable sigue el mismo orden
+    const cur=sel.value; const opts={}; Array.prototype.slice.call(sel.options).forEach(function(o){opts[o.value]=o;});
+    rows.forEach(function(r){const o=opts[r.k]; if(o){o.textContent="#"+rank[r.k]+" · "+r.d.n+(r.d.canal==="NO FULL"?" · No Full":" · Full"); sel.appendChild(o);}});
+    sel.value=cur;
+    const ps=document.getElementById("pgSum"); if(ps) ps.textContent="ranking por "+LBL[PG_S];
+  };
+  document.querySelectorAll(".psort [data-s]").forEach(function(b){b.addEventListener("click",function(){PG_S=b.dataset.s;document.querySelectorAll(".psort [data-s]").forEach(function(x){x.classList.toggle("sel",x===b);});renderProdGrid();});});
+  document.querySelectorAll(".psort [data-f]").forEach(function(b){b.addEventListener("click",function(){PG_F=b.dataset.f;document.querySelectorAll(".psort [data-f]").forEach(function(x){x.classList.toggle("sel",x===b);});renderProdGrid();});});
+  document.getElementById("usd").addEventListener("input",function(){renderProdGrid();});
+  renderProdGrid();
 })();
 </script>
 </body>
