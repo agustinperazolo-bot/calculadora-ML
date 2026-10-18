@@ -247,7 +247,7 @@
       <span class="usd">USD/$ <input type="number" id="usd" value="1510" step="5"></span>
     </div>
   </header>
-  <nav class="jump"><a href="#secVentas">🛒 Ventas y stock</a><a href="#secPrecio">🎯 Precio sugerido</a><a href="#secSim">📉 Simulador descuento / dólar</a><a href="#secCat">📊 Impacto catálogo</a><a href="#secRank">🏆 Ranking COGS</a><a href="#wfChart">💧 Cascada</a><a href="#cmpChart">📈 Comparativa</a></nav>
+  <nav class="jump"><a href="#secVentas">🛒 Ventas y stock</a><a href="#secRank">🏆 Ranking COGS</a><a href="#wfChart">💧 Cascada</a><a href="#cmpChart">📈 Comparativa</a></nav>
   <div class="card">
     <h2>🏆 Productos · elegí con un toque <span class="sum pos" id="pgSum">ranking</span></h2>
     <div class="psort"><span class="lbl">Ordenar por</span><button type="button" class="tbtn sel" data-s="gan">💰 Ganancia / mes</button><button type="button" class="tbtn" data-s="pct">% Margen</button><button type="button" class="tbtn" data-s="ven">🛒 Ventas</button><button type="button" class="tbtn" data-s="uni">Ganancia / u</button><button type="button" class="tbtn" data-s="pre">Precio</button>
@@ -353,49 +353,6 @@
     </div>
     <div class="note" id="vtNote"></div>
   </div>
-  <div class="grid2">
-    <div class="card" id="secPrecio">
-      <h2>🎯 Precio sugerido · margen objetivo <span class="sum pos" id="psSum"></span></h2>
-      <div class="ctl"><label>Margen objetivo</label><input type="range" id="psM" min="0" max="50" step="1" value="20"><span class="val" id="psMv">20%</span></div>
-      <div class="ctog"><button type="button" class="tbtn sel" id="psBaseN">Sobre rentabilidad neta</button><button type="button" class="tbtn" id="psBaseI">Con recupero de IVA</button></div>
-      <label class="chk"><input type="checkbox" id="psR" checked> Redondear a precio terminado en 990</label>
-      <div class="hero" id="psHero">
-        <div class="lbl">Precio de venta sugerido</div>
-        <div class="big" id="psBig">—</div>
-        <div class="meta" id="psMeta"></div>
-      </div>
-      <button type="button" class="btnGold" id="psApply">Aplicar este precio a la calculadora ↑</button>
-      <div class="tblwrap">
-        <table class="tbl" id="psTbl"><thead><tr><th class="l">Margen</th><th>Precio exacto</th><th>Precio 990</th><th>USD</th><th>vs. actual</th></tr></thead><tbody></tbody></table>
-      </div>
-      <div class="note">Tiene en cuenta IVA, IIBB (mismo % que hoy), comisión 16,3%, cargo fijo, envío por tramo (&lt;$33.001 sin envío · hasta $49.999 $6.190 · más $6.790), almacenamiento, publicidad y COGS. Si el precio cambia de tramo se marca con ⚠.</div>
-    </div>
-    <div class="card" id="secSim">
-      <h2>📉 Simulador · descuento y dólar <span class="sum" id="simSum"></span></h2>
-      <div class="ctl"><label>Descuento al precio</label><input type="range" id="simD" min="0" max="50" step="1" value="0"><span class="val" id="simDv">0%</span></div>
-      <div class="ctl"><label>Suba / baja del dólar</label><input type="range" id="simT" min="-30" max="60" step="1" value="0"><span class="val" id="simTv">0%</span></div>
-      <div class="metrics" style="margin-top:8px">
-        <div class="metric"><div class="ml">Precio simulado</div><div class="mv" id="simP">—</div><div class="mh" id="simPh"></div></div>
-        <div class="metric"><div class="ml">Rentabilidad neta</div><div class="mv" id="simR">—</div><div class="mh" id="simRh"></div></div>
-        <div class="metric"><div class="ml">Rent. con recupero IVA</div><div class="mv" id="simRi">—</div><div class="mh" id="simRih"></div></div>
-        <div class="metric"><div class="ml">Ventas para ganar lo mismo</div><div class="mv" id="simV">—</div><div class="mh" id="simVh"></div></div>
-      </div>
-      <div class="hero" id="simHero" style="margin-bottom:6px">
-        <div class="lbl">Precio para sostener el margen neto actual</div>
-        <div class="big" id="simKeep">—</div>
-        <div class="meta" id="simKeepH"></div>
-      </div>
-      <div class="actions"><button type="button" id="simReset">↺ Volver a 0% / dólar actual</button></div>
-      <div class="note">El dólar mueve los costos atados a USD: joya nacionalizada, cajita/estuche, armado (US$ 2) y su IVA crédito. Comisión, cargo fijo, envío, almacenamiento y publicidad quedan en pesos. Descuento sobre el precio actual de la calculadora.</div>
-    </div>
-  </div>
-  <div class="card" id="secCat">
-    <h2>📊 Impacto del escenario en todo el catálogo <span class="sum" id="catSum"></span></h2>
-    <div class="tblwrap">
-      <table class="tbl" id="catTbl"><thead><tr><th class="l">Producto</th><th>Precio</th><th>Precio sim.</th><th>Margen neto hoy</th><th>Margen neto sim.</th><th>Δ pts</th><th>Rent. IVA / u sim.</th><th>Ganancia/mes hoy</th><th>Ganancia/mes sim.</th></tr></thead><tbody></tbody><tfoot></tfoot></table>
-    </div>
-    <div class="note">Usa el descuento y la variación del dólar del simulador. Ganancia/mes = rentabilidad con recupero de IVA × ventas 30d (ventas_30d.json), con el mismo volumen.</div>
-  </div>
   <div class="card" id="secRank">
     <h2>🏆 Ranking de costos · COGS por unidad vendida <span class="sum" id="rkSum"></span></h2>
     <div class="ctog"><button type="button" class="tbtn sel" id="rkAbs">$ por unidad</button><button type="button" class="tbtn" id="rkPct">% del precio</button><button type="button" class="tbtn" id="rkMes">$ COGS al mes</button><button type="button" class="tbtn" id="rkPza">$ por pieza</button></div>
@@ -418,7 +375,7 @@
 <div class="foot">
     Modelo basado en la planilla "Calculadora Rentabilidad ML". El IVA Venta (21/121 del precio), la <b>Tarifa ML (16,3% del precio)</b> se calculan (las cuotas sin interés ya no tienen costo) automáticamente; el IVA de comisión ML sale de esa comisión (21/121). El resto son montos fijos editables.<br>
     El costo se calcula por unidad vendida; si enviás más de una unidad, los costos de envío se suman.<br>
-    <span id="mlSync"></span><br>v4 · selector de productos rankeado (ganancia/mes, margen, ventas, $/u, precio) · v3 · 16-oct-2026 · ventas y stock por producto/SKU desde COLECTA ML FULL con proyección 30d / ritmo 7d · v2: ranking de COGS, precio sugerido por margen objetivo (por tramo de envío), simulador de descuento y dólar e impacto en el catálogo.
+    <span id="mlSync"></span><br>v4 · selector de productos rankeado (ganancia/mes, margen, ventas, $/u, precio) · v3 · 16-oct-2026 · ventas y stock por producto/SKU desde COLECTA ML FULL con proyección 30d / ritmo 7d · v2: ranking de COGS.
   </div>
 </div>
 <script>
@@ -727,74 +684,6 @@ function renderCharts(){try{renderWaterfall();renderCompare();updateMensual();}c
   const ICO=k=>(typeof ICONS!=="undefined"&&ICONS[k])||"🔹";
   const NM=k=>ICO(k)+" "+P[k].n+(P[k].canal==="NO FULL"?" · NF":"");
 
-  /* ---------- Precio sugerido ---------- */
-  let PS_BASE="neto"; let PS_LAST=null;
-  function renderPS(){
-    const d=formD(); const m=(parseFloat($("psM").value)||0)/100; const round=$("psR").checked;
-    $("psMv").textContent=Math.round(m*100)+"%";
-    const hero=$("psHero"), mx=maxM(d,PS_BASE);
-    const p=solve(d,m,PS_BASE);
-    if(p==null||!d.precio&&!d.nacion){hero.className="hero bad";$("psBig").textContent="Margen inalcanzable";
-      $("psMeta").innerHTML="Con esta estructura de costos el margen máximo posible es "+pctS(mx)+" (por IVA, IIBB y comisión ML). Bajá el objetivo.";$("psSum").textContent="—";PS_LAST=null;}
-    else{hero.className="hero";
-      const pf=round?r990(p):Math.ceil(p); const r=ev(d,pf); PS_LAST=pf;
-      const dv=d.precio?(pf/d.precio-1):0;
-      $("psBig").innerHTML=fmt(pf)+"<small>"+ud(pf)+"</small>";
-      $("psMeta").innerHTML="Exacto "+fmt(p)+" · con "+fmt(pf)+" quedan <b>"+sgn(r.rent)+"</b> neto ("+pctS(r.mN)+") y <b>"+sgn(r.rentIva)+"</b> con IVA ("+pctS(r.mI)+")<br>"
-        +"vs. precio actual "+fmt(d.precio)+": <span class=\""+(dv>=0?"up":"dn")+"\">"+(dv>=0?"+":"−")+Math.abs(dv*100).toFixed(1).replace(".",",")+"%</span> · "+TIER_TXT[r.tier]+(r.cambio?" ⚠ cambia de tramo"+(r.est?" (cargo fijo estimado $2.455)":""):"");
-      $("psSum").textContent=fmt(pf)+" · "+Math.round(m*100)+"%";
-    }
-    const tb=$("psTbl").querySelector("tbody"); let h="";
-    [0,10,15,20,25,30,35,40].forEach(function(t){const q=solve(d,t/100,PS_BASE);
-      if(q==null){h+="<tr><td class=\"l\"><b>"+(t?t+"%":"Equilibrio")+"</b></td><td colspan=\"4\" style=\"text-align:left;color:var(--red)\">inalcanzable</td></tr>";return;}
-      const q9=r990(q), dv=d.precio?(q9/d.precio-1):0, rr=ev(d,q9);
-      h+="<tr class=\"click\" data-p=\""+q9+"\""+(Math.round(m*100)===t?" style=\"outline:1px solid var(--gold2)\"":"")+"><td class=\"l\"><b>"+(t?t+"%":"Equilibrio (0%)")+"</b></td><td>"+fmt(q)+"</td><td><b>"+fmt(q9)+"</b>"+(rr.cambio?" ⚠":"")+"</td><td class=\"u\">"+ud(q9)+"</td><td class=\""+(dv>=0?"up":"dn")+"\">"+(dv>=0?"+":"−")+Math.abs(dv*100).toFixed(1).replace(".",",")+"%</td></tr>";});
-    tb.innerHTML=h;
-    tb.querySelectorAll("tr.click").forEach(function(tr){tr.addEventListener("click",function(){applyPrice(parseFloat(tr.dataset.p));});});
-  }
-  function applyPrice(p){if(!p)return;const el=$("precio");el.value=Math.round(p);el.dispatchEvent(new Event("input"));window.scrollTo({top:0,behavior:"smooth"});}
-
-  /* ---------- Simulador ---------- */
-  function simF(){return 1+(parseFloat($("simT").value)||0)/100;}
-  function simDsc(){return (parseFloat($("simD").value)||0)/100;}
-  function renderSim(){
-    const d=formD(), ds=simDsc(), f=simF(), usd=v("usd")||1;
-    $("simDv").textContent=Math.round(ds*100)+"%";
-    const tp=Math.round((f-1)*100); $("simTv").innerHTML=(tp>0?"+":"")+tp+"% <small style=\"color:var(--tn);font-size:11.5px\">"+Math.round(usd*f).toLocaleString("es-AR")+"</small>";
-    const now=ev(d,d.precio,1), ps=d.precio*(1-ds), s=ev(d,ps,f);
-    $("simP").textContent=fmt(ps); $("simPh").innerHTML=ud(ps)+(ds?" · antes "+fmt(d.precio):"")+(s.cambio?" · ⚠ "+TIER_TXT[s.tier]:"");
-    const R=$("simR"); R.textContent=sgn(s.rent)+" · "+pctS(s.mN); R.style.color=s.rent<0?"var(--red)":(s.mN<0.1?"var(--amber)":"var(--green)");
-    $("simRh").innerHTML="hoy "+sgn(now.rent)+" ("+pctS(now.mN)+") · <span class=\""+(s.rent>=now.rent?"up":"dn")+"\">"+(s.rent>=now.rent?"+":"−")+fmt(Math.abs(s.rent-now.rent))+"</span>";
-    const Ri=$("simRi"); Ri.textContent=sgn(s.rentIva)+" · "+pctS(s.mI); Ri.style.color=s.rentIva<0?"var(--red)":"var(--tn)";
-    $("simRih").innerHTML="hoy "+sgn(now.rentIva)+" · "+usdS(s.rentIva)+" por unidad";
-    const V=$("simV"), n30=(typeof V30!=="undefined"&&V30[SELECTED])||0;
-    if(s.rentIva<=0){V.textContent="No compensa";V.style.color="var(--red)";$("simVh").textContent="cada venta pierde plata con este escenario";}
-    else if(now.rentIva<=0){V.textContent="—";V.style.color="";$("simVh").textContent="hoy el producto no gana";}
-    else{const fx=now.rentIva/s.rentIva; V.textContent=(fx>=1?"+":"−")+Math.abs((fx-1)*100).toFixed(0)+"%";V.style.color=fx>1.0001?"var(--amber)":"var(--green)";
-      $("simVh").textContent=n30?("de "+n30+" a "+Math.ceil(n30*fx)+" u./mes para igualar la ganancia"):"más (o menos) unidades para igualar la ganancia por mes";}
-    // precio que sostiene el margen neto actual con el nuevo dolar
-    const keep=solve(d,now.mN,"neto",f), kh=$("simHero");
-    if(keep==null||now.mN<=0){kh.className="hero bad";$("simKeep").textContent=now.mN<=0?"Hoy el margen neto es ≤ 0":"Inalcanzable";$("simKeepH").textContent="";}
-    else{kh.className="hero";const k9=r990(keep);$("simKeep").innerHTML=fmt(k9)+"<small>"+ud(k9)+"</small>";
-      const dv=d.precio?(k9/d.precio-1):0;
-      $("simKeepH").innerHTML="para seguir en "+pctS(now.mN)+" neto con dólar a "+Math.round(usd*f).toLocaleString("es-AR")+" · exacto "+fmt(keep)+" · <span class=\""+(dv>=0?"up":"dn")+"\">"+(dv>=0?"+":"−")+Math.abs(dv*100).toFixed(1).replace(".",",")+"%</span> vs. hoy";}
-    const ss=$("simSum"); ss.textContent=(ds||f!==1)?("Δ "+(s.rent>=now.rent?"+":"−")+fmt(Math.abs(s.rent-now.rent))+" / u"):"escenario base"; ss.className="sum"+(s.rent>=now.rent?" pos":"");
-    renderCat(ds,f);
-  }
-  function renderCat(ds,f){
-    const rows=Object.keys(P).map(function(k){const d=P[k];const a=ev(d,d.precio,1), b=ev(d,d.precio*(1-ds),f), n=(typeof V30!=="undefined"&&V30[k])||0;
-      return {k:k,d:d,a:a,b:b,n:n};}).sort(function(x,y){return y.b.mN-x.b.mN;});
-    let h="", tA=0, tB=0, neg=0;
-    rows.forEach(function(r){const dp=(r.b.mN-r.a.mN)*100; tA+=r.a.rentIva*r.n; tB+=r.b.rentIva*r.n; if(r.b.rent<0)neg++;
-      const cl=r.b.mN<0?"r":(r.b.mN<0.1?"a":"g");
-      h+="<tr class=\"click"+(r.k===SELECTED?" cur":"")+"\" data-k=\""+r.k+"\"><td class=\"l\">"+esc(NM(r.k))+"</td><td>"+fmt(r.d.precio)+"</td><td><b>"+fmt(r.b.precio)+"</b>"+(r.b.cambio?" ⚠":"")+"</td><td>"+pctS(r.a.mN)+"</td><td><span class=\"pill "+cl+"\">"+pctS(r.b.mN)+"</span></td><td class=\""+(dp>=0?"up":"dn")+"\">"+(dp>=0?"+":"−")+Math.abs(dp).toFixed(1).replace(".",",")+"</td><td>"+sgn(r.b.rentIva)+" <span class=\"u\">"+usdS(r.b.rentIva)+"</span></td><td>"+(r.n?sgn(r.a.rentIva*r.n):"—")+"</td><td>"+(r.n?"<b class=\""+(r.b.rentIva<0?"dn":"")+"\">"+sgn(r.b.rentIva*r.n)+"</b>":"—")+"</td></tr>";});
-    $("catTbl").querySelector("tbody").innerHTML=h;
-    const dT=tB-tA;
-    $("catTbl").querySelector("tfoot").innerHTML="<tr><td class=\"l\">Total con ventas 30d</td><td></td><td></td><td></td><td></td><td></td><td></td><td>"+sgn(tA)+"</td><td>"+sgn(tB)+" <span class=\""+(dT>=0?"up":"dn")+"\">("+(dT>=0?"+":"−")+fmt(Math.abs(dT))+")</span></td></tr>";
-    const cs=$("catSum"); cs.textContent=neg?neg+" producto"+(neg>1?"s":"")+" a pérdida":"ninguno a pérdida"; cs.className="sum"+(neg?"":" pos");
-    $("catTbl").querySelectorAll("tbody tr.click").forEach(function(tr){tr.addEventListener("click",function(){selectK(tr.dataset.k);});});
-  }
-
   /* ---------- Ranking COGS ---------- */
   let RK_MODE="abs";
   function rkRows(){const usd=v("usd")||1;
@@ -831,19 +720,11 @@ function renderCharts(){try{renderWaterfall();renderCompare();updateMensual();}c
 
   // precio de equilibrio por tramo de envio (reemplaza la formula simple de calc)
   function updBE(){const be=solve(formD(),0,"neto"); const el=$("m_be"); if(el&&be!=null){el.textContent=fmt(be);}}
-  function renderV2(){try{updBE();}catch(e){} try{renderPS();}catch(e){console.error(e);} try{renderSim();}catch(e){console.error(e);} try{renderRank();}catch(e){console.error(e);}}
+  function renderV2(){try{updBE();}catch(e){} try{renderRank();}catch(e){console.error(e);}}
   window.renderV2=renderV2;
   // enganches
   const _ld=load; load=function(k){_ld(k); renderV2();};
   ["precio","usd"].concat(FIELDS).forEach(function(id){const el=$(id); if(el) el.addEventListener("input",renderV2);});
-  ["psM","psR"].forEach(function(id){$(id).addEventListener("input",renderPS);});
-  $("psR").addEventListener("change",renderPS);
-  ["simD","simT"].forEach(function(id){$(id).addEventListener("input",renderSim);});
-  $("simReset").addEventListener("click",function(){$("simD").value=0;$("simT").value=0;renderSim();});
-  $("psApply").addEventListener("click",function(){applyPrice(PS_LAST);});
-  const bN=$("psBaseN"), bI=$("psBaseI");
-  bN.addEventListener("click",function(){PS_BASE="neto";bN.classList.add("sel");bI.classList.remove("sel");renderPS();});
-  bI.addEventListener("click",function(){PS_BASE="iva";bI.classList.add("sel");bN.classList.remove("sel");renderPS();});
   const rb={abs:$("rkAbs"),pct:$("rkPct"),mes:$("rkMes"),pza:$("rkPza")};
   Object.keys(rb).forEach(function(m){rb[m].addEventListener("click",function(){RK_MODE=m;Object.keys(rb).forEach(function(x){rb[x].classList.toggle("sel",x===m);});renderRank();});});
   // reengancha cuando llegan ventas_30d.json (lo carga el bloque de graficos)
