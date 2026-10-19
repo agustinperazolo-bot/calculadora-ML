@@ -187,7 +187,10 @@
   .skrow{display:flex;justify-content:space-between;font-size:13.5px;padding:3px 0;color:var(--muted)}
   .skrow b{font-weight:700;color:var(--ink)}
   .camt.neg,.cpct.neg{color:#f87171}
-  #tab_fs .cpct{white-space:nowrap;min-width:92px;text-align:right}
+  #tab_fs .crow{grid-template-columns:15px minmax(0,1fr) 110px 140px}
+  #tab_fs .cpct,#tab_fs .camt{white-space:nowrap;text-align:right}
+  #tab_fs .cseg span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
+  @media(max-width:600px){#tab_fs .crow{grid-template-columns:12px minmax(0,1fr) 84px 108px;gap:6px}}
   .years{display:flex;align-items:center;gap:7px;margin:0 0 10px}
   .years .ylbl{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#8b93ab;font-weight:700;margin-right:3px}
   .ybtn{font:inherit;font-size:13px;font-weight:800;letter-spacing:.3px;color:#c7cde0;background:#151926;border:1px solid #323a50;border-radius:10px;padding:7px 16px;cursor:pointer;transition:all .15s ease}
@@ -202,27 +205,17 @@
       <div class="logo">SF</div>
       <div>
         <h1>Dashboard Financiero · Sofia Ferrer Chile</h1>
-        <div class="sub">Fuente: CHILE - Finance · datos al <b>19/10/2026</b> · TC USD/CLP <b id="tcnote">981</b> · 2026 con último mes en curso (parcial) · 2025 año cerrado</div>
+        <div class="sub">Fuente: CHILE - Finance · datos al <b>19/10/2026</b> · TC USD/CLP <b id="tcnote">981</b> · último mes en curso (parcial)</div>
       </div>
     </div>
-    <div class="years">
-      <span class="ylbl">Año</span>
-      <button id="yb_2026" class="ybtn on" onclick="showYear('2026')">2026</button>
-      <button id="yb_2025" class="ybtn" onclick="showYear('2025')">2025</button>
-    </div>
     <div class="tabs">
-      <button id="bt_sh" class="on t-tn" onclick="show('sh')">Shopify</button>
-      <button id="bt_ml" class="t-ml" onclick="show('ml')">Mercado Libre</button>
-      <button id="bt_cl" class="t-sf" onclick="show('cl')">Consolidado CHILE</button>
+      <button id="bt_cl" class="on t-sf" onclick="show('cl')">Consolidado CHILE</button>
       <button id="bt_fs" class="t-fs" onclick="show('fs')">Fondos y Stock</button>
     </div>
   </header>
   <div id="srcchip"></div>
-  <div id="tab_sh" class="tab show"></div>
-  <div id="tab_ml" class="tab"></div>
-  <div id="tab_cl" class="tab"></div>
+  <div id="tab_cl" class="tab show"></div>
   <div id="tab_fs" class="tab"></div>
-  <div id="tab_sh25" class="tab"></div>
   <div class="foot">Chileteca SpA · montos en CLP (USD al TC 981) · generado el 19/10/2026</div>
 </div>
 <script>
@@ -408,18 +401,6 @@ function renderFS(){
     {l:"Deuda a socios",v:usd(sSoc),cls:"neg",s:f0(sSoc),k:"k-red"},
     {l:"Deuda a Mediacor",v:usd(sMed),cls:"neg",s:f0(sMed),k:"k-red"}
   ]);
-  // puente de capital
-  const act=[["Caja",sCaja,"#38bdf8"],["Stock en casa",sCasa,"#a78bfa"],["Stock en tránsito",sTr,"#e8c46a"],["Stock ML Full",sFull,"#2dd4bf"]];
-  const pas=[["Deuda a socios",sSoc,"#f87171"],["Deuda a Mediacor",sMed,"#fb923c"]];
-  const totA=sum(act.map(a=>a[1]));
-  let bar='<div class="cbar">';
-  act.forEach(a=>{const w=a[1]/totA*100;bar+=`<div class="cseg" style="width:${w}%;background:${a[2]}"><span>${w>=9?a[0]+' '+Math.round(w)+'%':''}</span><div class="ctip">${a[0]}: ${f0(a[1])} · ${usd(a[1])} · ${w.toFixed(1)}%</div></div>`;});
-  bar+='</div>';
-  let rows=act.map(a=>`<div class="crow"><span class="cdot" style="background:${a[2]}"></span><span class="cname">+ ${a[0]}</span><span class="cpct">${usd(a[1])}</span><span class="camt">${f0(a[1])}</span></div>`).join('');
-  rows+=pas.map(a=>`<div class="crow"><span class="cdot" style="background:${a[2]}"></span><span class="cname">− ${a[0]}</span><span class="cpct neg">${usd(a[1])}</span><span class="camt neg">−${f0(a[1])}</span></div>`).join('');
-  rows+=`<div class="crow cmargrow"><span class="cdot" style="background:#34d399"></span><span class="cname">= Capital neto (incluye Full)</span><span class="cpct">${usd(capFull)}</span><span class="camt">${f0(capFull)}</span></div>`;
-  const nar=`El negocio vale hoy <b style="color:#34d399">US$ ${F.conv.actUSD.toLocaleString("es-CL")}</b> según la planilla, <b>${x.toFixed(1)}x</b> la inversión inicial. El <b>${Math.round(stk/totA*100)}%</b> de los activos está en mercadería y el <b>${Math.round(sCaja/totA*100)}%</b> en caja; las deudas suman <b style="color:#f87171">${usd(sSoc+sMed)}</b>.`;
-  h+=`<div class="card"><h2><span class="dot" style="background:#34d399"></span>Fondos y Stock · de qué está hecho el capital</h2><div class="cnar">${nar}</div>${bar}<div class="cbarcap">Composición de los activos (caja + stock) · foto al ${F.fecha} · TC ${F.tc.toLocaleString("es-CL")} CLP/USD</div><div class="clist">${rows}</div><div class="note">El "Valor actual" de la planilla (US$ ${F.conv.actUSD.toLocaleString("es-CL")}) = caja + stock en casa + tránsito − deudas, <b>sin</b> el stock en ML Full (${usd(sFull)}). Sumándolo, el capital neto da ${usd(capFull)}.</div></div>`;
   // resumen de stock
   const groups=[["Stock en casa",F.casa,"#a78bfa"],["Compra en tránsito",F.transito,"#e8c46a"],["Stock ML Full",F.full,"#2dd4bf"]];
   let cards='<div class="skgrid" style="grid-template-columns:repeat(3,1fr)">';
@@ -427,6 +408,18 @@ function renderFS(){
     cards+=`<div class="skcard" style="border-top:4px solid ${g[2]}"><div class="skhead"><span class="skrank" style="background:${g[2]}">${i+1}</span><span class="skname">${g[0]}</span></div><div class="skpct" style="color:${g[2]}">${p.toFixed(1)}%</div><div class="skbar"><div style="width:${p}%;background:${g[2]}"></div></div><div class="skrow"><span>Unidades</span><b>${u.toLocaleString("es-CL")} u</b></div><div class="skrow"><span>Valor CLP</span><b>${f0(v)}</b></div><div class="skrow"><span>Valor USD</span><b>${usd(v)}</b></div></div>`;});
   cards+='</div>';
   h+=`<div class="card"><h2><span class="dot" style="background:#a78bfa"></span>Resumen de stock · ${usd(stk)}</h2>${cards}</div>`;
+  // puente de capital
+  const act=[["Caja",sCaja,"#38bdf8"],["Stock en casa",sCasa,"#a78bfa"],["Stock en tránsito",sTr,"#e8c46a"],["Stock ML Full",sFull,"#2dd4bf"]];
+  const pas=[["Deuda a socios",sSoc,"#f87171"],["Deuda a Mediacor",sMed,"#fb923c"]];
+  const totA=sum(act.map(a=>a[1]));
+  let bar='<div class="cbar">';
+  act.forEach(a=>{const w=a[1]/totA*100;bar+=`<div class="cseg" style="width:${w}%;background:${a[2]}"><span>${w>=18?a[0]+' '+Math.round(w)+'%':(w>=5?Math.round(w)+'%':'')}</span><div class="ctip">${a[0]}: ${f0(a[1])} · ${usd(a[1])} · ${w.toFixed(1)}%</div></div>`;});
+  bar+='</div>';
+  let rows=act.map(a=>`<div class="crow"><span class="cdot" style="background:${a[2]}"></span><span class="cname">+ ${a[0]}</span><span class="cpct">${usd(a[1])}</span><span class="camt">${f0(a[1])}</span></div>`).join('');
+  rows+=pas.map(a=>`<div class="crow"><span class="cdot" style="background:${a[2]}"></span><span class="cname">− ${a[0]}</span><span class="cpct neg">${usd(a[1])}</span><span class="camt neg">−${f0(a[1])}</span></div>`).join('');
+  rows+=`<div class="crow cmargrow"><span class="cdot" style="background:#34d399"></span><span class="cname">= Capital neto (incluye Full)</span><span class="cpct">${usd(capFull)}</span><span class="camt">${f0(capFull)}</span></div>`;
+  const nar=`El negocio vale hoy <b style="color:#34d399">US$ ${F.conv.actUSD.toLocaleString("es-CL")}</b> según la planilla, <b>${x.toFixed(1)}x</b> la inversión inicial. El <b>${Math.round(stk/totA*100)}%</b> de los activos está en mercadería y el <b>${Math.round(sCaja/totA*100)}%</b> en caja; las deudas suman <b style="color:#f87171">${usd(sSoc+sMed)}</b>.`;
+  h+=`<div class="card"><h2><span class="dot" style="background:#34d399"></span>Fondos y Stock · de qué está hecho el capital</h2><div class="cnar">${nar}</div>${bar}<div class="cbarcap">Composición de los activos (caja + stock) · foto al ${F.fecha} · TC ${F.tc.toLocaleString("es-CL")} CLP/USD</div><div class="clist">${rows}</div><div class="note">El "Valor actual" de la planilla (US$ ${F.conv.actUSD.toLocaleString("es-CL")}) = caja + stock en casa + tránsito − deudas, <b>sin</b> el stock en ML Full (${usd(sFull)}). Sumándolo, el capital neto da ${usd(capFull)}.</div></div>`;
   h+='<div class="grid2">';
   h+='<div class="card">'+stockTable("Stock en casa",F.casa,"#a78bfa")+'</div>';
   h+='<div class="card">'+stockTable("Compra en tránsito",F.transito,"#e8c46a")+stockTable("Stock ML Full",F.full,"#2dd4bf")+'</div></div>';
@@ -460,26 +453,6 @@ function kpiBlock(d,label,accent){
     {l:"Vendido TOTAL (período)",v:usd(vT),s:enT.toLocaleString("es-CL")+" ped. · "+f0(vT),k:"k-gold"}
   ]);
 }
-function renderSH(){
-  const d=DATA.shop, vT=sum(d.ventas), rnT=sum(d.resNeto);
-  let h=kpiBlock(d,"Shopify","#1e6fb8");
-  h+='<div class="grid2">'+chartCard("Facturación · Pedidos · Margen (Shopify)",d,"#38bdf8")+
-     `<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
-  h+=`<div class="card"><h2><span class="dot" style="background:#38bdf8"></span>Detalle mensual · Shopify</h2>`+chanTable(d)+
-     `<div class="note">Fuente: hoja "$ chi EERR-26". Último mes en curso: barras rayadas y fila atenuada. IVA a recuperar del período ${f0(d.ivaRecup)} · al fisco ${f0(d.fisco)}.</div></div>`;
-  document.getElementById("tab_sh").innerHTML=h;
-}
-function renderMLC(){
-  const d=DATA.ml, vT=sum(d.ventas), rnT=sum(d.resNeto), dvT=sum(d.devol);
-  let h=kpiBlock(d,"Mercado Libre","#e8c46a");
-  h+='<div class="grid2">'+chartCard("Facturación · Pedidos · Margen (Mercado Libre)",d,"#e8c46a")+
-     `<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
-  h+=`<div class="card"><h2><span class="dot" style="background:#e8c46a"></span>Detalle mensual · Mercado Libre</h2>`+chanTable(d,[
-    {h:"Devoluciones",get:i=>d.devol[i],fmt:v=>v?f0(v):"—",cls:v=>v?'neg':'',tot:()=>f0(dvT)},
-    {h:"Dividendo /3",get:i=>d.dividendo[i],fmt:f0u,tot:()=>f0u(sum(d.dividendo))}
-  ])+`<div class="note">Fuente: hoja "ML Finz 26". Devoluciones del período ${f0(dvT)} (${pc(dvT,vT)} de ventas). IVA a recuperar ${f0(d.ivaRecup)} · al fisco ${f0(d.fisco)}.</div></div>`;
-  document.getElementById("tab_ml").innerHTML=h;
-}
 function renderCLT(){
   const d=DATA.cl, vT=sum(d.ventas), rnT=sum(d.resNeto), rbT=sum(d.resBruto), divT=sum(d.dividendo);
   const enSH=sum(d.enviosSH), enML=sum(d.enviosML), enT=enSH+enML;
@@ -512,46 +485,15 @@ function renderCLT(){
   ])+`<div class="note">Fuente: hoja "CHILETECA 26". Ventas consolidadas netas de devoluciones ML. Shopify aporta ${pc(sum(DATA.shop.ventas),vT)} de la facturación del período y ML el resto. Dividendo /3 = reparto por socio (Chileteca SpA).</div></div>`;
   document.getElementById("tab_cl").innerHTML=h;
 }
-function renderSH25(){
-  USD=TC_YEAR["2025"];
-  const d=DATA.shop25, vT=sum(d.ventas), rnT=sum(d.resNeto), enT=sum(d.envios);
-  const best=d.ventas.indexOf(Math.max(...d.ventas));
-  const h1=d.ventas.slice(0,6).reduce((a,b)=>a+b,0), h2=d.ventas.slice(6).reduce((a,b)=>a+b,0);
-  let h=kpiHtml([
-    {l:"Facturación 2025 · año cerrado",v:usd(vT),s:f0(vT),k:"k-gold"},
-    {l:"Resultado Neto 2025",v:usd(rnT),cls:rnT<0?"neg":"pos",s:pc(rnT,vT)+" margen · "+f0(rnT),k:"k-blue"},
-    {l:"Pedidos 2025",v:enT.toLocaleString("es-CL")+" ped.",s:"ticket promedio "+f0(vT/enT)},
-    {l:"Mejor mes",v:d.months[best],s:f0(d.ventas[best])+" · "+d.envios[best]+" ped."},
-    {l:"2do semestre vs 1ro",v:deltaTag(h2,h1),s:f0(h1)+" → "+f0(h2),k:"k-curso"}
-  ]);
-  h+='<div class="grid2">'+chartCard("Facturación · Pedidos · Margen (Shopify 2025)",d,"#38bdf8").replace(/<span><i class="hatch"><\/i>Mes en curso<\/span>/,"")+
-     `<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos 2025 · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
-  h+=`<div class="card"><h2><span class="dot" style="background:#38bdf8"></span>Detalle mensual · Shopify 2025</h2>`+chanTable(d)+
-     `<div class="note">Fuente: hoja "$ chi EERR-25" · año completo y cerrado (sin mes parcial). TC USD/CLP 921 (el de esa planilla). IVA a recuperar ${f0(d.ivaRecup)} · al fisco ${f0(d.fisco)}. En 2025 Mercado Libre Chile todavía no operaba salvo Dic-25, que se muestra en la pestaña ML de 2026.</div></div>`;
-  document.getElementById("tab_sh25").innerHTML=h;
-  USD=TC_YEAR["2026"];
-}
-const YEAR_TABS={"2026":["sh","ml","cl","fs"],"2025":["sh25"]};
-let CURY="2026";
-function showYear(y){
-  CURY=y;
-  ["2026","2025"].forEach(k=>document.getElementById("yb_"+k).classList.toggle("on",k===y));
-  Object.keys(YEAR_TABS).forEach(k=>YEAR_TABS[k].forEach(t=>{
-    const b=document.getElementById("bt_"+t); if(b) b.style.display=(k===y?"":"none");
-  }));
-  const tc=TC_YEAR[y].toLocaleString("es-CL");
-  const el=document.getElementById("tcnote"); if(el) el.textContent=tc;
-  show(YEAR_TABS[y][0]);
-}
 function show(k){
-  ["sh","ml","cl","fs","sh25"].forEach(t=>{
+  ["cl","fs"].forEach(t=>{
     const tb=document.getElementById("tab_"+t), bb=document.getElementById("bt_"+t);
     if(tb) tb.classList.toggle("show",t===k);
     if(bb) bb.classList.toggle("on",t===k);
   });
   setSrc(k);
 }
-renderSH();renderMLC();renderCLT();renderFS();renderSH25();showYear("2026");
+renderCLT();renderFS();show("cl");
 
 </script>
 </body>
