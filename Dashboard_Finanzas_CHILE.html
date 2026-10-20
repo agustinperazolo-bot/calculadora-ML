@@ -246,7 +246,8 @@ function svgBars(months, series, opts){
   const pIdx=opts.partialIndex!=null?opts.partialIndex:-1;
   const U=(svgBars._n=(svgBars._n||0)+1);
   let max=0,min=0;
-  series.forEach(s=>s.data.forEach(v=>{if(v==null)return;if(v>max)max=v;if(v<min)min=v;}));
+  if(opts.stack){months.forEach((_,i)=>{const t=series.reduce((a,s)=>a+Math.max(s.data[i]||0,0),0);if(t>max)max=t;});}
+  else series.forEach(s=>s.data.forEach(v=>{if(v==null)return;if(v>max)max=v;if(v<min)min=v;}));
   max=max*1.12||1; min=min*1.12;
   const span=max-min||1;
   const y=v=>padT+(max-v)/span*(H-padT-padB);
@@ -270,6 +271,13 @@ function svgBars(months, series, opts){
   months.forEach((m,i)=>{
     const gx=padL+gw*i+gw*0.17;
     const isP=i===pIdx;
+    if(opts.stack){
+      let base=0;const tot=series.reduce((a,s)=>a+Math.max(s.data[i]||0,0),0);const sbw=gw*0.66;
+      series.forEach((s,si)=>{const v=Math.max(s.data[i]||0,0); if(!v) return;
+        const yTop=y(base+v), h=y(base)-yTop; const fill=isP?`url(#h${U}_${si})`:`url(#g${U}_${si})`;
+        g+=`<rect x="${gx.toFixed(1)}" y="${yTop.toFixed(1)}" width="${(sbw*0.95).toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="2" fill="${fill}" ${isP?'opacity=".92"':''}><title>${m} · ${s.name}: ${fmtT(v)} (${tot?Math.round(v/tot*100):0}%) · Total ${fmtT(tot)}${isP?' (en curso)':''}</title></rect>`;
+        base+=v;});
+    } else
     series.forEach((s,si)=>{
       const v=s.data[i]; if(v==null) return; const yy=y(Math.max(v,0)), h=Math.abs(y(v)-y0);
       const fill=isP?`url(#h${U}_${si})`:`url(#g${U}_${si})`;
@@ -467,11 +475,12 @@ function renderCLT(){
   ]);
   const marg=d.ventas.map((v,i)=>v?d.resNeto[i]/v*100:0);
   const units=d.ventas.map((_,i)=>d.enviosSH[i]+d.enviosML[i]);
-  const svg=svgBars(d.months,[{name:"Facturación",color:"#a78bfa",data:d.ventas,flat:true}],
-    {partialIndex:li,lines:[{name:"Margen Neto",data:marg,color:"#34d399",axis:true,suffix:"%",dec:1},
+  const vSH=d.months.map((_,i)=>DATA.shop.ventas[i]||0), vML=d.ventas.map((v,i)=>Math.max(v-vSH[i],0));
+  const svg=svgBars(d.months,[{name:"Shopify",color:"#38bdf8",data:vSH,flat:true},{name:"Mercado Libre",color:"#fbbf24",data:vML,flat:true}],
+    {stack:true,partialIndex:li,lines:[{name:"Margen Neto",data:marg,color:"#34d399",axis:true,suffix:"%",dec:1},
                             {name:"Unidades",data:units,color:"#c7cde0",points:true}]});
   h+='<div class="grid2"><div class="card"><h2><span class="dot" style="background:#a78bfa"></span>Facturación · Pedidos · Margen (Shopify+ML)</h2>'+svg+
-     '<div class="legend"><span><i style="background:#a78bfa"></i>Facturación</span><span><i style="background:#c7cde0;border-radius:50%"></i>Pedidos</span><span><i style="background:#34d399"></i>Margen %</span><span><i class="hatch"></i>Mes en curso</span></div></div>'+
+     '<div class="legend"><span><i style="background:#38bdf8"></i>Shopify '+pc(sum(vSH),vT)+'</span><span><i style="background:#fbbf24"></i>Mercado Libre '+pc(sum(vML),vT)+'</span><span><i style="background:#c7cde0;border-radius:50%"></i>Pedidos</span><span><i style="background:#34d399"></i>Margen %</span><span><i class="hatch"></i>Mes en curso</span></div></div>'+
      `<div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Estructura de costos · a dónde va cada $100</h2>${costBreakdown(d.struct,vT,rnT)}</div></div>`;
   h+=`<div class="card"><h2><span class="dot"></span>Detalle mensual consolidado</h2>`+monthTable(d,[
     {h:"Env. Shopify",get:i=>d.enviosSH[i],fmt:v=>v,tot:()=>enSH},
