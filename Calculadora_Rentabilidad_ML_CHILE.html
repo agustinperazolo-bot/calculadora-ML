@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Rentabilidad — Mercado Libre Chile · Chileteca</title>
+<style>
+  :root{
+    --bg:#0b0d14; --bg2:#0e1119; --panel:#151926; --panel2:#1b2030; --line:#262c3d; --line2:#323a50;
+    --ink:#eef1f8; --ink2:#c7cde0; --muted:#8b93ab; --faint:#5b647d;
+    --gold:#e8c46a; --gold2:#c79a3a; --violet:#a78bfa; --violet2:#7c3aed;
+    --ml:#fbbf24; --tn:#38bdf8;
+    --green:#34d399; --green2:#10b981; --red:#f87171; --amber:#fbbf24;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg)}
+  body{font-family:'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:var(--ink);line-height:1.45;
+    padding:28px 20px 40px;background:
+      radial-gradient(1200px 500px at 80% -10%, rgba(124,58,237,.16), transparent 60%),
+      radial-gradient(900px 500px at -5% 0%, rgba(251,191,36,.08), transparent 55%),
+      var(--bg);min-height:100vh}
+  .wrap{max-width:1240px;margin:0 auto}
+  /* HEADER */
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-content:space-between;
+    margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:52px;height:52px;border-radius:14px;
+    background:linear-gradient(135deg,#7c3aed 0%,#fbbf24 100%);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;
+    box-shadow:0 6px 18px rgba(124,58,237,.45);letter-spacing:.5px}
+  h1{font-size:21px;font-weight:700;letter-spacing:-.2px}
+  .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .sub b{color:var(--gold);font-weight:600}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .nav{display:flex;gap:8px;flex-wrap:wrap}
+  .navbtn{text-decoration:none;font-size:12.5px;font-weight:700;padding:9px 13px;border:1px solid var(--line2);border-radius:11px;background:var(--panel);color:var(--ink2);white-space:nowrap;transition:all .18s ease}
+  .navbtn:hover{border-color:var(--violet);color:#fff}
+  .navbtn.tn:hover{border-color:var(--tn);color:#fff}
+  select{font-size:13.5px;padding:10px 14px;border:1px solid var(--line2);border-radius:11px;
+    background:var(--panel);font-weight:600;color:var(--ink);min-width:240px;cursor:pointer;transition:border-color .18s ease}
+  select:hover{border-color:var(--violet)}
+  .usd{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .usd input{width:88px;font-size:13.5px;padding:10px 12px;border:1px solid var(--line2);border-radius:11px;
+    background:var(--panel);font-weight:700;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+  .tag{font-size:10px;font-weight:700;padding:4px 10px;border-radius:7px;letter-spacing:.4px;text-transform:uppercase}
+  .tag.full{background:rgba(251,191,36,.16);color:var(--ml);border:1px solid rgba(251,191,36,.35)}
+  .tag.nofull{background:rgba(139,147,171,.15);color:var(--muted);border:1px solid var(--line2)}
+  .grid{display:grid;grid-template-columns:1.45fr 1fr;gap:18px;align-items:start}
+  @media(max-width:880px){.grid{grid-template-columns:1fr}}
+  /* CARDS */
+  .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:18px;padding:16px 18px;margin-bottom:16px;box-shadow:var(--shadow);transition:border-color .2s ease}
+  .card:hover{border-color:var(--line2)}
+  .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--ink2);font-weight:700;
+    margin:-2px -4px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 13px;
+    background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(255,255,255,.012));
+    border:1px solid var(--line);border-left:3px solid var(--violet);border-radius:9px}
+  .card h2 .sum{font-size:11.5px;font-weight:800;color:var(--red);background:rgba(248,113,113,.14);
+    border:1px solid rgba(248,113,113,.3);padding:3px 10px;border-radius:20px;font-variant-numeric:tabular-nums;white-space:nowrap;text-transform:none;letter-spacing:0}
+  .card h2 .sum.pos{color:var(--green);background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.3)}
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .metric{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .metric .ml{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .metric .mv{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px;letter-spacing:-.3px}
+  .metric .mh{font-size:10px;color:var(--faint);margin-top:2px}
+  .row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row label{flex:1;font-size:13px;color:var(--ink2)}
+  .row .pct{font-size:11px;color:var(--muted);min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
+  .row .ud{font-size:11px;color:var(--tn);font-weight:700;min-width:74px;text-align:right;font-variant-numeric:tabular-nums;margin-left:8px}
+  .row .money{position:relative}
+  .row .money span.cur{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
+  .row input[type=number]{width:122px;padding:8px 9px 8px 22px;border:1px solid var(--line2);border-radius:9px;
+    font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;background:var(--panel);color:var(--ink)}
+  .row input[type=number]:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(167,139,250,.18)}
+  .row.price input{font-size:15px;font-weight:800;color:var(--gold);border-color:var(--gold2)}
+  .row.calc label{color:var(--muted)}
+  .row.calc .ro{width:122px;text-align:right;font-weight:700;font-size:13.5px;color:var(--ink2);font-variant-numeric:tabular-nums;padding-right:9px}
+  .row.auto label::after{content:"AUTO";font-size:8.5px;font-weight:800;color:var(--violet);background:rgba(167,139,250,.16);
+    border:1px solid rgba(167,139,250,.3);padding:1px 5px;border-radius:5px;margin-left:7px;vertical-align:middle;letter-spacing:.5px}
+  .results{position:sticky;top:20px}
+  /* KPIs */
+  .kpi{position:relative;border-radius:16px;padding:16px 18px;margin-bottom:13px;overflow:hidden;
+    background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);transition:transform .18s ease,box-shadow .18s ease}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.4)}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--violet)}
+  .kpi.good::before{background:var(--green)} .kpi.amber::before{background:var(--amber)}
+  .kpi.bad::before{background:var(--red)} .kpi.iva::before{background:var(--tn)}
+  .kpi .lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+  .kpi .big{font-size:30px;font-weight:800;line-height:1.1;margin-top:5px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .kpi.good .big{color:var(--green)} .kpi.amber .big{color:var(--amber)} .kpi.bad .big{color:var(--red)} .kpi.iva .big{color:var(--tn)}
+  .kpi .meta{font-size:12px;margin-top:4px;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .bd{font-size:12.5px}
+  .bd .l{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;color:var(--ink2)}
+  .bd .l:last-child{border-bottom:none}
+  .bd .l.t{font-weight:700;border-top:1.5px solid var(--line2);border-bottom:none;margin-top:2px;padding-top:9px;color:#fff}
+  .bd .l span:last-child{font-weight:600;color:var(--ink)}
+  .bd .l .ud{color:var(--tn);font-weight:700;font-size:11px;margin-left:6px}
+  .neg{color:var(--red)!important}
+  .bar{display:flex;height:32px;border-radius:9px;overflow:hidden;margin:6px 0 4px;box-shadow:inset 0 0 0 1px var(--line)}
+  .bar div{height:100%;display:flex;align-items:center;justify-content:center;color:rgba(0,0,0,.55);font-size:10.5px;font-weight:800;font-variant-numeric:tabular-nums;overflow:hidden}
+  .seg-cogs{background:#f59e0b}.seg-ml{background:#38bdf8}.seg-imp{background:#a78bfa}.seg-publi{background:#ec4899}.seg-rent{background:#34d399}.seg-rentneg{background:#f87171}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--ink2);margin-top:10px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:middle}
+  .actions{display:flex;gap:10px;margin-top:6px}
+  button{flex:1;padding:10px;border:1px solid var(--line2);background:var(--panel);border-radius:11px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink2);transition:all .18s ease}
+  button:hover{border-color:var(--violet);color:#fff}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+  .pchip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;transition:border-color .15s ease,background .15s ease}
+  .pchip:hover{border-color:var(--violet);background:rgba(167,139,250,.08)}
+  .pchip.sel{border-color:var(--gold)!important;background:rgba(232,196,106,.20)!important;box-shadow:inset 0 0 0 2px var(--gold)}
+  .pchip .ic{font-size:22px;line-height:1;flex:0 0 auto}
+  .pchip .pn{font-size:12px;font-weight:600;color:var(--ink);line-height:1.2}
+  .pchip .pc{font-size:11.5px;color:var(--gold);font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+  .pchip .pc small{color:var(--tn);font-weight:700;margin-left:5px}
+  .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:20px;line-height:1.7}
+  /* ===== Graficos ===== */
+  .chartbox{width:100%;overflow-x:auto;margin-top:10px}
+  .chartbox svg{width:100%;height:auto;display:block}
+  .ctog{display:flex;gap:6px;margin-top:8px}
+  .tbtn{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px}
+  .tbtn.sel{color:var(--gold);border-color:var(--gold)}
+  /* ===== v4 · selector de productos rankeado ===== */
+  .psort{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 12px;align-items:center}
+  .psort .lbl{font-size:11.5px;color:var(--muted);margin-right:4px;font-weight:600}
+  .psort .tbtn{flex:none;padding:6px 12px;font-size:12px;font-weight:700;border-radius:20px}
+  .psort .flt{margin-left:auto;display:flex;gap:6px}
+  .pgrid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px}
+  .pcard{position:relative;display:flex;flex-direction:column;gap:8px;padding:12px 13px 11px;border-radius:14px;cursor:pointer;
+    background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);
+    transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;overflow:hidden}
+  .pcard:hover{transform:translateY(-2px);border-color:var(--violet);box-shadow:0 8px 20px rgba(0,0,0,.35)}
+  .pcard.sel{border-color:var(--gold);box-shadow:inset 0 0 0 2px var(--gold),0 8px 22px rgba(232,196,106,.18);background:linear-gradient(180deg,rgba(232,196,106,.16),rgba(232,196,106,.05))}
+  .pcard.top1{border-color:rgba(232,196,106,.6)} .pcard.top2{border-color:rgba(199,205,224,.5)} .pcard.top3{border-color:rgba(199,154,58,.5)}
+  .pcard.dim{opacity:.55} .pcard.dim:hover{opacity:1}
+  .pcard .ph{display:flex;align-items:center;gap:9px}
+  .pcard .rkb{flex:0 0 auto;min-width:30px;height:30px;padding:0 6px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:var(--panel);border:1px solid var(--line2);color:var(--ink2)}
+  .pcard.top1 .rkb{background:linear-gradient(135deg,#f6d77a,#c79a3a);color:#1a1405;border:none}
+  .pcard.top2 .rkb{background:linear-gradient(135deg,#eef1f8,#9aa3bd);color:#151926;border:none}
+  .pcard.top3 .rkb{background:linear-gradient(135deg,#e8a866,#a8662b);color:#1a0f05;border:none}
+  .pcard .ic{font-size:24px;line-height:1}
+  .pcard .pn{font-size:13px;font-weight:800;color:var(--ink);line-height:1.2}
+  .pcard .pm{font-size:10.5px;color:var(--muted);margin-top:2px;font-weight:600;letter-spacing:.3px}
+  .pcard .pm .f{color:var(--ml)}
+  .pcard .pr{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+  .pcard .price{font-size:19px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+  .pcard .price small{font-size:11px;color:var(--tn);margin-left:5px;font-weight:800}
+  .pcard .kp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .pcard .kp div{background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:8px;padding:5px 6px;text-align:center}
+  .pcard .kp b{display:block;font-size:12.5px;white-space:nowrap;font-weight:800;font-variant-numeric:tabular-nums}
+  .pcard .kp span{display:block;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-top:1px}
+  .pcard .gb{height:5px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden}
+  .pcard .gb i{display:block;height:100%;border-radius:3px}
+  .pcard .alert{white-space:nowrap;font-size:10px;font-weight:800;padding:2px 7px;border-radius:12px}
+  .pcard .alert.r{background:rgba(248,113,113,.18);color:var(--red);border:1px solid rgba(248,113,113,.4)}
+  .pcard .alert.a{background:rgba(251,191,36,.16);color:var(--amber);border:1px solid rgba(251,191,36,.35)}
+  @media(max-width:600px){.pgrid2{grid-template-columns:1fr;gap:8px}.pcard{padding:10px}.pcard .kp b{font-size:12px}.pcard .price{font-size:15px}.psort .flt{margin-left:0}}
+  /* ===== v2 · Ranking COGS · Precio objetivo · Simulador ===== */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:-8px 0 18px}
+  .jump a{font-size:12.5px;font-weight:700;text-decoration:none;color:var(--ink2);background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:7px 14px;transition:all .15s ease}
+  .jump a:hover{border-color:var(--gold);color:var(--gold)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr}}
+  .ctl{display:flex;align-items:center;gap:12px;padding:8px 0}
+  .ctl label{font-size:13px;color:var(--ink2);min-width:128px}
+  .ctl input[type=range]{flex:1;accent-color:var(--gold);height:28px;cursor:pointer}
+  .ctl .val{min-width:118px;text-align:right;font-size:15px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+  .ctl input[type=number]{width:96px;padding:7px 9px;border:1px solid var(--line2);border-radius:9px;background:var(--panel);color:var(--ink);font-weight:700;text-align:right;font-size:13.5px}
+  .chk{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);margin:8px 0 4px;cursor:pointer}
+  .chk input{accent-color:var(--gold);width:16px;height:16px}
+  .hero{background:rgba(232,196,106,.08);border:1px solid rgba(232,196,106,.35);border-radius:14px;padding:14px 16px;margin:12px 0}
+  .hero .lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+  .hero .big{font-size:32px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:-.5px;line-height:1.15;margin-top:3px}
+  .hero .big small{font-size:15px;color:var(--tn);margin-left:8px;font-weight:800}
+  .hero .meta{font-size:12.5px;color:var(--ink2);margin-top:5px;line-height:1.6;font-variant-numeric:tabular-nums}
+  .hero.bad{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.4)}
+  .hero.bad .big{color:var(--red);font-size:22px}
+  .btnGold{width:100%;flex:none;border-color:var(--gold2);color:var(--gold);background:rgba(232,196,106,.08)}
+  .btnGold:hover{border-color:var(--gold);color:#fff;background:rgba(232,196,106,.18)}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+  .tbl th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;text-align:right;padding:8px 6px;border-bottom:1.5px solid var(--line2);white-space:nowrap}
+  .tbl th:first-child,.tbl td:first-child{text-align:center}
+  .tbl th.l,.tbl td.l{text-align:left}
+  .tbl td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;color:var(--ink2);white-space:nowrap}
+  .tbl tr.click{cursor:pointer;transition:background .12s ease}
+  .tbl tr.click:hover td{background:rgba(167,139,250,.08)}
+  .tbl tr.cur td{background:rgba(232,196,106,.13)}
+  .tbl tr.cur td.l{color:var(--gold);font-weight:700}
+  .tbl td b{color:var(--ink);font-weight:800}
+  .tbl td .u{color:var(--tn);font-weight:800}
+  .tbl tfoot td{font-weight:800;color:#fff;border-top:1.5px solid var(--line2);border-bottom:none}
+  .tblwrap{overflow-x:auto;margin-top:10px;-webkit-overflow-scrolling:touch}
+  .rk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;font-weight:800;font-size:12px;background:var(--panel);border:1px solid var(--line2);color:var(--ink2)}
+  .rk.r1{background:rgba(232,196,106,.25);border-color:var(--gold);color:var(--gold)}
+  .rk.r2{background:rgba(199,205,224,.18);border-color:#c7cde0;color:#fff}
+  .rk.r3{background:rgba(199,154,58,.2);border-color:var(--gold2);color:#f0c27a}
+  .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-weight:800;font-size:12px}
+  .pill.g{background:rgba(52,211,153,.16);color:var(--green)} .pill.a{background:rgba(251,191,36,.16);color:var(--amber)} .pill.r{background:rgba(248,113,113,.16);color:var(--red)}
+  .mbar{display:flex;height:14px;width:120px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,.04)}
+  .mbar i{display:block;height:100%}
+  .c-joya{background:#f59e0b}.c-caja{background:#a78bfa}.c-tarj{background:#38bdf8}.c-arm{background:#ec4899}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+  .chipk{flex:1 1 180px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 13px}
+  .chipk .ml{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+  .chipk .mv{font-size:18px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
+  .chipk .mh{font-size:11.5px;color:var(--ink2);margin-top:2px}
+  .note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.6}
+  .grid>*,.grid2>*{min-width:0}
+  @media(max-width:600px){
+    body{padding:16px 12px 32px}
+    .grid,.grid2{grid-template-columns:minmax(0,1fr)}
+    select{min-width:0;width:100%}
+    .controls{width:100%}
+    .card{padding:14px 12px}
+    .card h2{flex-wrap:wrap}
+    .row{gap:6px}
+    .row input[type=number],.row.calc .ro{width:92px}
+    .row .ud{min-width:0;margin-left:2px}
+    .row .pct{min-width:36px}
+    .ctl{flex-wrap:wrap;gap:6px}
+    .ctl label{min-width:0;width:100%}
+    .hero .big{font-size:26px}
+    .metrics{grid-template-columns:1fr 1fr}
+    .metric .mv{font-size:16px}
+  }
+  .up{color:var(--green)!important;font-weight:800} .dn{color:var(--red)!important;font-weight:800}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">CL</div>
+      <div>
+        <h1>Calculadora de Rentabilidad · Mercado Libre Chile</h1>
+        <div class="sub">Chileteca · costo y margen por unidad vendida · IVA <b>19%</b> · comisión ML <b id="feeHdr">20%</b></div>
+      </div>
+    </div>
+    <div class="controls">
+      <nav class="nav">
+        <a class="navbtn" href="Dashboard_Finanzas_CHILE.html">← Dashboard CHILE</a>
+        <a class="navbtn tn" href="https://www.mercadolibre.cl/pagina/chiletecachileteca" target="_blank" rel="noopener">Tienda ML ↗</a>
+      </nav>
+      <select id="prod"></select>
+      <span class="tag" id="canalTag"></span>
+      <span class="usd">Comisión % <input type="number" id="fee" value="20" step="0.5"></span>
+      <span class="usd">USD/CLP <input type="number" id="usd" value="981" step="1"></span>
+    </div>
+  </header>
+  <nav class="jump"><a href="#secVentas">🛒 Ventas y stock</a><a href="#secRank">🏆 Ranking COGS</a><a href="#wfChart">💧 Cascada</a><a href="#cmpChart">📈 Comparativa</a></nav>
+  <div class="card">
+    <h2>🏆 Productos Chileteca · elegí con un toque <span class="sum pos" id="pgSum">ranking</span></h2>
+    <div class="psort"><span class="lbl">Ordenar por</span><button type="button" class="tbtn" data-s="gan">💰 Ganancia / mes</button><button type="button" class="tbtn sel" data-s="pct">% Margen</button><button type="button" class="tbtn" data-s="ven">🛒 Ventas</button><button type="button" class="tbtn" data-s="uni">Ganancia / u</button><button type="button" class="tbtn" data-s="pre">Precio</button>
+      <span class="flt"><button type="button" class="tbtn sel" data-f="all">Todos</button><button type="button" class="tbtn" data-f="full">Full</button><button type="button" class="tbtn" data-f="nf">No Full</button></span></div>
+    <div class="pgrid2" id="prodGrid"></div>
+  </div>
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Impuestos <span class="sum" id="sumPrice"></span></h2>
+        <div class="row price"><label>Precio de venta (con descuento)</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="precio"></div></div>
+        <div class="row calc auto"><label>IVA Venta (19%)</label><span class="pct" id="p_iva"></span><div class="ro" id="r_iva"></div></div>
+        <div class="row calc"><label>Precio después de impuestos</label><span class="pct" id="p_dpi"></span><div class="ro" id="r_dpi"></div></div>
+      </div>
+      <div class="card">
+        <h2>COGS — Costo del producto <span class="sum" id="sumCogs"></span></h2>
+        <div class="row"><label>Costo joya nacionalizada (+ flete)</label><span class="pct" id="p_joya"></span><div class="money"><span class="cur">$</span><input type="number" id="joya"></div></div>
+        <div class="row"><label>Costo cajita / estuche</label><span class="pct" id="p_caja"></span><div class="money"><span class="cur">$</span><input type="number" id="caja"></div></div>
+        <div class="row"><label>Costo tarjeta</label><span class="pct" id="p_tarj"></span><div class="money"><span class="cur">$</span><input type="number" id="tarj"></div></div>
+        <div class="row"><label>Costo armado ZENTRA</label><span class="pct" id="p_arm"></span><div class="money"><span class="cur">$</span><input type="number" id="arm"></div></div>
+      </div>
+      <div class="card">
+        <h2>Costos Mercado Libre <span class="sum" id="sumMl"></span></h2>
+        <div class="row calc auto"><label>Tarifa ML (comisión <span id="feeLbl">20%</span>)</label><span class="pct" id="p_tar"></span><div class="ro" id="r_tar"></div></div>
+        <div class="row"><label>Cargo fijo ML</label><span class="pct" id="p_cf"></span><div class="money"><span class="cur">$</span><input type="number" id="cf"></div></div>
+        <div class="row"><label>Costo envío ML (bonif. 60%)</label><span class="pct" id="p_env"></span><div class="money"><span class="cur">$</span><input type="number" id="env"></div></div>
+        <div class="row"><label>Costo almacenamiento Full</label><span class="pct" id="p_alm"></span><div class="money"><span class="cur">$</span><input type="number" id="alm"></div></div>
+      </div>
+      <div class="card">
+        <h2>Publicidad <span class="sum" id="sumPub"></span></h2>
+        <div class="row"><label>Publicidad ML (Product Ads)</label><span class="pct" id="p_pub"></span><div class="money"><span class="cur">$</span><input type="number" id="pub"></div></div>
+      </div>
+      <div class="card">
+        <h2>Recupero de IVA (crédito fiscal) <span class="sum" id="sumIva"></span></h2>
+        <div class="row"><label>IVA importación joya</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaJoya"></div></div>
+        <div class="row"><label>IVA insumos (caja, tarjeta, armado)</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaCaja"></div></div>
+        <div class="row"><label>IVA envíos ML</label><span class="pct"></span><div class="money"><span class="cur">$</span><input type="number" id="ivaEnv"></div></div>
+        <div class="row calc auto"><label>IVA comisión ML</label><span class="pct"></span><div class="ro" id="r_ivaMl"></div></div>
+      </div>
+    </div>
+    <div class="results">
+      <div class="kpi" id="kpiRent">
+        <div class="lbl">Rentabilidad neta</div>
+        <div class="big" id="rentBig">—</div>
+        <div class="meta" id="rentMeta"></div>
+      </div>
+      <div class="kpi iva">
+        <div class="lbl">Rentabilidad con recupero de IVA</div>
+        <div class="big" id="rentIvaBig">—</div>
+        <div class="meta" id="rentIvaMeta"></div>
+      </div>
+      <div class="card">
+        <h2>Métricas clave <span class="sum" id="estTag" hidden>costo estimado</span></h2>
+        <div class="metrics">
+          <div class="metric"><div class="ml">Costo total por unidad</div><div class="mv" id="m_costo"></div><div class="mh" id="m_costo_h"></div></div>
+          <div class="metric"><div class="ml">Markup s/ costo</div><div class="mv" id="m_markup"></div><div class="mh">precio ÷ costo prod.+ML+ads</div></div>
+          <div class="metric"><div class="ml">Precio de equilibrio</div><div class="mv" id="m_be"></div><div class="mh">margen neto = 0</div></div>
+          <div class="metric"><div class="ml">Ventas 30d</div><div class="mv" id="m_v30">&mdash;</div><div class="mh" id="m_v30_h">unidades/mes (Full)</div></div>
+          <div class="metric"><div class="ml">Ganancia mensual est.</div><div class="mv" id="m_mes">&mdash;</div><div class="mh" id="m_mes_h">rent. final x ventas 30d</div></div>
+          <div class="metric"><div class="ml">Tope de publicidad</div><div class="mv" id="m_topePub"></div><div class="mh">máx. ads con margen 0</div></div>
+        </div>
+        <div class="note" id="pubLink"></div>
+      </div>
+      <div class="card">
+        <h2>¿A dónde va el precio?</h2>
+        <div class="bar" id="bar"></div>
+        <div class="legend">
+          <span><i class="seg-cogs"></i>Producto</span>
+          <span><i class="seg-ml"></i>Costos ML</span>
+          <span><i class="seg-imp"></i>IVA</span>
+          <span><i class="seg-publi"></i>Publi</span>
+          <span><i class="seg-rent"></i>Ganancia</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Desglose</h2>
+        <div class="bd">
+          <div class="l"><span>Precio de venta</span><span id="b_precio"></span></div>
+          <div class="l"><span>− IVA venta (19%)</span><span id="b_imp" class="neg"></span></div>
+          <div class="l t"><span>= Precio después de impuestos</span><span id="b_dpi"></span></div>
+          <div class="l"><span>− Costo producto (COGS)</span><span id="b_cogs" class="neg"></span></div>
+          <div class="l"><span>− Costos Mercado Libre</span><span id="b_ml" class="neg"></span></div>
+          <div class="l"><span>− Publicidad</span><span id="b_pub" class="neg"></span></div>
+          <div class="l t"><span>= Rentabilidad neta</span><span id="b_rent"></span></div>
+          <div class="l"><span>+ Recupero IVA</span><span id="b_iva"></span></div>
+          <div class="l t"><span>= Rentabilidad con IVA</span><span id="b_rentiva"></span></div>
+        </div>
+        <div class="actions"><button id="reset">↺ Restaurar preset</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="secVentas">
+    <h2>🛒 Ventas y stock por producto · ML FULL Chile <span class="sum pos" id="vtSum"></span></h2>
+    <div class="chips" id="vtChips" style="margin-top:4px"></div>
+    <div class="tblwrap">
+      <table class="tbl" id="vtTbl" style="font-size:12.5px"><thead><tr><th class="l">Producto</th><th>Vtas 30d</th><th>Aptas Full</th><th>En camino</th><th>Cobertura</th><th>Facturación / mes</th><th>Ganancia / mes</th><th>% ganancia</th></tr></thead><tbody></tbody><tfoot></tfoot></table>
+    </div>
+    <h2 style="margin-top:18px"><span>Detalle por SKU · <span id="vtSkuT" style="color:var(--gold);text-transform:none;letter-spacing:0"></span></span> <span class="sum" id="vtSkuS"></span></h2>
+    <div class="tblwrap">
+      <table class="tbl" id="vtSku"><thead><tr><th class="l">SKU</th><th>Vtas 30d</th><th>Aptas</th><th>En camino</th><th>Cobertura</th><th class="l">Estado</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="note" id="vtNote"></div>
+  </div>
+  <div class="card" id="secRank">
+    <h2>🏆 Ranking de costos · COGS por unidad vendida <span class="sum" id="rkSum"></span></h2>
+    <div class="ctog"><button type="button" class="tbtn sel" id="rkAbs">$ por unidad</button><button type="button" class="tbtn" id="rkPct">% del precio</button><button type="button" class="tbtn" id="rkMes">$ COGS al mes</button></div>
+    <div class="chips" id="rkChips" style="margin-top:12px"></div>
+    <div class="tblwrap">
+      <table class="tbl" id="rkTbl"><thead><tr><th>#</th><th class="l">Producto</th><th class="l">Composición</th><th>Joya nac.</th><th>Caja</th><th>Tarj.</th><th>Armado</th><th>COGS $</th><th>COGS USD</th><th>% precio</th><th>Vtas 30d</th><th>COGS / mes</th></tr></thead><tbody></tbody><tfoot></tfoot></table>
+    </div>
+    <div class="legend"><span><i class="c-joya"></i>Joya nacionalizada</span><span><i class="c-caja"></i>Cajita / estuche</span><span><i class="c-tarj"></i>Tarjeta</span><span><i class="c-arm"></i>Armado ZENTRA</span></div>
+    <div class="note">COGS = joya nacionalizada (+ flete) + cajita/estuche + tarjeta + armado ZENTRA, según hoja “rent ML” de CHILE - Finance 2026. % precio: <span class="pill g">&lt;25%</span> <span class="pill a">25–40%</span> <span class="pill r">&gt;40%</span>. <b style="color:var(--amber)">≈ est.</b> = costo estimado con un producto similar (no está en la planilla). Tocá una fila para cargar el producto.</div>
+  </div>
+  <div class="card">
+    <h2>Cascada del precio <span class="sum" id="wfSum"></span></h2>
+    <div class="chartbox" id="wfChart"></div>
+  </div>
+  <div class="card">
+    <h2>Comparativa de productos <span class="sum">rentabilidad final (con IVA recuperado)</span></h2>
+    <div class="ctog"><button type="button" class="tbtn sel" id="cmpPct">% margen</button><button type="button" class="tbtn" id="cmpAbs">$ por unidad</button><button type="button" class="tbtn" id="cmpMes">$ ganancia/mes</button></div>
+    <div class="chartbox" id="cmpChart"></div>
+  </div>
+  <div class="foot">
+    Modelo basado en la hoja “rent ML” (CHILE - Finance 2026). IVA venta = 19/119 del precio; Tarifa ML = comisión % × precio (editable arriba, 20% por defecto = publicación con cuotas). Recupero de IVA = crédito fiscal: IVA comisión ML (19/119 de la tarifa) + IVA envío + IVA importación de la joya + IVA de insumos; todos editables.<br>
+    Precios de venta tomados de la tienda ML Chileteca el <span id="precAl"></span>. Ventas y stock: hoja data_FULL (solo publicaciones Full).<br>
+    v1 Chile · 22-oct-2026 · réplica de la Calculadora ML Argentina v4.
+  </div>
+</div>
+
+<script>
+/* ===== Calculadora ML CHILE · Chileteca ===== */
+const DATA={
+  precios_al:"22-10-2026",
+  ventas_al:"22-10-2026",
+  fuente_ventas:"CHILE - Finance 2026 › data_FULL (reporte stock Full ML)",
+  /* ventas 30d y stock Full por SKU → producto */
+  skus:{
+    "2cora_full":[{sku:"COLLARCORAZONES-WHITE-08MV-NUDO",v30:4,aptas:5,camino:0},{sku:"COLLARCORAZONES-ROSA-EX06ES",v30:2,aptas:8,camino:0}],
+    "nudo_full":[{sku:"COLLARNUDO-ROSA-EX06ES",v30:3,aptas:7,camino:0},{sku:"COLLARNUDO-ROSA-EX06MV",v30:1,aptas:9,camino:0}],
+    "pulsnudo_full":[{sku:"PULSERANUDO-BRA-KNOT-AMIGA",v30:5,aptas:0,camino:0},{sku:"PULSERANUDO-BRA-KNOT-HERMANA",v30:1,aptas:2,camino:0}],
+    "cruz_full":[{sku:"PULSERACRUZ-BRA-CRUZ-BLANCO",v30:1,aptas:8,camino:0},{sku:"PULSERACRUZ-BRA-CRUZ-CELESTE",v30:0,aptas:10,camino:0}],
+    "anillo_full":[{sku:"2XANILLO-ESTUCHE-TARJETA-DE-PARA",v30:1,aptas:19,camino:0}]
+  }
+};
+/* Presets por publicación. joya = costo joya + nacionalización (+ flete) en CLP. est:true = costo estimado */
+const P={
+  "nudo_full":    {n:"COLLAR NUDO · Novia",          canal:"FULL",    mlc:"MLC1852593957", precio:28490, joya:5915, caja:1700, tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300},
+  "2cora_full":   {n:"COLLAR 2 CORAZONES · MDV",     canal:"FULL",    mlc:"MLC2238396257", precio:28490, joya:5283, caja:1700, tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300},
+  "pulsnudo_full":{n:"PULSERA NUDO · Hermana",       canal:"FULL",    mlc:"MLC1909591173", precio:17099, joya:727,  caja:1650, tarj:110, arm:1700, cf:0, env:3050, alm:0, pub:2300},
+  "cruz_full":    {n:"PULSERA CRUZ COMUNIÓN",        canal:"FULL",    mlc:"MLC1909735433", precio:17099, joya:875,  caja:1800, tarj:110, arm:1850, cf:0, env:3050, alm:0, pub:2300},
+  "anillo_full":  {n:"ANILLO JUNTAS + FRASCO",       canal:"FULL",    mlc:"MLC4018752600", precio:19790, joya:3882, caja:0,    tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300},
+  "forever_nf":   {n:"COLLAR FOREVER · Esposa",      canal:"NO FULL", mlc:"MLC2306029979", precio:24990, joya:3386, caja:1700, tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300},
+  "olita_nf":     {n:"PULSERA OLITA · Recordatorio", canal:"NO FULL", mlc:"MLC4465618404", precio:20990, joya:4523, caja:1700, tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300},
+  "pulsnudo2_nf": {n:"2x PULSERA NUDO + FRASCO",     canal:"NO FULL", mlc:"MLC2275658901", precio:18990, joya:1454, caja:1650, tarj:110, arm:1700, cf:0, env:3050, alm:0, pub:2300, est:true},
+  "hija_nf":      {n:"COLLAR HIJA plata 925",        canal:"NO FULL", mlc:"MLC2764152950", precio:28490, joya:5915, caja:1700, tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300, est:true},
+  "leon_nf":      {n:"CADENA LEÓN Hija/Papá",        canal:"NO FULL", mlc:"MLC1777543087", precio:28490, joya:5915, caja:1700, tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300, est:true},
+  "mama_nf":      {n:"COLLAR MAMÁ plata 925",        canal:"NO FULL", mlc:"MLC1479772629", precio:28490, joya:5915, caja:1700, tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300, est:true},
+  "hombre_nf":    {n:"COLLAR ACERO HOMBRE",          canal:"NO FULL", mlc:"MLC2762514940", precio:19990, joya:1600, caja:500,  tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300, est:true},
+  "futbol_nf":    {n:"COLLAR ACERO FÚTBOL niño",     canal:"NO FULL", mlc:"MLC2762476256", precio:19990, joya:1600, caja:500,  tarj:110, arm:1800, cf:0, env:3050, alm:0, pub:2300, est:true}
+};
+const JOYA={"nudo_full":"Nudo","2cora_full":"2 corazones","pulsnudo_full":"Puls Nudo","cruz_full":"Pulsera Cruz","anillo_full":"Estuche Anillo","forever_nf":"Forever","olita_nf":"Olita","pulsnudo2_nf":"Puls Nudo ×2 (≈ est.)","hija_nf":"≈ est. costo Nudo","leon_nf":"≈ est. costo Nudo","mama_nf":"≈ est. costo Nudo","hombre_nf":"≈ est. collar inox","futbol_nf":"≈ est. collar inox"};
+const ICONS={"nudo_full":"🪢","2cora_full":"💞","pulsnudo_full":"📿","cruz_full":"✝️","anillo_full":"💍","forever_nf":"💝","olita_nf":"🌊","pulsnudo2_nf":"📿","hija_nf":"💗","leon_nf":"🦁","mama_nf":"🌷","hombre_nf":"⛓️","futbol_nf":"⚽"};
+/* IVA crédito fiscal por defecto (19%) */
+Object.keys(P).forEach(function(k){const d=P[k];
+  d.ivaJoya=Math.round(d.joya*0.19); d.ivaCaja=Math.round((d.caja+d.tarj+d.arm)*0.19); d.ivaEnv=Math.round(d.env*19/119);
+  d.v30=(DATA.skus[k]||[]).reduce(function(s,x){return s+x.v30;},0);
+  d.aptas=(DATA.skus[k]||[]).reduce(function(s,x){return s+x.aptas;},0);
+  d.camino=(DATA.skus[k]||[]).reduce(function(s,x){return s+x.camino;},0);
+});
+const IVA=0.19, IVAF=19/119;
+const FIELDS=["joya","caja","tarj","arm","cf","env","alm","pub","ivaJoya","ivaCaja","ivaEnv"];
+const $=id=>document.getElementById(id);
+const fmt=n=>(n<0?"−":"")+"$"+Math.round(Math.abs(n)).toLocaleString("es-CL");
+const pct=(n,base)=>base?(n/base*100).toFixed(1).replace(".",",")+"%":"—";
+const pctS=x=>(x*100).toFixed(1).replace(".",",")+"%";
+const v=id=>parseFloat($(id).value)||0;
+const USD=()=>v("usd")||1;
+const FEE=()=>v("fee")/100;
+const ud=n=>(n<0?"−":"")+"US$ "+(Math.abs(n)/USD()).toLocaleString("es-CL",{minimumFractionDigits:2,maximumFractionDigits:2});
+const both=n=>fmt(n)+' <span class="ud">'+ud(n)+'</span>';
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const NM=k=>(ICONS[k]||"🔹")+" "+P[k].n+(P[k].canal==="NO FULL"?" · NF":"");
+const V30=k=>P[k].v30||0;
+
+/* motor de cálculo único */
+function evalD(d){
+  const precio=d.precio, fee=FEE();
+  const ivaV=precio*IVAF, tar=precio*fee, ivaMl=tar*IVAF;
+  const dpi=precio-ivaV;
+  const cogs=d.joya+d.caja+d.tarj+d.arm;
+  const ml=tar+d.cf+d.env+d.alm;
+  const rent=dpi-cogs-ml-d.pub;
+  const recup=d.ivaJoya+d.ivaCaja+d.ivaEnv+ivaMl;
+  const factor=1-IVAF-fee;
+  const be=factor>0?(cogs+d.cf+d.env+d.alm+d.pub)/factor:0;
+  return {precio:precio,ivaV:ivaV,tar:tar,ivaMl:ivaMl,dpi:dpi,cogs:cogs,ml:ml,pub:d.pub,imp:ivaV,rent:rent,recup:recup,rentIva:rent+recup,be:be,pct:precio?(rent+recup)/precio*100:0};
+}
+function formD(){const d={precio:v("precio")}; FIELDS.forEach(function(f){d[f]=v(f);}); return d;}
+const prodVals=k=>Object.assign({k:k,n:P[k].n,canal:P[k].canal},evalD(P[k]));
+
+const sel=$("prod");
+Object.keys(P).forEach(function(k){const o=document.createElement("option");o.value=k;o.textContent=P[k].n+(P[k].canal==="NO FULL"?" · No Full":" · Full");sel.appendChild(o);});
+document.querySelectorAll(".row").forEach(function(row){
+  const inp=row.querySelector("input[type=number]")||row.querySelector(".ro");
+  if(!inp||row.querySelector(".ud"))return;
+  const s=document.createElement("span");s.className="ud";row.appendChild(s);
+});
+let SELECTED="nudo_full";
+function load(k){
+  SELECTED=k; const d=P[k];
+  $("precio").value=d.precio;
+  FIELDS.forEach(function(f){$(f).value=d[f];});
+  $("canalTag").textContent=d.canal; $("canalTag").className="tag "+(d.canal==="FULL"?"full":"nofull");
+  $("estTag").hidden=!d.est;
+  $("pubLink").innerHTML='Publicación: <a style="color:var(--gold)" href="https://articulo.mercadolibre.cl/'+d.mlc.replace("MLC","MLC-")+'" target="_blank" rel="noopener">'+d.mlc+' ↗</a> · '+esc(JOYA[k]||"");
+  renderAll();
+}
+function calc(){
+  const c=evalD(formD()), precio=c.precio;
+  $("feeLbl").textContent=pctS(FEE()); $("feeHdr").textContent=pctS(FEE());
+  $("r_iva").textContent=fmt(c.ivaV); $("r_dpi").textContent=fmt(c.dpi); $("r_tar").textContent=fmt(c.tar); $("r_ivaMl").textContent=fmt(c.ivaMl);
+  $("p_iva").textContent=pct(c.ivaV,precio); $("p_dpi").textContent=pct(c.dpi,precio); $("p_tar").textContent=pct(c.tar,precio);
+  ["joya","caja","tarj","arm","cf","env","alm","pub"].forEach(function(f){$("p_"+f).textContent=pct(v(f),precio);});
+  $("sumPrice").textContent=fmt(c.imp)+" · "+pct(c.imp,precio);
+  $("sumCogs").textContent=fmt(c.cogs)+" · "+pct(c.cogs,precio);
+  $("sumMl").textContent=fmt(c.ml)+" · "+pct(c.ml,precio);
+  $("sumPub").textContent=fmt(c.pub)+" · "+pct(c.pub,precio);
+  const sIva=$("sumIva"); sIva.textContent="+"+fmt(c.recup)+" · "+pct(c.recup,precio); sIva.className="sum pos";
+  const costoOp=c.cogs+c.ml+c.pub, costoTot=c.imp+costoOp;
+  $("m_costo").textContent=fmt(costoTot); $("m_costo_h").textContent=pct(costoTot,precio)+" del precio";
+  $("m_markup").textContent=(costoOp?precio/costoOp:0).toFixed(2).replace(".",",")+"x";
+  $("m_be").textContent=fmt(c.be);
+  const tope=c.pub+c.rent, tp=$("m_topePub"); tp.textContent=fmt(tope); tp.style.color=tope<0?"var(--red)":"";
+  const rp=precio?c.rent/precio*100:0;
+  $("kpiRent").className="kpi "+(rp<0?"bad":rp<10?"amber":"good");
+  $("rentBig").textContent=fmt(c.rent)+"  ·  "+rp.toFixed(1).replace(".",",")+"%";
+  $("rentMeta").textContent=ud(c.rent)+" por unidad";
+  const rip=precio?c.rentIva/precio*100:0;
+  $("rentIvaBig").textContent=fmt(c.rentIva)+"  ·  "+rip.toFixed(1).replace(".",",")+"%";
+  $("rentIvaMeta").textContent=ud(c.rentIva)+" · recupero "+fmt(c.recup);
+  $("b_precio").innerHTML=both(precio); $("b_imp").innerHTML="−"+both(c.imp); $("b_dpi").innerHTML=both(c.dpi);
+  $("b_cogs").innerHTML="−"+both(c.cogs); $("b_ml").innerHTML="−"+both(c.ml); $("b_pub").innerHTML="−"+both(c.pub);
+  const br=$("b_rent"); br.innerHTML=both(c.rent)+" ("+rp.toFixed(1).replace(".",",")+"%)"; br.className=c.rent<0?"neg":"";
+  $("b_iva").innerHTML="+"+both(c.recup);
+  const bri=$("b_rentiva"); bri.innerHTML=both(c.rentIva)+" ("+rip.toFixed(1).replace(".",",")+"%)"; bri.className=c.rentIva<0?"neg":"";
+  document.querySelectorAll(".row .ud").forEach(function(s){
+    const row=s.closest(".row"), inp=row.querySelector("input[type=number]"); let val=0;
+    if(inp) val=parseFloat(inp.value)||0; else {const ro=row.querySelector(".ro"); val=ro?parseFloat(ro.textContent.replace(/[^\d-]/g,""))||0:0;}
+    s.textContent=ud(val);
+  });
+  const bar=$("bar"); bar.innerHTML="";
+  const segs=[["seg-cogs",c.cogs],["seg-ml",c.ml],["seg-imp",c.imp],["seg-publi",c.pub],[c.rent<0?"seg-rentneg":"seg-rent",Math.abs(c.rent)]];
+  const tot=segs.reduce(function(a,s){return a+s[1];},0)||1;
+  segs.forEach(function(sg){if(sg[1]<=0)return;const w=sg[1]/tot*100;const d=document.createElement("div");d.className=sg[0];d.style.width=w+"%";d.title=fmt(sg[1]);if(w>=7)d.textContent=Math.round(w)+"%";bar.appendChild(d);});
+  // mensual
+  const n=V30(SELECTED);
+  $("m_v30").textContent=n?n+" u.":(P[SELECTED].canal==="FULL"?"0 u.":"sin dato");
+  $("m_v30_h").textContent=P[SELECTED].canal==="FULL"?"aptas Full: "+P[SELECTED].aptas:"no Full: sin ventas por publicación";
+  const mm=$("m_mes"); mm.textContent=n?fmt(c.rentIva*n):"—"; mm.style.color=n?(c.rentIva>=0?"var(--green)":"var(--red)"):"";
+  $("m_mes_h").textContent=n?"rent. final "+fmt(c.rentIva)+" × "+n+" ventas":"sin ventas cargadas";
+  renderWaterfall(c);
+}
+
+/* ---------- Selector rankeado ---------- */
+let PG_S="pct", PG_F="all";
+const LBL={gan:"ganancia / mes",pct:"% margen final",ven:"ventas / mes",uni:"ganancia por unidad",pre:"precio"};
+function renderProdGrid(){
+  const g=$("prodGrid");
+  const rows=Object.keys(P).map(function(k){const pv=prodVals(k), n=V30(k); return {k:k,d:P[k],pv:pv,n:n,gan:pv.rentIva*n,pct:pv.pct,uni:pv.rentIva,pre:P[k].precio,ven:n};});
+  rows.sort(function(a,b){return (b[PG_S]-a[PG_S])||(b.pct-a.pct);});
+  const rank={}; rows.forEach(function(r,i){rank[r.k]=i+1;});
+  const vis=rows.filter(function(r){return PG_F==="all"||(PG_F==="full"?r.d.canal==="FULL":r.d.canal!=="FULL");});
+  const maxS=Math.max.apply(null,rows.map(function(r){return Math.max(r[PG_S],0);}).concat([1e-9]));
+  g.innerHTML="";
+  vis.forEach(function(r){
+    const i=rank[r.k], c=document.createElement("div");
+    const dim=(PG_S==="gan"||PG_S==="ven")&&r[PG_S]<=0;
+    c.className="pcard"+(i<=3&&!dim?" top"+i:"")+(SELECTED===r.k?" sel":"")+(dim?" dim":"");
+    const mcl=r.pct<0?"r":(r.pct<10?"a":"g"), gc=r.uni<0?"var(--red)":"var(--green)";
+    c.title="Cargar "+r.d.n;
+    c.innerHTML="<div class=\"ph\"><span class=\"rkb\">#"+i+"</span><span class=\"ic\">"+(ICONS[r.k]||"🔹")+"</span><div><div class=\"pn\">"+esc(r.d.n)+"</div><div class=\"pm\">"+(r.d.canal==="FULL"?"<span class=\"f\">⚡ FULL</span>":"NO FULL")+(r.d.est?" · <span style=\"color:var(--amber)\">≈ costo est.</span>":"")+(r.n?" · "+r.n+" u./30d":"")+"</div></div></div>"
+      +"<div class=\"pr\"><span class=\"price\">"+fmt(r.d.precio)+"<small>"+ud(r.d.precio)+"</small></span><span class=\"pill "+mcl+"\" title=\"margen final (con recupero de IVA)\">"+r.pct.toFixed(1).replace(".",",")+"%</span></div>"
+      +"<div class=\"kp\"><div><b style=\"color:#f59e0b\">"+fmt(r.pv.cogs)+"</b><span>COGS</span></div><div><b style=\"color:var(--tn)\">"+fmt(r.pv.ml)+"</b><span>Costo ML</span></div><div><b style=\"color:"+gc+"\">"+fmt(r.uni)+"</b><span>Gan. / u</span></div></div>"
+      +"<div class=\"gb\"><i style=\"width:"+(Math.max(r[PG_S],0)/maxS*100).toFixed(1)+"%;background:"+(i<=3?"linear-gradient(90deg,#c79a3a,#f6d77a)":"var(--green)")+"\"></i></div>";
+    c.addEventListener("click",function(){pick(r.k);});
+    g.appendChild(c);
+  });
+  const cur=sel.value, opts={}; Array.prototype.slice.call(sel.options).forEach(function(o){opts[o.value]=o;});
+  rows.forEach(function(r){const o=opts[r.k]; if(o){o.textContent="#"+rank[r.k]+" · "+r.d.n+(r.d.canal==="NO FULL"?" · No Full":" · Full"); sel.appendChild(o);}});
+  sel.value=cur;
+  $("pgSum").textContent="ranking por "+LBL[PG_S]+" · US$ a "+USD().toLocaleString("es-CL");
+}
+function pick(k){if(!P[k])return; sel.value=k; load(k); window.scrollTo({top:0,behavior:"smooth"});}
+
+/* ---------- Ventas y stock ---------- */
+function cobTxt(st,vm){
+  if(!vm) return st?"<span style=\"color:var(--muted)\">sin ventas</span>":"—";
+  if(!st) return "<span class=\"pill r\">sin stock</span>";
+  const d=st/(vm/30), cl=d<14?"r":(d<30?"a":"g");
+  return "<span class=\"pill "+cl+"\">"+(d>=365?"+1 año":Math.round(d)+" días")+"</span>";
+}
+const chip=function(l,vv,hh,col){return "<div class=\"chipk\"><div class=\"ml\">"+l+"</div><div class=\"mv\""+(col?" style=\"color:"+col+"\"":"")+">"+vv+"</div><div class=\"mh\">"+hh+"</div></div>";};
+function renderVentas(){
+  const rows=Object.keys(P).filter(function(k){return P[k].canal==="FULL";}).map(function(k){const pv=prodVals(k), n=V30(k);
+    return {k:k,pv:pv,n:n,ap:P[k].aptas,ca:P[k].camino,fact:pv.precio*n,gan:pv.rentIva*n};}).sort(function(a,b){return b.gan-a.gan;});
+  const tot=rows.reduce(function(s,r){s.n+=r.n;s.ap+=r.ap;s.ca+=r.ca;s.fact+=r.fact;s.gan+=r.gan;return s;},{n:0,ap:0,ca:0,fact:0,gan:0});
+  const ganPos=rows.reduce(function(s,r){return s+Math.max(r.gan,0);},0)||1;
+  let h="";
+  rows.forEach(function(r){const share=r.gan>0?r.gan/ganPos:0;
+    h+="<tr class=\"click"+(r.k===SELECTED?" cur":"")+"\" data-k=\""+r.k+"\"><td class=\"l\">"+esc(NM(r.k))+"</td><td><b>"+(r.n||"—")+"</b></td><td><b>"+(r.ap||"—")+"</b></td><td>"+(r.ca||"—")+"</td><td>"+cobTxt(r.ap,r.n)+"</td>"
+      +"<td>"+(r.n?fmt(r.fact):"—")+"</td><td>"+(r.n?"<b class=\""+(r.gan<0?"dn":"")+"\">"+fmt(r.gan)+"</b> <span class=\"u\">"+ud(r.gan)+"</span>":"—")+"</td><td>"+(share?(share*100).toFixed(1).replace(".",",")+"%":"—")+"</td></tr>";});
+  $("vtTbl").querySelector("tbody").innerHTML=h;
+  $("vtTbl").querySelector("tfoot").innerHTML="<tr><td class=\"l\">Total Full</td><td>"+tot.n+"</td><td>"+tot.ap+"</td><td>"+tot.ca+"</td><td>"+cobTxt(tot.ap,tot.n)+"</td><td>"+fmt(tot.fact)+"</td><td>"+fmt(tot.gan)+" <span class=\"u\">"+ud(tot.gan)+"</span></td><td>100%</td></tr>";
+  $("vtTbl").querySelectorAll("tbody tr.click").forEach(function(tr){tr.addEventListener("click",function(){pick(tr.dataset.k);});});
+  const star=rows[0], sinStk=rows.filter(function(r){return r.n>0&&r.ap===0;}), crit=rows.filter(function(r){return r.n>0&&r.ap>0&&r.ap/(r.n/30)<14;});
+  const skuSin=[]; Object.keys(DATA.skus).forEach(function(k){DATA.skus[k].forEach(function(x){if(!x.aptas&&x.v30)skuSin.push(x.sku);});});
+  $("vtChips").innerHTML=chip("Unidades Full / mes",tot.n+" u.","ventas 30d de publicaciones Full")
+    +chip("Facturación Full / mes",fmt(tot.fact)+" <span style=\"color:var(--tn);font-size:14px\">"+ud(tot.fact)+"</span>","precio actual × ventas 30d")
+    +chip("Ganancia Full / mes (c/ IVA)",fmt(tot.gan)+" <span style=\"color:var(--tn);font-size:14px\">"+ud(tot.gan)+"</span>","margen "+(tot.fact?(tot.gan/tot.fact*100).toFixed(1).replace(".",","):"0")+"% sobre facturación",tot.gan>=0?"var(--green)":"var(--red)")
+    +chip("Producto estrella",esc(NM(star.k)),fmt(star.gan)+" / mes · "+(star.gan/ganPos*100).toFixed(0)+"% de la ganancia","var(--gold)")
+    +chip("Alertas de stock Full",(sinStk.length+crit.length+skuSin.length)?(skuSin.length+" SKU sin stock · "+crit.length+" &lt;14 días"):"OK",(skuSin.concat(crit.map(function(r){return P[r.k].n;})).map(esc).join(", ")||"todo con más de 2 semanas"),(skuSin.length+crit.length)?"var(--red)":"var(--green)");
+  $("vtSum").textContent=fmt(tot.gan)+" / mes";
+  const k=SELECTED, list=DATA.skus[k]||[];
+  $("vtSkuT").textContent=NM(k);
+  let s=""; list.forEach(function(x){
+    const est=x.aptas===0&&x.camino>0?"<span class=\"pill a\">en camino</span>":(x.aptas===0&&x.v30>0?"<span class=\"pill r\">reponer</span>":"<span class=\"pill g\">ok</span>");
+    s+="<tr><td class=\"l\">"+esc(x.sku)+"</td><td><b>"+(x.v30||"—")+"</b></td><td><b>"+(x.aptas||"—")+"</b></td><td>"+(x.camino||"—")+"</td><td>"+cobTxt(x.aptas,x.v30)+"</td><td class=\"l\">"+est+"</td></tr>";});
+  $("vtSku").querySelector("tbody").innerHTML=s||"<tr><td class=\"l\" colspan=\"6\" style=\"color:var(--muted)\">Publicación no Full: no hay SKUs en el reporte de stock Full.</td></tr>";
+  $("vtSkuS").textContent=list.length?list.length+" SKU"+(list.length>1?"s":""):"";
+  $("vtNote").innerHTML="Fuente: "+esc(DATA.fuente_ventas)+", al "+DATA.ventas_al+". Solo cubre las 5 publicaciones Full; las No Full no traen ventas por publicación (ver total ML en el Dashboard CHILE). Cobertura = aptas ÷ venta diaria (<span class=\"pill r\">&lt;14 d</span> <span class=\"pill a\">14–30 d</span> <span class=\"pill g\">&gt;30 d</span>). Tocá un producto para ver sus SKUs.";
+}
+
+/* ---------- Ranking COGS ---------- */
+let RK_MODE="abs";
+function renderRank(){
+  const usd=USD();
+  const rows=Object.keys(P).map(function(k){const d=P[k], cogs=d.joya+d.caja+d.tarj+d.arm, n=V30(k);
+    return {k:k,d:d,cogs:cogs,usd:cogs/usd,pct:d.precio?cogs/d.precio:0,n:n,mes:cogs*n};});
+  const key={abs:"cogs",pct:"pct",mes:"mes"}[RK_MODE];
+  rows.sort(function(a,b){return b[key]-a[key]||b.cogs-a.cogs;});
+  const maxC=Math.max.apply(null,rows.map(function(r){return r.cogs;}).concat([1]));
+  let h="", tN=0, tM=0, tV=0;
+  rows.forEach(function(r,i){tN+=r.n; tM+=r.mes; tV+=r.d.precio*r.n;
+    const w=120*r.cogs/maxC, seg=function(val,c){return "<i class=\""+c+"\" style=\"width:"+(w*val/r.cogs).toFixed(1)+"px\" title=\""+fmt(val)+"\"></i>";};
+    const cl=r.pct>0.4?"r":(r.pct>=0.25?"a":"g");
+    h+="<tr class=\"click"+(r.k===SELECTED?" cur":"")+"\" data-k=\""+r.k+"\"><td><span class=\"rk"+(i<3?" r"+(i+1):"")+"\">"+(i+1)+"</span></td><td class=\"l\">"+esc(NM(r.k))+"<div style=\"font-size:11px;color:"+(r.d.est?"var(--amber)":"var(--muted)")+"\">"+esc(JOYA[r.k]||"")+"</div></td>"
+      +"<td class=\"l\"><div class=\"mbar\">"+seg(r.d.joya,"c-joya")+seg(r.d.caja,"c-caja")+seg(r.d.tarj,"c-tarj")+seg(r.d.arm,"c-arm")+"</div></td>"
+      +"<td>"+fmt(r.d.joya)+"</td><td>"+fmt(r.d.caja)+"</td><td>"+fmt(r.d.tarj)+"</td><td>"+fmt(r.d.arm)+"</td>"
+      +"<td><b style=\"font-size:14px\">"+fmt(r.cogs)+"</b></td><td class=\"u\" style=\"font-size:14px\">"+ud(r.cogs)+"</td>"
+      +"<td><span class=\"pill "+cl+"\">"+pctS(r.pct)+"</span></td><td>"+(r.n||"—")+"</td><td>"+(r.n?fmt(r.mes):"—")+"</td></tr>";});
+  $("rkTbl").querySelector("tbody").innerHTML=h;
+  const avg=tN?tM/tN:0;
+  $("rkTbl").querySelector("tfoot").innerHTML="<tr><td></td><td class=\"l\">Total mensual Full (ventas 30d)</td><td></td><td></td><td></td><td></td><td></td><td>"+(tN?fmt(avg):"—")+"</td><td class=\"u\">"+(tN?ud(avg):"")+"</td><td>"+(tV?pctS(tM/tV):"—")+"</td><td>"+tN+"</td><td>"+fmt(tM)+"</td></tr>";
+  const byC=rows.slice().sort(function(a,b){return b.cogs-a.cogs;}), byP=rows.slice().sort(function(a,b){return b.pct-a.pct;}), lowP=rows.slice().sort(function(a,b){return a.pct-b.pct;});
+  $("rkChips").innerHTML=chip("COGS más alto",fmt(byC[0].cogs)+" <span style=\"color:var(--tn);font-size:14px\">"+ud(byC[0].cogs)+"</span>",esc(NM(byC[0].k)),"var(--gold)")
+    +chip("COGS promedio ponderado",tN?fmt(avg):"—",tN?"por venta Full, mix 30d · "+pctS(tM/tV)+" del precio":"sin ventas")
+    +chip("Mayor peso sobre el precio",pctS(byP[0].pct),esc(NM(byP[0].k)),"var(--red)")
+    +chip("Más liviano sobre el precio",pctS(lowP[0].pct),esc(NM(lowP[0].k)),"var(--green)");
+  $("rkSum").textContent=tN?"COGS mes Full "+fmt(tM)+" · "+ud(tM):rows.length+" productos";
+  $("rkTbl").querySelectorAll("tbody tr.click").forEach(function(tr){tr.addEventListener("click",function(){pick(tr.dataset.k);});});
+}
+
+/* ---------- Gráficos ---------- */
+function renderWaterfall(c){
+  const el=$("wfChart");
+  const steps=[{l:"Precio",val:c.precio,type:"start"},{l:"IVA",val:-c.imp,type:"neg"},{l:"COGS",val:-c.cogs,type:"neg"},{l:"Costos ML",val:-c.ml,type:"neg"},{l:"Publicidad",val:-c.pub,type:"neg"},{l:"Recupero IVA",val:c.recup,type:"pos"},{l:"Ganancia",val:c.rentIva,type:"end"}];
+  const W=760,H=300,padT=48,padB=40,padL=10, n=steps.length, gap=(W-padL*2)/n, bw=Math.floor(gap*0.62);
+  const sc=(H-padT-padB)/Math.max(c.precio,1); let run=0, out="";
+  const colors={start:"var(--gold)",neg:"rgba(248,113,113,.75)",pos:"var(--green2)",end:(c.rentIva>=0?"var(--green)":"var(--red)")};
+  steps.forEach(function(s,i){
+    let y0,y1;
+    if(s.type==="start"||s.type==="end"){y0=0;y1=Math.abs(s.val);} else {y0=Math.min(run,run+s.val);y1=Math.max(run,run+s.val);}
+    if(s.type==="start") run=s.val; else if(s.type!=="end") run+=s.val;
+    const x=padL+i*gap+(gap-bw)/2, yTop=H-padB-y1*sc, h=Math.max((y1-y0)*sc,2);
+    out+="<rect x=\""+x.toFixed(1)+"\" y=\""+yTop.toFixed(1)+"\" width=\""+bw+"\" height=\""+h.toFixed(1)+"\" rx=\"4\" fill=\""+colors[s.type]+"\"/>";
+    out+="<text x=\""+(x+bw/2)+"\" y=\""+(yTop-18)+"\" text-anchor=\"middle\"><tspan x=\""+(x+bw/2)+"\" font-size=\"11\" fill=\"var(--ink2)\">"+(s.val<0?"−":"")+fmt(Math.abs(s.val))+"</tspan><tspan x=\""+(x+bw/2)+"\" dy=\"13\" font-size=\"10\" font-weight=\"bold\" fill=\"var(--gold)\">"+ud(Math.abs(s.val))+"</tspan></text>";
+    out+="<text x=\""+(x+bw/2)+"\" y=\""+(H-padB+16)+"\" text-anchor=\"middle\" font-size=\"11\" fill=\"var(--muted)\">"+s.l+"</text>";
+  });
+  out+="<line x1=\"0\" y1=\""+(H-padB)+"\" x2=\""+W+"\" y2=\""+(H-padB)+"\" stroke=\"var(--line)\"/>";
+  el.innerHTML="<svg viewBox=\"0 0 "+W+" "+H+"\" xmlns=\"http://www.w3.org/2000/svg\">"+out+"</svg>";
+  $("wfSum").innerHTML="quedan <b>"+fmt(c.rentIva)+"</b> <b style=\"color:var(--gold)\">("+ud(c.rentIva)+")</b> de "+fmt(c.precio)+" ("+(c.precio?(c.rentIva/c.precio*100).toFixed(1).replace(".",","):0)+"%)";
+}
+let CMP_MODE="pct";
+function renderCompare(){
+  const val=function(d){return CMP_MODE==="pct"?d.pct:CMP_MODE==="mes"?d.rentIva*V30(d.k):d.rentIva;};
+  const data=Object.keys(P).map(prodVals).sort(function(a,b){return val(b)-val(a);});
+  const rowH=26,labW=250,valW=165,W=840,H=data.length*rowH+10;
+  const maxV=Math.max.apply(null,data.map(function(d){return Math.abs(val(d));}).concat([1]));
+  const barMax=W-labW-valW-10; let out="";
+  data.forEach(function(d,i){
+    const y=5+i*rowH, vv=val(d), w=Math.max(Math.abs(vv)/maxV*barMax,1.5);
+    const col=d.pct<0?"var(--red)":(d.pct<10?"var(--amber)":"var(--green)"), cur=d.k===SELECTED;
+    out+="<text x=\""+(labW-8)+"\" y=\""+(y+rowH/2+4)+"\" text-anchor=\"end\" font-size=\"11\" fill=\""+(cur?"var(--gold)":"var(--ink2)")+"\""+(cur?" font-weight=\"bold\"":"")+">"+esc(NM(d.k))+(P[d.k].est?" ≈":"")+"</text>";
+    out+="<rect x=\""+labW+"\" y=\""+(y+5)+"\" width=\""+w.toFixed(1)+"\" height=\""+(rowH-10)+"\" rx=\"4\" fill=\""+col+"\" opacity=\""+(cur?"1":"0.8")+"\"/>";
+    out+="<text x=\""+(labW+w+8)+"\" y=\""+(y+rowH/2+4)+"\" font-size=\"11\" fill=\"var(--ink2)\">"+(CMP_MODE==="pct"?vv.toFixed(1).replace(".",",")+"%":CMP_MODE==="mes"?(V30(d.k)?fmt(vv)+" · x"+V30(d.k):"sin ventas Full"):fmt(vv)+" · "+ud(vv))+"</text>";
+  });
+  $("cmpChart").innerHTML="<svg viewBox=\"0 0 "+W+" "+H+"\" xmlns=\"http://www.w3.org/2000/svg\">"+out+"</svg>";
+}
+
+function renderAll(){calc(); renderProdGrid(); renderVentas(); renderRank(); renderCompare();}
+function renderLive(){calc(); renderCompare();}
+sel.addEventListener("change",function(e){load(e.target.value);});
+$("reset").addEventListener("click",function(){load(SELECTED);});
+["precio"].concat(FIELDS).forEach(function(id){$(id).addEventListener("input",renderLive);});
+["usd","fee"].forEach(function(id){$(id).addEventListener("input",renderAll);});
+document.querySelectorAll(".psort [data-s]").forEach(function(b){b.addEventListener("click",function(){PG_S=b.dataset.s;document.querySelectorAll(".psort [data-s]").forEach(function(x){x.classList.toggle("sel",x===b);});renderProdGrid();});});
+document.querySelectorAll(".psort [data-f]").forEach(function(b){b.addEventListener("click",function(){PG_F=b.dataset.f;document.querySelectorAll(".psort [data-f]").forEach(function(x){x.classList.toggle("sel",x===b);});renderProdGrid();});});
+(function(){const bm={abs:$("rkAbs"),pct:$("rkPct"),mes:$("rkMes")};Object.keys(bm).forEach(function(m){bm[m].addEventListener("click",function(){RK_MODE=m;Object.keys(bm).forEach(function(x){bm[x].classList.toggle("sel",x===m);});renderRank();});});})();
+(function(){const bm={pct:$("cmpPct"),abs:$("cmpAbs"),mes:$("cmpMes")};Object.keys(bm).forEach(function(m){bm[m].addEventListener("click",function(){CMP_MODE=m;Object.keys(bm).forEach(function(x){bm[x].classList.toggle("sel",x===m);});renderCompare();});});})();
+$("precAl").textContent=DATA.precios_al;
+load(SELECTED);
+
+</script>
+</body>
+</html>
