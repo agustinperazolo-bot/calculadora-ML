@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-10-14",
+  "actualizado": "2026-10-22",
   "fuente": "https://listado.mercadolibre.com.ar/_CustId_2708733964",
   "nota": "Precio = precio final con descuento vigente en la publicacion. Editar SOLO via la tarea diaria; no tocar a mano.",
   "items": {
@@ -10,7 +10,7 @@
     },
     "unicornio_full": {
       "mla": "MLA1978014161",
-      "precio": 38790,
+      "precio": 39990,
       "titulo": "Unicornio"
     },
     "2cora_full": {
@@ -20,17 +20,17 @@
     },
     "nudo_full": {
       "mla": "MLA2537241202",
-      "precio": 56990,
+      "precio": 59990,
       "titulo": "Collar Plata 925 Novia"
     },
     "pulsnudo_full": {
       "mla": "MLA1825561641",
-      "precio": 48490,
+      "precio": 49990,
       "titulo": "2x Pulsera Nudo + Frasco"
     },
     "pulsnudo3_full": {
       "mla": "MLA3631103954",
-      "precio": 59840,
+      "precio": 57990,
       "titulo": "3x Pulsera Nudo + Frasco"
     },
     "pulsnudo4_full": {
@@ -45,7 +45,7 @@
     },
     "anillo_full": {
       "mla": "MLA1818605097",
-      "precio": 45990,
+      "precio": 44990,
       "titulo": "Anillos Juntas + Frasco"
     },
     "anillo3_full": {
@@ -55,7 +55,7 @@
     },
     "forever_full": {
       "mla": "MLA3572694044",
-      "precio": 47990,
+      "precio": 49990,
       "titulo": "Collar Corazon (Forever)"
     },
     "pulsera_full": {
@@ -75,12 +75,12 @@
     },
     "cadena_nf": {
       "mla": "MLA1565581541",
-      "precio": 21816,
+      "precio": 22990,
       "titulo": "Collar Acero (Cadena)"
     },
     "martillo_full": {
-      "mla": "MLA1682849525",
-      "precio": 20890,
+      "mla": "MLA1682849527",
+      "precio": 22990,
       "titulo": "Collar Martillo"
     }
   }
