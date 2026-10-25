@@ -1,53 +1,53 @@
 {
- "actualizado": "2026-10-24",
+ "actualizado": "2026-10-25",
  "fuente": "Google Sheet 'ARG - PEDIDOS y STOCK', hoja 'COLECTA - ML FULL' (Vtas ult 30 dias / Vtas ult 7 dias / En Stock / En camino) por SKU, agrupado por joya",
- "periodo_30d": "reporte general de stock Full de ML, actualizado el 24 de octubre a las 10:12 hs. (ventas ult. 30 dias, aptas y en camino por SKU)",
- "periodo_7d": "reporte rendimiento ML 17/10–24/10/2026 (8 dias, recalculado del reporte)",
+ "periodo_30d": "reporte general de stock Full de ML, actualizado el 25 de octubre a las 11:17 hs. (ventas ult. 30 dias, aptas y en camino por SKU)",
+ "periodo_7d": "reporte rendimiento ML 18/10–25/10/2026 (8 dias, recalculado del reporte)",
  "dias_7d": 8,
  "nota": "ventas = Vtas ult 30 dias (solo publicaciones Full); ventas_7d = Vtas ult 7 dias (todas las publicaciones, incluye estimados por variante). Mapeo joya→producto confirmado por Agustin 16-oct-2026: 2 corazones→2cora_full, Nudo→nudo_full, Forever→forever_full, Estuche Puls Nudo (2XBRA-KNOT-ESTUCHE)→pulsnudo_full, Puls Nudo simple→pulsera_full, Puls Nudo X2→dblpulsnudo_full, 2XANILLO→anillo_full, 3XANILLO→anillo3_full, Puls 2cora→puls2cora_nf, Moñito, Unicornio, Martillo, Cadena. Frasquito y Pelota no tienen producto en la calculadora (van en 'fuera').",
  "ventas": {
-  "monito_full": 23,
+  "monito_full": 24,
   "unicornio_full": 11,
-  "2cora_full": 256,
-  "nudo_full": 158,
+  "2cora_full": 250,
+  "nudo_full": 157,
   "pulsnudo_full": 67,
   "pulsnudo3_full": 0,
   "pulsnudo4_full": 0,
   "dblpulsnudo_full": 10,
-  "anillo_full": 47,
+  "anillo_full": 46,
   "anillo3_full": 10,
-  "forever_full": 231,
+  "forever_full": 224,
   "pulsera_full": 33,
   "pulsnino_prueba": 0,
   "puls2cora_nf": 6,
-  "cadena_nf": 3,
+  "cadena_nf": 4,
   "martillo_full": 2
  },
  "ventas_7d": {
-  "monito_full": 2,
-  "unicornio_full": 3,
-  "2cora_full": 25,
-  "nudo_full": 43,
+  "monito_full": 3,
+  "unicornio_full": 4,
+  "2cora_full": 22,
+  "nudo_full": 35,
   "pulsnudo_full": 13,
   "pulsnudo3_full": 0,
   "pulsnudo4_full": 0,
-  "dblpulsnudo_full": 2,
+  "dblpulsnudo_full": 1,
   "anillo_full": 4,
   "anillo3_full": 0,
-  "forever_full": 20,
+  "forever_full": 19,
   "pulsera_full": 4,
   "pulsnino_prueba": 0,
   "puls2cora_nf": 0,
-  "cadena_nf": 0,
+  "cadena_nf": 1,
   "martillo_full": 0
  },
  "stock": {
   "monito_full": {
-   "aptas": 43,
+   "aptas": 42,
    "camino": 3
   },
   "unicornio_full": {
-   "aptas": 28,
+   "aptas": 27,
    "camino": 0
   },
   "2cora_full": {
@@ -55,11 +55,11 @@
    "camino": 45
   },
   "nudo_full": {
-   "aptas": 157,
+   "aptas": 156,
    "camino": 20
   },
   "pulsnudo_full": {
-   "aptas": 83,
+   "aptas": 82,
    "camino": 0
   },
   "pulsnudo3_full": {
@@ -83,11 +83,11 @@
    "camino": 0
   },
   "forever_full": {
-   "aptas": 208,
+   "aptas": 207,
    "camino": 83
   },
   "pulsera_full": {
-   "aptas": 20,
+   "aptas": 18,
    "camino": 26
   },
   "pulsnino_prueba": {
@@ -99,7 +99,7 @@
    "camino": 0
   },
   "cadena_nf": {
-   "aptas": 12,
+   "aptas": 11,
    "camino": 0
   },
   "martillo_full": {
@@ -140,9 +140,9 @@
     "sku": "COLLARMOÑO-SOBRINA-NIÑA",
     "nicho": "",
     "full": true,
-    "v30": 3,
-    "v7": 0,
-    "aptas": 8,
+    "v30": 4,
+    "v7": 1,
+    "aptas": 7,
     "camino": 0
    },
    {
@@ -206,8 +206,8 @@
     "nicho": "",
     "full": true,
     "v30": 2,
-    "v7": 0,
-    "aptas": 6,
+    "v7": 1,
+    "aptas": 5,
     "camino": 0
    },
    {
@@ -234,8 +234,8 @@
     "sku": "COLLARCORAZONES-ROSA-EX06MV",
     "nicho": "Mujer",
     "full": true,
-    "v30": 87,
-    "v7": 11,
+    "v30": 84,
+    "v7": 10,
     "aptas": 76,
     "camino": 6
    },
@@ -244,7 +244,7 @@
     "nicho": "Mujer",
     "full": true,
     "v30": 40,
-    "v7": 3,
+    "v7": 2,
     "aptas": 47,
     "camino": 6
    },
@@ -270,7 +270,7 @@
     "sku": "COLLARCORAZONES-FRI-HM01",
     "nicho": "Hija",
     "full": true,
-    "v30": 16,
+    "v30": 15,
     "v7": 2,
     "aptas": 14,
     "camino": 0
@@ -280,7 +280,7 @@
     "nicho": "Hija",
     "full": true,
     "v30": 13,
-    "v7": 2,
+    "v7": 1,
     "aptas": 14,
     "camino": 0
    },
@@ -315,7 +315,7 @@
     "sku": "COLLARCORAZONES-LEON4-HP20",
     "nicho": "Hija",
     "full": true,
-    "v30": 10,
+    "v30": 9,
     "v7": 1,
     "aptas": 19,
     "camino": 0
@@ -342,7 +342,7 @@
     "sku": "COLLARCORAZONES-ARB-HMP01",
     "nicho": "Hija",
     "full": true,
-    "v30": 4,
+    "v30": 3,
     "v7": 0,
     "aptas": 5,
     "camino": 3
@@ -362,8 +362,8 @@
     "sku": "COLLARNUDO-BLANC-MAHI06-GRACIAS",
     "nicho": "Mama",
     "full": true,
-    "v30": 39,
-    "v7": 25,
+    "v30": 40,
+    "v7": 17,
     "aptas": 6,
     "camino": 0
    },
@@ -371,8 +371,8 @@
     "sku": "COLLARNUDO-ADORADA-MH07",
     "nicho": "Mama",
     "full": true,
-    "v30": 21,
-    "v7": 1,
+    "v30": 20,
+    "v7": 0,
     "aptas": 0,
     "camino": 6
    },
@@ -380,8 +380,8 @@
     "sku": "COLLARNUDO-LEON4-HP20",
     "nicho": "Hija",
     "full": true,
-    "v30": 14,
-    "v7": 3,
+    "v30": 13,
+    "v7": 4,
     "aptas": 14,
     "camino": 0
    },
@@ -400,7 +400,7 @@
     "full": true,
     "v30": 12,
     "v7": 3,
-    "aptas": 17,
+    "aptas": 16,
     "camino": 0
    },
    {
@@ -519,7 +519,7 @@
     "full": true,
     "v30": 67,
     "v7": 13,
-    "aptas": 83,
+    "aptas": 82,
     "camino": 0
    }
   ],
@@ -531,7 +531,7 @@
     "nicho": "Mama",
     "full": true,
     "v30": 5,
-    "v7": 2,
+    "v7": 1,
     "aptas": 0,
     "camino": 6
    },
@@ -559,7 +559,7 @@
     "sku": "2XANILLO-ESTUCHE-JUNTOS",
     "nicho": "Pareja",
     "full": true,
-    "v30": 13,
+    "v30": 12,
     "v7": 2,
     "aptas": 25,
     "camino": 0
@@ -581,16 +581,16 @@
     "sku": "CORADORADO-ROSA-EX06MV",
     "nicho": "Mujer",
     "full": true,
-    "v30": 90,
+    "v30": 88,
     "v7": 15,
-    "aptas": 73,
+    "aptas": 72,
     "camino": 12
    },
    {
     "sku": "CORAPLATEADO-ROSA-EX06MV",
     "nicho": "Mujer",
     "full": true,
-    "v30": 29,
+    "v30": 27,
     "v7": 0,
     "aptas": 26,
     "camino": 12
@@ -599,7 +599,7 @@
     "sku": "CORADORADO-GOLD-MUJER",
     "nicho": "Mujer",
     "full": true,
-    "v30": 21,
+    "v30": 20,
     "v7": 0,
     "aptas": 33,
     "camino": 6
@@ -608,7 +608,7 @@
     "sku": "CORADORADO-BLANCO-EX05ES",
     "nicho": "Mujer",
     "full": true,
-    "v30": 15,
+    "v30": 14,
     "v7": 0,
     "aptas": 21,
     "camino": 6
@@ -617,7 +617,7 @@
     "sku": "CORAPLATEADO-GOLD-MUJER",
     "nicho": "Mujer",
     "full": true,
-    "v30": 13,
+    "v30": 12,
     "v7": 0,
     "aptas": 28,
     "camino": 0
@@ -650,15 +650,6 @@
     "camino": 0
    },
    {
-    "sku": "CORADORADO-MAMA-PLURAL",
-    "nicho": "Mama",
-    "full": true,
-    "v30": 5,
-    "v7": 1,
-    "aptas": 0,
-    "camino": 6
-   },
-   {
     "sku": "CORADORADO-MAMA-HIJO1",
     "nicho": "Mama",
     "full": true,
@@ -675,6 +666,15 @@
     "v7": 0,
     "aptas": 0,
     "camino": 4
+   },
+   {
+    "sku": "CORADORADO-MAMA-PLURAL",
+    "nicho": "Mama",
+    "full": true,
+    "v30": 5,
+    "v7": 0,
+    "aptas": 0,
+    "camino": 6
    },
    {
     "sku": "CORAPLATEADO-MAMA-HIJA2",
@@ -724,29 +724,29 @@
   ],
   "pulsera_full": [
    {
-    "sku": "PULSERANUDO-BRA-KNOT-AMIGA",
-    "nicho": "",
-    "full": true,
-    "v30": 10,
-    "v7": 1,
-    "aptas": 13,
-    "camino": 0
-   },
-   {
     "sku": "PULSERANUDO-BRA-KNOT-HERMANA",
     "nicho": "",
     "full": true,
-    "v30": 9,
-    "v7": 1,
-    "aptas": 7,
+    "v30": 11,
+    "v7": 3,
+    "aptas": 5,
     "camino": 3
+   },
+   {
+    "sku": "PULSERANUDO-BRA-KNOT-AMIGA",
+    "nicho": "",
+    "full": true,
+    "v30": 8,
+    "v7": 1,
+    "aptas": 13,
+    "camino": 0
    },
    {
     "sku": "BRA-KNOT-MAMA-GENERIC",
     "nicho": "Mama",
     "full": true,
     "v30": 5,
-    "v7": 1,
+    "v7": 0,
     "aptas": 0,
     "camino": 5
    },
@@ -755,7 +755,7 @@
     "nicho": "Mama",
     "full": true,
     "v30": 5,
-    "v7": 1,
+    "v7": 0,
     "aptas": 0,
     "camino": 8
    },
@@ -822,9 +822,9 @@
     "sku": "CAD-HOM-05",
     "nicho": "",
     "full": true,
-    "v30": 2,
-    "v7": 0,
-    "aptas": 9,
+    "v30": 3,
+    "v7": 1,
+    "aptas": 8,
     "camino": 0
    },
    {
