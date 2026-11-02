@@ -205,7 +205,7 @@
       <div class="logo">SF</div>
       <div>
         <h1>Dashboard Financiero · Sofia Ferrer Chile</h1>
-        <div class="sub">Fuente: CHILE - Finance · datos al <b>01/11/2026</b> · TC USD/CLP <b id="tcnote">997</b> · último mes en curso (parcial)</div>
+        <div class="sub">Fuente: CHILE - Finance · datos al <b>02/11/2026</b> · TC USD/CLP <b id="tcnote">997</b> · último mes en curso (parcial)</div>
       </div>
     </div>
     <div class="tabs">
@@ -216,7 +216,7 @@
   <div id="srcchip"></div>
   <div id="tab_cl" class="tab show"></div>
   <div id="tab_fs" class="tab"></div>
-  <div class="foot">Chileteca SpA · montos en CLP (USD al TC 997) · generado el 01/11/2026</div>
+  <div class="foot">Chileteca SpA · montos en CLP (USD al TC 997) · generado el 02/11/2026</div>
 </div>
 <script>
 /* ===== DASHBOARD CHILE · datos ===== */
@@ -230,7 +230,7 @@ const DATA={
 };
 
 DATA.shop25={partial:false,months:["Ene-25","Feb-25","Mar-25","Abr-25","May-25","Jun-25","Jul-25","Ago-25","Sep-25","Oct-25","Nov-25","Dic-25"],envios:[85,177,98,117,82,116,79,107,100,163,326,257],pventa:[36370,32647,32509,35682,33183,32325,32166,32793,31490,33369,33013,38111],ventas:[3091450,5778519,3185882,4174794,2721006,3749700,2541114,3508851,3149000,5439147,10762238,9794527],cv:[1657555,3002220,1819556,2090934,1452187,2043444,1597998,1744475,1731138,2599220,5086784,4366228],margenBruto:[1433895,2776299,1366326,2083860,1268819,1706256,943116,1764376,1417862,2839927,5675454,5428299],corpo:[87053,87053,87053,87053,87053,87053,87053,87053,87053,87053,87053,87053],resBruto:[1346842,2689246,1279273,1996807,1181766,1619203,856063,1677323,1330809,2752874,5588401,5341246],resNeto:[1346842,2689246,1279273,1996807,1181766,1619203,856063,1677323,1330809,2752874,5588401,5341246],struct:[["CMV SF Chile",19935333,"#f59e0b"],["Facebook Ads",6007854,"#ec4899"],["Comisiones MP",1673201,"#a855f7"],["Shopify / Apps",1575352,"#38bdf8"],["Costos Corporativos",1044636,"#0ea5e9"]],fisco:7252839,ivaRecup:2010558};
-const FONDOS={"fecha":"31/10/2026","tc":997,"conv":{"iniUSD":6133,"actUSD":15265,"stkUSD":9666},"caja":[["Santander $",5490500],["MercadoPago",6661570],["Santander USD",99700]],"socios":[["Pera",3057514],["Seba",0],["Nico",2485194]],"mediacor":[["Compra joyas · deuda 2025",1126610],["Compra anillos + cajas · deuda 2026",0]],"retiros":[["Retiros Seba 2026",1800000],["Retiros Nico 2026",933881]],"casa":[["2cora",819036,155],["Nudo",996900,198],["Pelota",200995,126],["Cadena",272779,171],["Cajitas",1928850,1169],["Pulseras",49302,23],["Puls 2 cora",127536,78],["Estuche Blanco",642557,279],["Estuche Puls Nudo",16121,7],["Anillos",394991,558],["Puls Olita",524502,128],["Puls Cruz Comunión",401960,453],["Puls Nudo",148294,201],["Forever D",808128,298],["Forever P",265760,98]],"full":[["2cora",15852,3],["Nudo",15105,3],["Cajitas",31350,19],["Estuche Blanco",32243,14],["Anillos",19820,28],["Puls Cruz Comunión",10648,12],["Puls Nudo",738,1]],"transito":[["2cora",528410,100],["Nudo",1510455,300]]};
+const FONDOS={"fecha":"02/11/2026","tc":997,"conv":{"iniUSD":6133,"actUSD":15444,"stkUSD":9578},"caja":[["Santander $",5490500],["MercadoPago",6927570],["Santander USD",99700]],"socios":[["Pera",3057514],["Seba",0],["Nico",2485194]],"mediacor":[["Compra joyas · deuda 2025",1126610],["Compra anillos + cajas · deuda 2026",0]],"retiros":[["Retiros Seba 2026",1800000],["Retiros Nico 2026",933881]],"casa":[["2cora",803183,152],["Nudo",976761,194],["Pelota",200995,126],["Cadena",272779,171],["Cajitas",1905750,1155],["Pulseras",49302,23],["Puls 2 cora",127536,78],["Estuche Blanco",637950,277],["Estuche Puls Nudo",11515,5],["Anillos",394991,558],["Puls Olita",520404,127],["Puls Cruz Comunión",401960,453],["Puls Nudo",146818,199],["Forever D",799993,295],["Forever P",260337,96]],"full":[["2cora",15852,3],["Nudo",15105,3],["Cajitas",31350,19],["Estuche Blanco",34546,15],["Anillos",21236,30],["Puls Cruz Comunión",10648,12],["Puls Nudo",738,1]],"transito":[["2cora",528410,100],["Nudo",1510455,300]]};
 const SRC={sh25:"CHILE Finance · hoja $ chi EERR-25",sh:"CHILE Finance · hoja $ chi EERR-26",ml:"CHILE Finance · hoja ML Finz 26",cl:"CHILE Finance · hoja CHILETECA 26",fs:"CHILE Finance · hoja Analisis Rent 26 (panel FONDOS y STOCKS)"};
 function setSrc(k){const el=document.getElementById("srcchip");if(!el)return;const b=document.querySelector(".sub b");el.innerHTML=`\u{1F4C4} Fuente: <b>${SRC[k]||""}</b> · datos al <b>${b?b.textContent:""}</b>`;}
 
