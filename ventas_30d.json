@@ -1,7 +1,7 @@
 {
  "actualizado": "2026-11-12",
  "fuente": "Google Sheet 'ARG - PEDIDOS y STOCK', hoja 'COLECTA - ML FULL' (Vtas ult 30 dias / Vtas ult 7 dias / En Stock / En camino) por SKU, agrupado por joya",
- "periodo_30d": "reporte general de stock Full de ML, actualizado el 12 de noviembre a las 08:42 hs. (ventas ult. 30 dias, aptas y en camino por SKU)",
+ "periodo_30d": "reporte general de stock Full de ML, actualizado el 12 de noviembre a las 16:39 hs. (ventas ult. 30 dias, aptas y en camino por SKU)",
  "periodo_7d": "reporte rendimiento ML 05/11–12/11/2026 (8 dias, recalculado del reporte)",
  "dias_7d": 8,
  "nota": "ventas = Vtas ult 30 dias (solo publicaciones Full); ventas_7d = Vtas ult 7 dias (todas las publicaciones, incluye estimados por variante). Mapeo joya→producto confirmado por Agustin 16-oct-2026: 2 corazones→2cora_full, Nudo→nudo_full, Forever→forever_full, Estuche Puls Nudo (2XBRA-KNOT-ESTUCHE)→pulsnudo_full, Puls Nudo simple→pulsera_full, Puls Nudo X2→dblpulsnudo_full, 2XANILLO→anillo_full, 3XANILLO→anillo3_full, Puls 2cora→puls2cora_nf, Moñito, Unicornio, Martillo, Cadena. Frasquito y Pelota no tienen producto en la calculadora (van en 'fuera').",
@@ -26,15 +26,15 @@
  "ventas_7d": {
   "monito_full": 9,
   "unicornio_full": 4,
-  "2cora_full": 34,
-  "nudo_full": 23,
-  "pulsnudo_full": 15,
+  "2cora_full": 38,
+  "nudo_full": 25,
+  "pulsnudo_full": 17,
   "pulsnudo3_full": 0,
   "pulsnudo4_full": 0,
   "dblpulsnudo_full": 0,
-  "anillo_full": 3,
+  "anillo_full": 4,
   "anillo3_full": 0,
-  "forever_full": 18,
+  "forever_full": 21,
   "pulsera_full": 4,
   "pulsnino_prueba": 0,
   "puls2cora_nf": 2,
@@ -51,15 +51,15 @@
    "camino": 8
   },
   "2cora_full": {
-   "aptas": 245,
+   "aptas": 241,
    "camino": 220
   },
   "nudo_full": {
-   "aptas": 148,
-   "camino": 17
+   "aptas": 146,
+   "camino": 16
   },
   "pulsnudo_full": {
-   "aptas": 43,
+   "aptas": 42,
    "camino": 90
   },
   "pulsnudo3_full": {
@@ -75,7 +75,7 @@
    "camino": 6
   },
   "anillo_full": {
-   "aptas": 53,
+   "aptas": 52,
    "camino": 12
   },
   "anillo3_full": {
@@ -83,7 +83,7 @@
    "camino": 0
   },
   "forever_full": {
-   "aptas": 248,
+   "aptas": 245,
    "camino": 150
   },
   "pulsera_full": {
@@ -235,8 +235,8 @@
     "nicho": "Mujer",
     "full": true,
     "v30": 57,
-    "v7": 14,
-    "aptas": 66,
+    "v7": 15,
+    "aptas": 65,
     "camino": 180
    },
    {
@@ -244,8 +244,8 @@
     "nicho": "Amiga",
     "full": true,
     "v30": 21,
-    "v7": 7,
-    "aptas": 1,
+    "v7": 8,
+    "aptas": 0,
     "camino": 18
    },
    {
@@ -262,8 +262,8 @@
     "nicho": "Pareja",
     "full": true,
     "v30": 17,
-    "v7": 1,
-    "aptas": 31,
+    "v7": 2,
+    "aptas": 30,
     "camino": 0
    },
    {
@@ -289,8 +289,8 @@
     "nicho": "Hija",
     "full": true,
     "v30": 7,
-    "v7": 1,
-    "aptas": 12,
+    "v7": 2,
+    "aptas": 11,
     "camino": 0
    },
    {
@@ -382,7 +382,7 @@
     "full": true,
     "v30": 12,
     "v7": 5,
-    "aptas": 14,
+    "aptas": 13,
     "camino": 0
    },
    {
@@ -399,7 +399,7 @@
     "nicho": "Hija",
     "full": true,
     "v30": 9,
-    "v7": 3,
+    "v7": 4,
     "aptas": 9,
     "camino": 0
    },
@@ -489,8 +489,8 @@
     "nicho": "Cumple",
     "full": true,
     "v30": 1,
-    "v7": 0,
-    "aptas": 10,
+    "v7": 1,
+    "aptas": 9,
     "camino": 0
    },
    {
@@ -509,7 +509,7 @@
     "v30": 0,
     "v7": 0,
     "aptas": 1,
-    "camino": 1
+    "camino": 0
    }
   ],
   "pulsnudo_full": [
@@ -518,8 +518,8 @@
     "nicho": "Amiga",
     "full": true,
     "v30": 63,
-    "v7": 15,
-    "aptas": 43,
+    "v7": 17,
+    "aptas": 42,
     "camino": 90
    }
   ],
@@ -551,8 +551,8 @@
     "nicho": "Amiga",
     "full": true,
     "v30": 21,
-    "v7": 2,
-    "aptas": 35,
+    "v7": 3,
+    "aptas": 34,
     "camino": 6
    },
    {
@@ -582,8 +582,8 @@
     "nicho": "Mujer",
     "full": true,
     "v30": 56,
-    "v7": 9,
-    "aptas": 65,
+    "v7": 12,
+    "aptas": 62,
     "camino": 120
    },
    {
